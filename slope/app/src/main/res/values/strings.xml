@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">云城建</string>
+    <string name="radioGroup_text">定位icon</string>
+    <string name="nomal_map">普通地图</string>
+    <string name="other_map">卫星地图</string>
+    <string name="head_map">罗盘地图</string>
+    <string name="report_msg">上报信息</string>
+    <string name="show_msg">查看详情</string>
+    <string name="title">光明边坡</string>
+    <string name="setting">网络设置</string>
+    <string name="guide">使用指南</string>
+    <string name="register">签到打卡</string>
+    <string name="feedback">问题反馈</string>
+    <string name="userinfo">个人中心</string>
+
+    <string name="type_slope">边坡</string>
+    <string name="type_weater">三防</string>
+    <string name="type_worker">巡查员</string>
+    <string name="type_house">危房</string>
+
+    <string name="type_zj">住建局</string>
+    <string name="type_hs">环水局</string>
+    <string name="type_jt">交通局</string>
+    <string name="type_gt">规土局</string>
+
+    <string name="type_data">监测数据</string>
+    <string name="type_video">监测视频</string>
+    <string name="type_his">巡查历史</string>
+    <string name="type_report">上报数据</string>
+    <string name="type_hisdetil">巡查详情</string>
+
+    <string name="net_set">网络设置</string>
+    <string name="p_set">权限设置</string>
+
+    <string name="p_cam">相机权限</string>
+    <string name="p_sound">录音权限</string>
+    <string name="p_flash">存储权限</string>
+    <string name="p_loca">定位权限</string>
+    <string name="p_net">网络权限</string>
+    <string name="p_GPS">GPS权限</string>
+    <string name="title_p">个人信息</string>
+    <string name="hint_tip">请录入信息</string>
+    <string name="report">巡查报告</string>
+    <string name="gread1">小</string>
+    <string name="gread2">中</string>
+    <string name="gread3">大</string>
+    <string name="empty_text">这里空空的</string>
+    <string name="network_error">网络不可用</string>
+    <string name="reportTip">(上传图片视频1-4张，点击图片预览播放，长按取消该图片,由于图片水印，请完善信息再拍照)</string>
+</resources>

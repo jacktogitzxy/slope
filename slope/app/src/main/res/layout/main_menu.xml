@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/person_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="80dp">
+
+        <com.zig.slope.view.CircleImageView
+            android:id="@+id/user_photo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/bga" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/user_photo">
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="zxy"
+                android:textColor="@color/color_393939"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/user_name"
+                android:text="156****9705"
+                android:textColor="@color/color_393939"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="80dp"
+        android:orientation="vertical">
+
+
+
+        <LinearLayout style="@style/menu_layout_style"
+            android:onClick="StartPerson">
+
+            <ImageView
+                style="@style/menu_icon_style"
+                android:src="@mipmap/invite_friend" />
+
+            <TextView
+                style="@style/menu_text_style"
+                android:text="@string/userinfo" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView style="@style/menu_right_arrow_style" />
+        </LinearLayout>
+
+        <View style="@style/menu_divider_style" />
+
+        <LinearLayout style="@style/menu_layout_style"
+            android:onClick="StartReport" >
+
+            <ImageView
+                style="@style/menu_icon_style"
+                android:src="@mipmap/feedback" />
+
+            <TextView
+                style="@style/menu_text_style"
+                android:text="@string/feedback"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView style="@style/menu_right_arrow_style"
+                android:onClick="StartReport"  />
+        </LinearLayout>
+
+        <View style="@style/menu_divider_style" />
+
+        <LinearLayout style="@style/menu_layout_style"
+            android:onClick="StartGuide">
+
+            <ImageView
+                style="@style/menu_icon_style"
+                android:src="@mipmap/guide" />
+
+            <TextView
+                style="@style/menu_text_style"
+                android:text="@string/guide" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView style="@style/menu_right_arrow_style"
+                android:onClick="StartGuide"/>
+        </LinearLayout>
+
+
+
+        <View style="@style/menu_divider_style" />
+
+        <LinearLayout style="@style/menu_layout_style"
+            android:onClick="StartSetting">
+
+            <ImageView
+                style="@style/menu_icon_style"
+                android:src="@mipmap/setting" />
+
+            <TextView
+                style="@style/menu_text_style"
+                android:text="@string/setting" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView style="@style/menu_right_arrow_style" />
+        </LinearLayout>
+
+        <View style="@style/menu_divider_style" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:minWidth="100dip"
+            android:orientation="vertical"
+            android:padding="2dp" >
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/radioGroup_text" >
+
+                <RadioButton
+                    android:id="@+id/defaulticon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:padding="@dimen/dp_10"
+                    android:textSize="@dimen/text_size_normal"
+                    android:layout_gravity="center"
+                    android:textColor="@color/top_bar_normal_bg"
+                    android:text="@string/nomal_map" >
+                </RadioButton>
+
+                <RadioButton
+                    android:id="@+id/customicon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/top_bar_normal_bg"
+                    android:padding="@dimen/dp_10"
+                    android:textSize="@dimen/text_size_normal"
+                    android:layout_gravity="center"
+                    android:text="@string/other_map" >
+                </RadioButton>
+
+            </RadioGroup>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+

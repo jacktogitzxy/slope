@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarhisDetil"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_70"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingTop="@dimen/dp_20"
+        android:background="@color/color_343333"
+        android:minHeight="@dimen/dp_70"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/toolbar_theme">
+        <ImageView
+            android:id="@+id/toolmenuhis_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_gravity="right"
+            android:src="@mipmap/menu_icon" />
+    </android.support.v7.widget.Toolbar>
+    <ScrollView
+        android:layout_below="@+id/title_layout"
+        android:layout_marginTop="@dimen/dp_70"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/rl_play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <cn.bingoogolapple.bgabanner.BGABanner
+            android:id="@+id/numBanner"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_height="400dp"
+            app:banner_pageChangeDuration="1000"
+            app:banner_pointAutoPlayInterval="3000"
+            app:banner_pointAutoPlayAble="true"
+            app:banner_transitionEffect="defaultEffect"
+            app:banner_placeholderDrawable="@mipmap/well"
+            android:layout_gravity="center_horizontal"
+            app:banner_indicatorGravity="bottom|center_horizontal"
+            app:banner_pointContainerBackground="@android:color/transparent"
+            app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
+            app:banner_pointContainerLeftRightPadding="10dp"
+            app:banner_pointTopBottomMargin="5dp"
+            app:banner_pointLeftRightMargin="3dp"/>
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/text_view_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:lines="1"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textSize="18sp"
+            tools:text="@string/appbar_scrolling_view_behavior" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_empty_img_24dp"
+            android:drawableTint="@color/colorPrimary"
+            android:gravity="center_vertical"
+            android:text="2018-5-1"
+            android:textColor="@android:color/black" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/dp_8"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_author_black_24dp"
+            android:drawableTint="@color/colorPrimary"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            tools:text="Xiao Ming" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_clock_black_24dp"
+            android:drawableTint="@android:color/black"
+            android:gravity="center_vertical"
+            android:text="2018-5-1"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+    </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,83 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+	package
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:3:5-33
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:1-30:12
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.SYSTEM_ALERT_WINDOW
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:5:5-78
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:5:22-75
+uses-permission#android.permission.MOUNT_UNMOUNT_FILESYSTEMS
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:6:5-84
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:6:22-81
+uses-permission#android.permission.KILL_BACKGROUND_PROCESSES
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:7:5-84
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:7:22-81
+uses-permission#android.permission.READ_LOGS
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:8:5-68
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:8:22-65
+application
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:10:5-28:19
+	android:hardwareAccelerated
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:12:9-43
+	android:allowBackup
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:11:9-35
+activity#com.sh.camera.MainActivity
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:13:9-15:20
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:13:19-60
+activity#com.sh.camera.FileActivity
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:16:9-72
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:16:19-60
+activity#com.sh.camera.SelectTimeActivity
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:17:9-78
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:17:19-66
+activity#com.sh.camera.SetActivity
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:18:9-71
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:18:19-59
+activity#com.sh.camera.vedioPlay.MoviePlayer
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:21:9-81
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:21:19-69
+activity#com.sh.camera.LiveActivity
+ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:25:9-27:20
+	android:name
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml:25:19-60
+uses-sdk
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+		ADDED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\17120\Desktop\others\Zigslope\rtmp_moudle\src\main\AndroidManifest.xml

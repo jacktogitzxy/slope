@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/title_content_layout"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_height="30dp">
+
+            <ImageView
+                android:id="@+id/menu_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:onClick="finishActivity"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:src="@mipmap/return_icon" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:text="@string/report"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginLeft="@dimen/margin_normal"
+
+                android:background="@null"
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/tv_gray_deep"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
+<ScrollView
+    android:layout_below="@+id/title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical"
+    >
+
+
+
+    <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+        android:background="@drawable/bolder"
+    >
+
+
+    <!-- 标题-->
+
+    <!--地点信息-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/report_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:text="上报日期：2018/7/5"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/tv_gray_deep"
+            />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        >
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:gravity="center_vertical|left"
+            android:layout_gravity="center_vertical|left"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="边坡编号："
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/tv_gray_deep"
+            />
+        <EditText
+            android:id="@+id/report_name1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical|left"
+            android:layout_gravity="center_vertical|left"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/tv_gray_deep"
+            android:hint="请录入信息"
+            />
+    </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:gravity="center_vertical|left"
+                android:layout_gravity="center_vertical|left"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="   巡查员："
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/tv_gray_deep"
+                />
+            <EditText
+                android:id="@+id/report_worker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:textSize="16sp"
+                android:gravity="center_vertical|left"
+                android:layout_gravity="center_vertical|left"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/tv_gray_deep"
+                android:hint="请录入信息"
+                />
+        </LinearLayout>
+<!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:background="@drawable/bolder"
+                android:gravity="center_vertical|left"
+                android:layout_gravity="center_vertical|left"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="联系电话："
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/tv_gray_deep"
+                />
+            <EditText
+                android:id="@+id/report_worker_tel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:textSize="16sp"
+                android:gravity="center_vertical|left"
+                android:layout_gravity="center_vertical|left"
+                android:layout_marginBottom="@dimen/margin_tiny"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/tv_gray_deep"
+                android:hint="请录入信息"
+                />
+        </LinearLayout>
+-->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:gravity="center_vertical|left"
+            android:layout_gravity="center_vertical|left"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/tv_gray_deep"
+            android:text="情况描述："
+            />
+        <EditText
+            android:id="@+id/report_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical|left"
+            android:layout_gravity="center_vertical|left"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/tv_gray_deep"
+            android:hint="请录入信息"
+            />
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:background="@drawable/bolder"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="70dp"
+                android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/video_upload"
+                android:layout_marginTop="20dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@mipmap/quick_commom_pic_select_press"
+                />
+                <TextView
+                    android:layout_below="@+id/video_upload"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_avgpre"
+                    android:textStyle="italic"
+                    android:text="@string/reportTip"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:paddingLeft="@dimen/micro_padding"
+               android:paddingTop="@dimen/micro_padding"
+                android:background="@drawable/bolder"
+                android:id="@+id/main_menu"
+               >
+                <com.zig.slope.view.MyImageBt
+                    android:layout_width="130dp"
+                    android:layout_height="160dp"
+                    android:id="@+id/play"
+                    android:src="@mipmap/addimage"
+                    android:layout_alignParentLeft="true" />
+                <com.zig.slope.view.MyImageBt
+                    android:layout_width="130dp"
+                    android:layout_height="160dp"
+                    android:layout_toRightOf="@+id/play"
+                    android:id="@+id/play0"
+                    android:src="@mipmap/addimage"
+                    />
+
+                <com.zig.slope.view.MyImageBt
+                    android:layout_width="130dp"
+                    android:layout_height="160dp"
+                    android:id="@+id/play1"
+                    android:layout_below="@+id/play"
+                    android:src="@mipmap/addimage"
+                    />
+
+                <com.zig.slope.view.MyImageBt
+                    android:layout_width="130dp"
+                    android:layout_height="160dp"
+                    android:layout_below="@+id/play0"
+                    android:layout_toRightOf="@+id/play1"
+                    android:id="@+id/play2"
+                    android:src="@mipmap/addimage"
+                     />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+
+            <Button
+                android:id="@+id/btn_submit"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:onClick="startReportdo"
+                android:padding="10dp"
+                android:layout_marginLeft="@dimen/margin_large"
+                android:layout_marginRight="@dimen/margin_large"
+                android:paddingBottom="@dimen/margin_small"
+                android:paddingTop="@dimen/margin_small"
+                android:text="上报信息"
+                android:background="@drawable/component_album_bt_red_p"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_large" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- 内容-->
+    <!-- 提交-->
+
+</RelativeLayout>
+</ScrollView>
+</RelativeLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="240dp"
+    android:layout_height="320dp"
+    android:background="@android:color/transparent"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:padding="10dp" >
+    <ImageView android:layout_width="match_parent"
+        android:id="@+id/photo_icon"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:padding="5dip"
+        android:layout_gravity="center_horizontal"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:orientation="vertical">
+    <TextView android:id="@+id/photo_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_marginRight="15dp"
+        android:layout_gravity="center_vertical|right"
+        android:textSize="15sp" android:text="audjaidsfsdf"/>
+
+    <TextView android:id="@+id/photo_name1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="15dp"
+        android:textSize="15sp"
+        android:text="audjaidsfsdf"/>
+
+        <TextView android:id="@+id/photo_name2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:textColor="@android:color/holo_red_dark"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="15dp"
+            android:textSize="15sp"
+            android:text="audjaidsfsdf"/>
+    </LinearLayout>
+</FrameLayout>
