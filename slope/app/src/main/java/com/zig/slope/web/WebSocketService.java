@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -35,7 +36,7 @@ public class WebSocketService extends Service {
     private static WebSocketOptions options = new WebSocketOptions();
     private static boolean isExitApp = false;
     private static String websocketHost = Constant.SOCKET_URL+"websocket?operatorID=";//"ws://192.168.1.133:8080/WebSocketTest/ws/websocket"; //websocket服务端的url,,,ws是协议,和http一样,我写的时候是用的我们公司的服务器所以这里不能贴出来
-
+    private static String mid;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -47,13 +48,19 @@ public class WebSocketService extends Service {
                     NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
                     if (networkInfo == null || !networkInfo.isAvailable()) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                webSocketConnect(null,mid);
+                            }
+                        },2000);
                         Toast.makeText(getApplicationContext(), "网络已断开，请重新连接", Toast.LENGTH_SHORT).show();
                     } else {
                         if (webSocketConnection != null) {
                             webSocketConnection.disconnect();
                         }
                         if (isClosed) {
-                            webSocketConnect(null,null);
+                            webSocketConnect(null,mid);
                         }
                     }
 
@@ -83,6 +90,11 @@ public class WebSocketService extends Service {
     }
 
     public static void webSocketConnect(final Inofation inf,String id){
+        if(inf!=null){
+            if (id!=null){
+                mid =id;
+            }
+        }
         webSocketConnection = new WebSocketConnection();
         Log.i(TAG, "webSocketConnect: host ="+websocketHost+id);
         try {

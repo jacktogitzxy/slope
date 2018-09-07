@@ -3,6 +3,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 <RelativeLayout
@@ -28,70 +30,77 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_3"
                 android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:paddingLeft="@dimen/dp_30"
-                android:paddingRight="@dimen/dp_30"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
                 >
                 <ImageView
                     android:id="@+id/menu_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
                     android:clickable="true"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
                     android:src="@mipmap/axq" />
                 <TextView
                     android:id="@+id/maintitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="@string/type_slope"
+                    android:drawableLeft="@mipmap/slopeyellow"
                     android:gravity="bottom"
                     android:textColor="@color/color_aa343333"
-                    android:textSize="16sp" />
-                <ImageView
-                    android:id="@+id/topmenu_icon"
+                    android:textSize="14sp" />
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:clickable="true"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
                     android:layout_alignParentRight="true"
-                    android:onClick="showPopFormTop"
-                    android:src="@mipmap/message_icon" />
+                    android:layout_marginRight="@dimen/dp_15"
+                    >
+                    <ImageView
+                        android:id="@+id/topmenu_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:onClick="showPopFormTop"
+                        android:src="@mipmap/message_icon" />
+                    <ImageView
+                        android:id="@+id/message_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|right"
+                        android:visibility="invisible"
+                        android:src="@mipmap/a8q"/>
+                </FrameLayout>
             </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dp_25"
-                android:paddingRight="@dimen/dp_25"
+                android:paddingLeft="@dimen/dp_20"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/typeSolpe"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:tag="9"
                     android:text="@string/type_slope"
                     android:onClick="selectType"
                     android:textColor="@color/orange_main"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
                 <TextView
                     android:id="@+id/typeThree"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:tag="10"
                     android:onClick="selectType"
                     android:text="@string/type_weater"
                     android:textColor="@color/color_757575"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
                 <TextView
                     android:id="@+id/typeHouse"
                     android:layout_width="0dp"
@@ -99,9 +108,8 @@
                     android:layout_weight="1"
                     android:onClick="selectType"
                     android:text="@string/type_house"
-                    android:tag="11"
                     android:textColor="@color/color_757575"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
                 <TextView
                     android:id="@+id/typeWorker"
                     android:layout_width="0dp"
@@ -110,9 +118,8 @@
                     android:layout_weight="1"
                     android:onClick="selectType"
                     android:text="@string/type_worker"
-                    android:tag="12"
                     android:textColor="@color/color_757575"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
@@ -125,13 +132,199 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/title_layout"
-        android:layout_marginBottom="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_70"
         android:clickable="true" />
     <!--菜单选项-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_100"
+        android:minWidth="50dp"
+        android:background="@drawable/bt_map_state"
+        android:orientation="vertical"
+        android:padding="2dp" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/position_divider2"
+            android:layout_toRightOf="@id/switch_icon2"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/solpeiconleft" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:clickable="true"
+                android:padding="5dp"
+                android:text="边坡"
+                android:textColor="@color/color_323232"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/position_divider2"
+            android:layout_toRightOf="@id/switch_icon2"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/sficonleft" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:clickable="true"
+                android:padding="5dp"
+                android:text="三防"
+                android:textColor="@color/color_323232"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/position_divider2"
+            android:layout_toRightOf="@id/switch_icon2"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/wficonleft" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:clickable="true"
+                android:padding="5dp"
+                android:text="危房"
+                android:textColor="@color/color_323232"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/position_divider2"
+            android:layout_toRightOf="@id/switch_icon2"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/worker" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:clickable="true"
+                android:padding="5dp"
+                android:text="巡查员"
+                android:textColor="@color/color_323232"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/position_divider2"
+            android:layout_toRightOf="@id/switch_icon2"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/green_line_bg" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:clickable="true"
+                android:padding="5dp"
+                android:text="危险低"
+                android:textColor="@color/color_323232"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/position_divider2"
+            android:layout_toRightOf="@id/switch_icon2"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/yellow_line_bg" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:clickable="true"
+                android:padding="5dp"
+                android:text="危险中"
+                android:textColor="@color/color_323232"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/position_divider2"
+            android:layout_toRightOf="@id/switch_icon2"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/red_line_bg" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:clickable="true"
+                android:padding="5dp"
+                android:text="危险大"
+                android:textColor="@color/color_323232"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </LinearLayout>
        <LinearLayout
            android:layout_width="match_parent"
-           android:layout_height="@dimen/dp_50"
+           android:layout_height="@dimen/dp_70"
+           android:clickable="true"
+          android:paddingTop="@dimen/dp_10"
+           android:paddingBottom="@dimen/dp_10"
            android:orientation="horizontal"
            android:background="@color/white"
            android:layout_alignParentBottom="true">
@@ -144,8 +337,8 @@
                        android:orientation="vertical" >
                        <ImageView
                            android:id="@+id/ivChat"
-                           android:layout_width="@dimen/dp_30"
-                           android:layout_height="@dimen/dp_30"
+                           android:layout_width="@dimen/dp_20"
+                           android:layout_height="@dimen/dp_20"
                            android:background="#00000000"
                            android:src="@mipmap/reporticon" />
                        <TextView
@@ -153,6 +346,7 @@
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="上报数据"
+                           android:textSize="13sp"
                            android:textColor="@color/color_757575" />
                    </LinearLayout>
                    <LinearLayout
@@ -165,8 +359,8 @@
                        android:orientation="vertical" >
                        <ImageView
                            android:id="@+id/ivFriends"
-                           android:layout_width="@dimen/dp_30"
-                           android:layout_height="@dimen/dp_30"
+                           android:layout_width="@dimen/dp_20"
+                           android:layout_height="@dimen/dp_20"
                            android:background="#00000000"
                            android:src="@mipmap/playlive" />
                        <TextView
@@ -174,6 +368,7 @@
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="发起直播"
+                           android:textSize="13sp"
                            android:textColor="@color/color_757575" />
                    </LinearLayout>
                    <LinearLayout
@@ -186,8 +381,8 @@
                        android:orientation="vertical" >
                        <ImageView
                            android:id="@+id/ivContacts"
-                           android:layout_width="@dimen/dp_30"
-                           android:layout_height="@dimen/dp_30"
+                           android:layout_width="@dimen/dp_20"
+                           android:layout_height="@dimen/dp_20"
                            android:background="#00000000"
                            android:src="@mipmap/reporthis" />
                        <TextView
@@ -195,6 +390,7 @@
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="巡查记录"
+                           android:textSize="13sp"
                            android:textColor="@color/color_757575" />
                    </LinearLayout>
                    <LinearLayout
@@ -207,15 +403,16 @@
                        android:orientation="vertical" >
                        <ImageView
                            android:id="@+id/ivSettings"
-                           android:layout_width="@dimen/dp_30"
-                           android:layout_height="@dimen/dp_30"
+                           android:layout_width="@dimen/dp_20"
+                           android:layout_height="@dimen/dp_20"
                            android:background="#00000000"
                            android:src="@mipmap/aum" />
                        <TextView
                            android:id="@+id/tvSettings"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="行政信息"
+                           android:text="主页"
+                           android:textSize="13sp"
                            android:textColor="@color/color_757575" />
                    </LinearLayout>
 
@@ -262,7 +459,7 @@
                 app:banner_pointAutoPlayInterval="3000"
                 app:banner_pointAutoPlayAble="true"
                 app:banner_transitionEffect="defaultEffect"
-                app:banner_placeholderDrawable="@mipmap/well"
+                app:banner_placeholderDrawable="@mipmap/webwxgetmsgimg5"
                 app:banner_indicatorGravity="bottom|center_horizontal"
 
                 app:banner_pointContainerBackground="@android:color/transparent"
@@ -276,6 +473,7 @@
                 android:layout_below="@+id/poitBanner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingBottom="@dimen/dp_100"
                 android:background="@android:color/white"/>
 
         </RelativeLayout>
@@ -289,29 +487,18 @@
         android:paddingTop="@dimen/dp_20"
         android:visibility="invisible"
         android:background="#00000000"
+        app:collapseIcon="@mipmap/menu_icon"
         android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/toolbar_theme">
-
-        <ImageView
-            android:id="@+id/toolmenu_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:paddingLeft="15dp"
-            android:onClick="showPopFormTop"
-            android:paddingRight="15dp"
-            android:layout_gravity="right"
-            android:src="@mipmap/menu_icon" />
-    </android.support.v7.widget.Toolbar>
+        app:popupTheme="@style/OverflowMenuStyle"
+        app:theme="@style/toolbar_theme"/>
 
     <!-- 欢迎-->
     <ImageView
         android:id="@+id/splash_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/splash"
+        android:src="@mipmap/wellcom"
+        android:visibility="gone"
         android:scaleType="fitXY"
         />
 </RelativeLayout>

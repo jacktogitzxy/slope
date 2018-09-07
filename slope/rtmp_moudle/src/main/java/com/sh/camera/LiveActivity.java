@@ -1,21 +1,27 @@
 package com.sh.camera;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -39,36 +45,37 @@ import org.push.push.Pusher;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+
 @Route(path = "/rtmp/live")
 public class LiveActivity extends AppCompatActivity {
     private static final String TAG = LiveActivity.class.getName();
-    public  Context application;
+    public Context application;
     private PreManager pm;
     private MediaCodecManager2 mm;
     public static Pusher mPusher;
-    public  int[] StreamIndex;
-    public  Camera[] camera;
+    public int[] StreamIndex;
+    public Camera[] camera;
     private MediaRecorder[] mrs;
     private String[] MrTempName;
     private ContentValues[] mCurrentVideoValues;
-    private  int framerate = Constants.FRAMERATE;
-    public  boolean isrun = false;
-    public  String ACTION = "com.dss.car.dvr";
-    public  String FULLSCREEN = "fullscreen";
-    public  String PASSWINFULL = "passwinfullscreen";
-    public  String WINDOW = "window";
-    public  String MINIMIZE = "minimize";
-    public  String RESTART = "restart";
-    public  String STARTRECORDER = "startrecorder";
-    public  String STARTPUSH = "startpush";
-    public  String STOPRECORDER = "stoprecorder";
-    public  String STOPPUSH = "stoppush";
+    private int framerate = Constants.FRAMERATE;
+    public boolean isrun = false;
+    public String ACTION = "com.dss.car.dvr";
+    public String FULLSCREEN = "fullscreen";
+    public String PASSWINFULL = "passwinfullscreen";
+    public String WINDOW = "window";
+    public String MINIMIZE = "minimize";
+    public String RESTART = "restart";
+    public String STARTRECORDER = "startrecorder";
+    public String STARTPUSH = "startpush";
+    public String STOPRECORDER = "stoprecorder";
+    public String STOPPUSH = "stoppush";
     public boolean isRecording = false;
-    private Button btn_app_minimize,btn_app_exit;
-    private FrameLayout   inc_alertaui;
-    private FrameLayout   inc_url;
-    private TextView  text_url;
-    private ImageView btiv1,btiv2;
+    private Button btn_app_minimize, btn_app_exit;
+    private FrameLayout inc_alertaui;
+    private FrameLayout inc_url;
+    private TextView text_url;
+    private ImageView btiv1, btiv2;
     private LinearLayout[] lys;
     private int[] lyids = {R.id.ly_1_0, R.id.ly_1_1};
     //主要显示控件
@@ -77,21 +84,44 @@ public class LiveActivity extends AppCompatActivity {
     //按钮容器
     private LinearLayout ly_bts;
     public Camera.PreviewCallback[] preview;
-    public  TextureView.SurfaceTextureListener[] stListener;
+    public TextureView.SurfaceTextureListener[] stListener;
     //记录当前录制视屏的起点，未录制时-1；
     long recoTime = -1;
     boolean isSC = false;
     boolean sd_inject = false;
-    public  boolean clickLock = false;
+    public boolean clickLock = false;
 
     //推流
     private int m_index_channel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_live);
         Constants.setParam(this);
-        pm =  PreManager.getInstance(this);
+        pm = PreManager.getInstance(this);
+        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        String ANDROID_ID = Settings.System.getString(getContentResolver(), Settings.System.ANDROID_ID);
+        String te1 = tm.getDeviceId();
+        Log.i(TAG, "onCreate: ANDROID_ID=="+te1);
+        if(ANDROID_ID!=null) {
+            pm.putStreamname(ANDROID_ID);
+            pm.putStreamURL(String.format(Constants.Default_URL,ANDROID_ID));
+        }else{
+            pm.putStreamURL(String.format(Constants.Default_URL,System.currentTimeMillis()));
+        }
         mm = MediaCodecManager2.getInstance(this);
         initView();
         initData();

@@ -10,9 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zig.slope.R;
 import com.zig.slope.common.base.bean.HisReport;
+import com.zig.slope.util.TimeUtils;
 
 import java.util.List;
 
@@ -28,19 +30,16 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<HisReport> mList;
     private OnRecyclerViewItemOnClickListener listener;
 
-
-    public static final int HEADER_VIEW = 0;
-    public static final int NORMAL_VIEW = 1;
-    private View mHeaderView;
-
     public HisAdapter(Context context, List<HisReport> list){
         this.context = context;
         inflater = LayoutInflater.from(this.context);
         mList = list;
     }
 
-    public void updateData(List<HisReport> list){
-        mList.clear();
+    public void updateData(List<HisReport> list,boolean isRefresh){
+        if(isRefresh){
+            mList.clear();
+        }
         mList.addAll(list);
         notifyDataSetChanged();
         notifyItemRemoved(list.size());
@@ -53,53 +52,27 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == HEADER_VIEW) {
-            return new NormalViewHolder(mHeaderView, null);
-        }
         View view = inflater.inflate(R.layout.item_hisreport, parent, false);
         return new NormalViewHolder(view,listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == HEADER_VIEW) {
-            return;
-        }
         NormalViewHolder normalViewHolder = (NormalViewHolder) holder;
-        Log.i("zxy", "onBindViewHolder: position===="+position);
         HisReport data = mList.get(position);
-
-        normalViewHolder.textAuthor.setText(data.getPatrollerID());
+        normalViewHolder.textAuthor.setText(data.getRemark());
         normalViewHolder.textTitle.setText(data.getContents());
-        //if the text is too long, the button can not show it correctly.The solution is adding " ".
         normalViewHolder.btnCategory.setText("  "+data.getNewName()+"  ");
-        normalViewHolder.textTime.setText(data.getCreateTime());
+        normalViewHolder.textTime.setText(TimeUtils.transleteTime(data.getCreateTime()));
     }
-
-    private int getRealPosition(int position) {
-        if (null != mHeaderView) {
-            return position - 1;
-        }
-        return position;
-    }
-
 
     @Override
     public int getItemCount() {
         return mList.size();
     }
+    private int getRealPosition(int position) {
 
-
-    public void setHeaderView(View headerView) {
-        mHeaderView = headerView;
-        notifyItemInserted(0);
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-//        if (mHeaderView == null) return NORMAL_VIEW;
-//        if (position == 0) return HEADER_VIEW;
-        return NORMAL_VIEW;
+        return position;
     }
 
     class NormalViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -107,7 +80,7 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         OnRecyclerViewItemOnClickListener listener;
         CardView cardView;
         AppCompatButton btnCategory;
-        AppCompatTextView textTitle;
+        TextView textTitle;
         AppCompatTextView textAuthor;
         AppCompatTextView textTime;
 
@@ -115,9 +88,6 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public NormalViewHolder(View itemView, final OnRecyclerViewItemOnClickListener listener) {
             super(itemView);
-            if (itemView == mHeaderView) {
-                return;
-            }
             this.listener = listener;
             btnCategory = itemView.findViewById(R.id.btn_category);
             btnCategory.setOnClickListener(this);

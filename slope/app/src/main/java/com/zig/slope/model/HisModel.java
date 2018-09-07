@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.zig.slope.api.HisApi;
 import com.zig.slope.common.base.bean.BaseResponseBean;
+import com.zig.slope.common.base.bean.HisBean;
 import com.zig.slope.common.base.bean.HisReport;
 import com.zig.slope.common.base.bean.LoginMsg;
 import com.zig.slope.common.http.RxObserver;
@@ -29,26 +30,24 @@ public class HisModel implements HisContract.HisModel {
      * 请求banner图片以及文章列表数据
      */
     @Override
-    public void getHisDatas(Context context, String admin, final HisContract.IHisModelCallback callback) {
-        Log.i("zxy", "-----------------getHisDatas: ");
+    public void getHisDatas(Context context, String admin,int page, final HisContract.IHisModelCallback callback,String meths) {
+
         RxRetrofitManager.getInstance()
-                .setTag("hisReport")
+                .setTag(meths)
                 .getApiService(HisApi.class)
-                .getHisReport(admin)
+                .getHisReport(meths,page,admin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( new RxObserver<BaseResponseBean<List<HisReport>>>(context, true) {
+                .subscribe( new RxObserver<BaseResponseBean<HisBean>>(context, true) {
                     @Override
-                    public void onSuccess(BaseResponseBean<List<HisReport>> listBaseResponseBean) {
-                        if (listBaseResponseBean.getCode() >= 0&&listBaseResponseBean.getData()!=null){
+                    public void onSuccess(BaseResponseBean<HisBean> BaseResponseBean) {
+                        if (BaseResponseBean.getCode() >= 0&&BaseResponseBean.getData()!=null){
                             if (callback != null){
-                                Log.i("zxy", "accept: listBaseResponseBean=="+listBaseResponseBean.getInfo());
-                                callback.onSuccess(listBaseResponseBean);
+                                callback.onSuccess(BaseResponseBean);
                             }
                         }else {
                             if (callback != null){
-                                Log.i("zxy", "accept: listBaseResponseBean=="+listBaseResponseBean.getInfo());
-                                callback.onFail(listBaseResponseBean.getInfo());
+                                callback.onFail(BaseResponseBean.getInfo());
                             }
                         }
                     }
@@ -59,4 +58,6 @@ public class HisModel implements HisContract.HisModel {
     public void cancleHttpRequest() {
         ApiCancleManager.getInstance().cancel("hisReport");
     }
+
+
 }

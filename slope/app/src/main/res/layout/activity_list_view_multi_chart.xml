@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_10"
+        android:background="@color/color_343333"
+        android:minHeight="@dimen/dp_70"
+        app:popupTheme="@style/OverflowMenuStyle"
+        app:theme="@style/toolbar_theme">
+    </android.support.v7.widget.Toolbar>
+    <ScrollView
+        android:id="@+id/myDataScro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dp_30"
+                android:paddingLeft="@dimen/dp_30"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_40"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+                <SurfaceView android:id="@+id/surface"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_160" />
+            </LinearLayout>
+             <ListView
+                android:id="@+id/listView1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_640" >
+             </ListView>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

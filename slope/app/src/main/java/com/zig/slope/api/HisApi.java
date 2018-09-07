@@ -2,12 +2,14 @@ package com.zig.slope.api;
 
 
 import com.zig.slope.common.base.bean.BaseResponseBean;
-import com.zig.slope.common.base.bean.HisReport;
+import com.zig.slope.common.base.bean.HisBean;
+import com.zig.slope.common.base.bean.ProcessBean;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -18,9 +20,22 @@ import retrofit2.http.Query;
 
 public interface HisApi {
     /**
-     *登录数据
+     *巡查数据
      */
-    @POST("queryInspectionResultsApp")
-    Observable<BaseResponseBean<List<HisReport>>> getHisReport(@Query("patrollerID") String admin);
+    @POST("{app}")
+    Observable<BaseResponseBean<HisBean>> getHisReport(@Path("app")String meths, @Query("currentPage") int page, @Query("operatorId") String admin);
+
+    /**
+     *管理审核
+     */
+    @POST("adminShenHeApp ")
+    Observable<BaseResponseBean> adminShenHeApp( @Query("id") String id,@Query("operatorName") String operatorName,@Query("contents") String contents);
+
+    /**
+     *领导审核
+     */
+    @POST("LeaderShenHeApp ")
+    Observable<BaseResponseBean> LeaderShenHeApp( @Query("id") String id,@Query("operatorName") String operatorName,@Query("contents") String contents);
+
 
 }

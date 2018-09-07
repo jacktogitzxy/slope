@@ -3,15 +3,15 @@
  */
 ext{
     android = [
-            compileSdkVersion: 26,
+            compileSdkVersion: 27,
             minSdkVersion: 17,
-            targetSdkVersion: 26,
+            targetSdkVersion: 27,
             versionCode: 1,
             versionName: "1.0"
     ]
 
     libsVersion = [
-            supportLibraryVersion = "26.1.0",
+            supportLibraryVersion = "27.1.1",
             constraint_layout = "1.1.0",
             retrofit = "2.3.0",
             retrofit_converter_gson = "2.3.0",

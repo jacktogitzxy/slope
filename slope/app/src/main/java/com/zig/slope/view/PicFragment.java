@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,8 @@ public class PicFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pic, container, false);
         mVideoView = view.findViewById(R.id.image_view);
-        Glide.with(getActivity()).load(new File(videoPath)).into(mVideoView);
+        Log.i("zxy", "onCreateView: videoPath=="+videoPath);
+            Glide.with(getActivity()).load(videoPath.trim()).into(mVideoView);
         mVideoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

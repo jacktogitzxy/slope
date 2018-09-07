@@ -8,29 +8,26 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarhisDetil"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_70"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:paddingTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_30"
         android:background="@color/color_343333"
         android:minHeight="@dimen/dp_70"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/toolbar_theme">
-        <ImageView
-            android:id="@+id/toolmenuhis_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:layout_gravity="right"
-            android:src="@mipmap/menu_icon" />
+
     </android.support.v7.widget.Toolbar>
+    <RelativeLayout
+        android:layout_below="@+id/toolbarhisDetil"
+        android:id="@+id/rl_play"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_95">
     <ScrollView
-        android:layout_below="@+id/title_layout"
-        android:layout_marginTop="@dimen/dp_70"
+        android:id="@+id/msgView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
@@ -40,19 +37,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <RelativeLayout
-            android:id="@+id/rl_play"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <cn.bingoogolapple.bgabanner.BGABanner
             android:id="@+id/numBanner"
             android:layout_width="wrap_content"
             android:layout_marginTop="@dimen/dp_3"
-            android:layout_height="400dp"
+            android:layout_height="180dp"
             app:banner_pageChangeDuration="1000"
             app:banner_pointAutoPlayInterval="3000"
             app:banner_pointAutoPlayAble="true"
             app:banner_transitionEffect="defaultEffect"
-            app:banner_placeholderDrawable="@mipmap/well"
+            app:banner_placeholderDrawable="@mipmap/webwxgetmsgimg5"
             android:layout_gravity="center_horizontal"
             app:banner_indicatorGravity="bottom|center_horizontal"
             app:banner_pointContainerBackground="@android:color/transparent"
@@ -61,16 +58,26 @@
             app:banner_pointTopBottomMargin="5dp"
             app:banner_pointLeftRightMargin="3dp"/>
         </RelativeLayout>
-        <TextView
-            android:id="@+id/text_view_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:lines="1"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginLeft="@dimen/dp_16">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_view_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:drawablePadding="8dp"
+            android:paddingLeft="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_8"
-            android:textSize="18sp"
-            tools:text="@string/appbar_scrolling_view_behavior" />
+            android:drawableStart="@mipmap/solpeiconleft"
+            android:gravity="center_vertical"
+            android:text="边坡编号："
+            android:textSize="13sp"
+            android:textColor="@android:color/black"
+            />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_content"
@@ -78,10 +85,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:drawablePadding="8dp"
+            android:layout_marginTop="@dimen/dp_8"
             android:drawableStart="@drawable/ic_empty_img_24dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/black"
             android:gravity="center_vertical"
-            android:text="2018-5-1"
+            android:text="情况描述："
+            android:textSize="13sp"
             android:textColor="@android:color/black" />
 
 
@@ -90,15 +99,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/dp_8"
             android:drawablePadding="8dp"
+            android:letterSpacing="0.25"
             android:drawableStart="@drawable/ic_author_black_24dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/black"
             android:gravity="center_vertical"
-            android:textColor="@color/black"
-            tools:text="Xiao Ming" />
+            android:text="张三："
+            android:textSize="13sp"
+            android:textColor="@color/black" />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_time"
             android:layout_width="wrap_content"
@@ -107,10 +117,263 @@
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_clock_black_24dp"
             android:drawableTint="@android:color/black"
-            android:gravity="center_vertical"
-            android:text="2018-5-1"
-            android:textColor="@android:color/black" />
+            android:text="上报时间："
+            android:textSize="13sp"
+            android:textColor="@android:color/black"
+            android:gravity="center_vertical"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/charge_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+           >
+
+
+            <LinearLayout
+                android:id="@+id/start_place_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/blue_circle_bg" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/start_place_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:tag="1"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/position_divider"
+                style="@style/transaction_type_divider"
+                android:layout_below="@id/start_place_layout"
+                android:layout_marginLeft="10dp"
+                android:visibility="invisible"
+                />
+
+            <LinearLayout
+                android:id="@+id/destination_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/position_divider"
+                android:layout_marginTop="@dimen/dp_8"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/yellow_circle_bg" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/destination_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+
+                    android:paddingLeft="@dimen/dp_16"
+                    android:text="意见："
+                    android:tag="2"
+                    android:onClick="showInputDestination"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/charge_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+          >
+
+
+
+            <LinearLayout
+                android:id="@+id/start_place_layout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/blue_circle_bg" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/start_place_edit2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:tag="3"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/position_divider2"
+                style="@style/transaction_type_divider"
+                android:layout_below="@id/start_place_layout2"
+                android:layout_marginLeft="10dp"
+                android:visibility="invisible"
+                android:layout_toRightOf="@id/switch_icon2" />
+
+            <LinearLayout
+                android:id="@+id/destination_layout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/position_divider2"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_toRightOf="@id/switch_icon2"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/yellow_circle_bg" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/destination_edit2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+
+                    android:paddingLeft="@dimen/dp_16"
+                    android:text="意见："
+                    android:tag="4"
+                    android:onClick="showInputDestination"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </RelativeLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/enterbt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@drawable/bt_book_selector"
+            android:clickable="true"
+            android:visibility="invisible"
+            android:gravity="center"
+            android:padding="10dp"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
     </LinearLayout>
     </ScrollView>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/place_search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_below="@id/toolbarhisDetil"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:id="@+id/position_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="50dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:clickable="true"
+                android:onClick="backFromEditPlace"
+                android:src="@mipmap/return_icon" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_layout_bg"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="5dp"
+                    android:onClick="backFromEnter"
+                    android:src="@mipmap/acq" />
+
+                <EditText
+                    android:id="@+id/place_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="xxxxxx"
+                    android:padding="5dp"
+                    android:textColorHint="@color/color_cc858585"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/confirm_poi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/bt_confirm_selector"
+                android:clickable="true"
+                android:text="xxxxx"
+                android:visibility="gone"
+                android:padding="10dp"
+                android:textColor="@color/white_dd"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <View
+            style="@style/transaction_type_divider"
+            android:layout_marginTop="10dp" />
+        />
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

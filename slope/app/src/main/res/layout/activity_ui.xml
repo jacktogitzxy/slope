@@ -18,7 +18,7 @@
             android:text="联系人"
             android:layout_marginTop="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_5"
-            android:textSize="20sp"
+            android:textSize="13sp"
             android:gravity="center"
             />
         <Spinner

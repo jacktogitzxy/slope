@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.zig.slope.R;
 import com.zig.slope.adapter.OnRecyclerViewItemOnClickListener;
 import com.zig.slope.web.model.ChatModel;
@@ -104,6 +106,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
             String contet = tv.getText().toString();
             if(contet.startsWith("rtmp")){
                 //play
+                startPlay(contet);
             }
         }
     }
@@ -135,7 +138,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
             String contet = tv.getText().toString();
             if(contet.startsWith("rtmp")){
                 //play
+                startPlay(contet);
             }
         }
+    }
+
+    private void startPlay(String url){
+        ARouter.getInstance().build("/player/play").withString("url",url).navigation();
     }
 }

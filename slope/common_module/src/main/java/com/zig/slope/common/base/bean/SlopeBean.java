@@ -44,6 +44,24 @@ public class SlopeBean implements Serializable {
     private String management   ;//管理维护单位
     private String remark;//自行治理
     private String createTime;//备注
+    private String imageAddress1;//图片
+    private String streamAddress;//监控地址
+
+    public String getStreamAddress() {
+        return streamAddress;
+    }
+
+    public void setStreamAddress(String streamAddress) {
+        this.streamAddress = streamAddress;
+    }
+
+    public String getImageAddress1() {
+        return imageAddress1;
+    }
+
+    public void setImageAddress1(String imageAddress1) {
+        this.imageAddress1 = imageAddress1;
+    }
 
     public String getId() {
         return id;
@@ -438,7 +456,6 @@ public class SlopeBean implements Serializable {
         lists.add("管理维护单位:"+this.management);
         lists.add("自行治理:"+this.remark);
         lists.add("备注:"+this.createTime);
-
         return lists;
     }
 }

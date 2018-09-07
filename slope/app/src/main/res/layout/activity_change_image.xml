@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:paddingTop="@dimen/dp_20"
+        android:background="#00000000"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/toolbar_theme">
+    </android.support.v7.widget.Toolbar>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/dp_70"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bolder"
+            >
+            <!-- 标题-->
+
+            <!--地点信息-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="340dp"
+                    android:background="@drawable/bolder"
+                    android:orientation="horizontal">
+                    <RelativeLayout
+                        android:layout_width="70dp"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:id="@+id/video_upload"
+                            android:layout_marginTop="20dp"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:src="@mipmap/quick_commom_pic_select_press"
+                            />
+                        <TextView
+                            android:layout_below="@+id/video_upload"
+                            android:layout_marginTop="@dimen/dp_5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_avgpre"
+                            android:textStyle="italic"
+                            android:text="@string/changeTip"
+                            />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:paddingLeft="@dimen/micro_padding"
+                        android:paddingTop="@dimen/micro_padding"
+                        android:background="@drawable/bolder"
+                        android:id="@+id/main_menu"
+                        >
+                        <com.zig.slope.view.MyImageBt
+                            android:layout_width="130dp"
+                            android:layout_height="160dp"
+                            android:id="@+id/play"
+                            android:src="@mipmap/addimage"
+                            android:layout_alignParentLeft="true" />
+                        <com.zig.slope.view.MyImageBt
+                            android:layout_width="130dp"
+                            android:layout_height="160dp"
+                            android:layout_toRightOf="@+id/play"
+                            android:id="@+id/play0"
+                            android:src="@mipmap/addimage"
+                            />
+
+                        <com.zig.slope.view.MyImageBt
+                            android:layout_width="130dp"
+                            android:layout_height="160dp"
+                            android:id="@+id/play1"
+                            android:layout_below="@+id/play"
+                            android:src="@mipmap/addimage"
+                            />
+
+                        <com.zig.slope.view.MyImageBt
+                            android:layout_width="130dp"
+                            android:layout_height="160dp"
+                            android:layout_below="@+id/play0"
+                            android:layout_toRightOf="@+id/play1"
+                            android:id="@+id/play2"
+                            android:src="@mipmap/addimage"
+                            />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_margin="20dp"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+                    <Button
+                        android:id="@+id/btn_submit"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:onClick="startUpload"
+                        android:padding="10dp"
+                        android:layout_marginLeft="@dimen/margin_large"
+                        android:layout_marginRight="@dimen/margin_large"
+                        android:paddingBottom="@dimen/margin_small"
+                        android:paddingTop="@dimen/margin_small"
+                        android:text="上传"
+                        android:background="@drawable/component_album_bt_red_p"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_size_large" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+</RelativeLayout>

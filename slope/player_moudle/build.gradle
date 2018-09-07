@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     compile rootProject.ext.dependencies.arouter_api
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
     implementation rootProject.ext.dependencies.appcompat_v7

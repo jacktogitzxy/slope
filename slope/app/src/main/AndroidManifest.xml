@@ -52,10 +52,9 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="GBUgEsWKllRmZRZ4YlnwlmYqWVkTjiFC" />
 
-        <activity android:name=".LocationdrawActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize">
-
-        </activity>
+        <activity
+            android:name=".LocationdrawActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".ReportActivity" />
         <activity android:name=".CameraActivity" />
         <!-- 定位服务 -->
@@ -68,11 +67,15 @@
         <activity android:name=".test.MainActivity" />
         <activity android:name=".HisReportActivity" />
         <activity android:name=".HisReportDetilActivity" />
-        <activity android:name=".web.MainActivity">
+        <activity android:name=".web.MainActivity" />
 
-        </activity>
         <service android:name=".web.WebSocketService" />
 
+        <activity android:name=".ChangeImageActivity" />
+        <activity android:name=".test.MainActivityChart"></activity>
+        <activity android:name=".charts.ListViewMultiChartActivity">
+
+        </activity>
     </application>
 
 </manifest>

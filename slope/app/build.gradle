@@ -53,7 +53,6 @@ android {
 //        versionName "1.0"
 //        vectorDrawables.useSupportLibrary = true
 //    }
-
     defaultConfig {
         applicationId "com.zig.slope"
         minSdkVersion rootProject.ext.android.minSdkVersion
@@ -86,9 +85,10 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     compile 'com.yinglan.scrolllayout:scrolllayout:1.0.2'
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
-//    compile 'com.jakewharton:butterknife:8.1.0'
-//    annotationProcessor 'com.jakewharton:butterknife-compiler:8.1.0'
-    compile 'com.android.support:cardview-v7:26.1.0'
+    //    compile 'com.jakewharton:butterknife:8.1.0'
+    //    annotationProcessor 'com.jakewharton:butterknife-compiler:8.1.0'
+    compile 'com.android.support:cardview-v7:27.1.1'
+    //26.1.0
     //banner
     compile 'cn.bingoogolapple:bga-banner:2.1.8@aar'
     compile 'org.xutils:xutils:3+'
@@ -96,8 +96,9 @@ dependencies {
     compile('com.github.huburt-Hu:NewbieGuide:v2.0.0') {
         exclude group: 'com.android.support'
     }
-    compile 'com.hjm:BottomTabBar:1.2.2'
     compile 'org.java-websocket:Java-WebSocket:1.3.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
     implementation project(':common_module')
     if (!isModule.toBoolean()) {
         implementation project(':login_module')
@@ -105,5 +106,4 @@ dependencies {
     implementation files('libs/autobahn-0.5.0.jar')
     implementation project(':rtmp_moudle')
     implementation project(':player_moudle')
-    //  implementation project(':pusher_moudle')
 }

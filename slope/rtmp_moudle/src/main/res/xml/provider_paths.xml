@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource xmlns:android="http://schemas.android.com/apk/res/android">
+<paths>
+    <!--代表外部存储区域的根目录下的文件 Environment.getExternalStorageDirectory()/Pictures/camerademo目录-->
+    <root-path
+        name="root_path"
+        path=".Careye_pusher" />
+    <!--<files-path path="my_file" name="Careye_pusher" />-->
+    <!--<external-files-path name="my_file" path="Careye_pusher" />-->
+    <external-path name="my_file" path="Careye_pusher" />
+</paths>
+</resource>

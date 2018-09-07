@@ -5,17 +5,17 @@
     android:background="@android:color/transparent"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="10dp" >
+    >
     <ImageView android:layout_width="match_parent"
         android:id="@+id/photo_icon"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:padding="5dip"
         android:layout_gravity="center_horizontal"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right"
+        android:padding="@dimen/dp_5"
         android:orientation="vertical">
     <TextView android:id="@+id/photo_name"
         android:layout_width="wrap_content"

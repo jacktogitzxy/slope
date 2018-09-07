@@ -1,6 +1,7 @@
 package slope.zxy.com.login_module;
 
 import android.Manifest;
+import android.content.Intent;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -94,23 +95,27 @@ public class LoginMActivity extends BaseMvpActivity<LoginContract.LoginView,Logi
         Gson gson = new Gson();
         pm.putString("localdata",gson.toJson(data.getSlopeInfo()));
         pm.putString("logindata",gson.toJson(data.getOperators()));
-        ARouter.getInstance().build("/map/index").withSerializable("data",data).navigation();
-        showLoading();//显示加载框
-        Thread loginRunnable = new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                //睡眠500豪秒
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                hideLoading();
-            finish();//关闭页面
-            }
-        };
-        loginRunnable.start();
+        Intent intent = new Intent(LoginMActivity.this,MainDoActivity.class);
+        intent.putExtra("data",data);
+        startActivity(intent);
+        LoginMActivity.this.finish();
+//        ARouter.getInstance().build("/map/index").withSerializable("data",data).navigation();
+//        showLoading();//显示加载框
+//        Thread loginRunnable = new Thread() {
+//            @Override
+//            public void run() {
+//                super.run();
+//                //睡眠500豪秒
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                hideLoading();
+//            finish();//关闭页面
+//            }
+//        };
+//        loginRunnable.start();
     }
 
     @Override

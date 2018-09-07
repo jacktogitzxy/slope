@@ -20,26 +20,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarhis"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_70"
-        android:paddingTop="@dimen/dp_20"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_10"
         android:background="@color/color_343333"
         android:minHeight="@dimen/dp_70"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:popupTheme="@style/OverflowMenuStyle"
         app:theme="@style/toolbar_theme">
-        <ImageView
-            android:id="@+id/toolmenuhis_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:layout_gravity="right"
-            android:src="@mipmap/menu_icon" />
+        <!--<ImageView-->
+            <!--android:id="@+id/toolmenuhis_icon"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:clickable="true"-->
+            <!--android:paddingLeft="15dp"-->
+            <!--android:paddingRight="15dp"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:src="@mipmap/menu_icon" />-->
     </android.support.v7.widget.Toolbar>
 
     <android.support.v4.widget.SwipeRefreshLayout

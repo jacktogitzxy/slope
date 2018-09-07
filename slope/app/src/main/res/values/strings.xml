@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">云城建</string>
     <string name="radioGroup_text">定位icon</string>
+    <string name="takephoto">拍照上传</string>
+
     <string name="nomal_map">普通地图</string>
     <string name="other_map">卫星地图</string>
     <string name="head_map">罗盘地图</string>
@@ -12,20 +14,19 @@
     <string name="register">签到打卡</string>
     <string name="feedback">问题反馈</string>
     <string name="userinfo">个人中心</string>
-
+    <string name="enter">确定</string>
+    <string name="cancle">取消</string>
     <string name="type_slope">边坡</string>
     <string name="type_weater">三防</string>
     <string name="type_worker">巡查员</string>
     <string name="type_house">危房</string>
 
-    <string name="type_zj">住建局</string>
-    <string name="type_hs">环水局</string>
-    <string name="type_jt">交通局</string>
-    <string name="type_gt">规土局</string>
 
     <string name="type_data">监测数据</string>
     <string name="type_video">监测视频</string>
+    <string name="type_process">治理进度</string>
     <string name="type_his">巡查历史</string>
+    <string name="type_addimg">替换图片</string>
     <string name="type_report">上报数据</string>
     <string name="type_hisdetil">巡查详情</string>
 
@@ -40,11 +41,23 @@
     <string name="p_GPS">GPS权限</string>
     <string name="title_p">个人信息</string>
     <string name="hint_tip">请录入信息</string>
+    <string name="process_tip">输入进度或拖动进度条调整进度</string>
     <string name="report">巡查报告</string>
+    <string name="reportmsg">巡查信息</string>
     <string name="gread1">小</string>
     <string name="gread2">中</string>
     <string name="gread3">大</string>
     <string name="empty_text">这里空空的</string>
+    <string name="full_text">已全部加载完了！！！</string>
+    <string name="refresh_text">刷新成功！</string>
     <string name="network_error">网络不可用</string>
     <string name="reportTip">(上传图片视频1-4张，点击图片预览播放，长按取消该图片,由于图片水印，请完善信息再拍照)</string>
+    <string name="changeTip">(上传图片1-4张，点击图片预览播放,只支持图片信息)</string>
+    <string name="notdo">&#160;&#160;&#160;&#160;未审核</string>
+    <string name="guanli">管&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;理：</string>
+    <string name="lingdao">领&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;导：</string>
+    <string name="yijian">意&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;见：</string>
+    <string name="admindo">&#160;&#160;管理审核</string>
+    <string name="leaderdo">&#160;&#160;领导审核</string>
+    <string name="reportDate">上报日期：&#160;&#160;&#160;&#160;</string>
 </resources>

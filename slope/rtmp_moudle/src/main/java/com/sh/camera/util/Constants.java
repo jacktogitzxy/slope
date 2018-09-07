@@ -45,11 +45,11 @@ public class Constants {
 	//四路
 	public static final int MAX_NUM_OF_CAMERAS = 1;
 	/**服务器IP*/
-	public static final String SERVER_IP = "www.car-eye.cn";
+	public static final String SERVER_IP = "47.107.32.201";
 	/**handle apk 升级消息*/
 	public static final int  MSG_APK_NEW = 1001;
 	/**服务器端口*/
-	public static final String SERVER_PORT = "10085";
+	public static final String SERVER_PORT = "1935";
 	public static final String SERVER_ADDPORT = "10000";
 	/**设备号*/
 	public static final String STREAM_NAME = "13510671870";
@@ -90,7 +90,7 @@ public class Constants {
 	public static int[] CAMERA_ID = {0,1,5,6};
 	/**录像状态 true录像中 false 未录像*/
 	public static boolean CAMERA_RECORD[] = {false,false,false,false};
-	public static final String Default_URL = "rtmp://www.car-eye.cn:10085/live/13510671870&channel=1";
+	public static final String Default_URL = "rtmp://47.107.32.201:1935/live/%s&channel=1";
 	//public static final String Key = "k15gTHU$)g+$6H+1t1U1{I71t1TiVHT1uj)1shSHTHSH7ir$THRirG)GVg7GtGSGt$+$THRH+$)3B";
 	public static final String Key = "b0DdWE_|vdx|yExF9F_FY!,F9FWf^EWF0!WFwF_EWEzE,fZ|.EyEXfZ|WE<Ez|9Ex2B";//")10h8IViuhtisItG+GVGrHRG+G8$UI8G)(uG6gsI8IqIR${i8I7${1u1UhR1+1q1+iti8I7Itiu63";
 	/**

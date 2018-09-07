@@ -50,7 +50,7 @@ public class VideoFragment extends Fragment {
         if (getArguments() != null) {
             videoPath = getArguments().getString(VIDEO_PATH);
         }
-        createProgressDialog(getActivity(),false);
+        createProgressDialog(getActivity(),true);
         showProgressDialog();
     }
 

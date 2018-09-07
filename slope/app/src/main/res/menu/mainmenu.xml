@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.zig.slope.HisReportActivity"
+    >
+
+    <item
+        android:id="@+id/notdo"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_looks_one_black_24dp"
+        android:title="@string/notdo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/admindo"
+        android:orderInCategory="200"
+        android:icon="@drawable/ic_looks_two_black_24dp"
+        android:title="@string/admindo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/leaderdo"
+        android:title="@string/leaderdo"
+        android:icon="@drawable/ic_looks_3_black_24dp"
+        android:orderInCategory="300"
+        app:showAsAction="never"
+        />
+</menu>

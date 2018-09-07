@@ -7,6 +7,6 @@
     <string name="app_exit">退出</string>
     <string name="app_minimize">最小化</string>
     <string name="app_title">提示</string>
-    <string name="app_alert_message">确认要退出应用吗？</string>
+    <string name="app_alert_message">确认要退出吗？</string>
 
 </resources>

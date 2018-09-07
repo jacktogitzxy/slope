@@ -60,6 +60,18 @@ public class PreManager {
 		String streamname = sp.getString(Constants.name,Constants.STREAM_NAME);
 		return streamname;
 	}
+
+	public void putStreamname(String name){
+		SharedPreferences.Editor editor = sp.edit();
+		editor.putString(Constants.name,name);
+		editor.commit();
+	}
+	public void 	putStreamURL(String name){
+		SharedPreferences.Editor editor = sp.edit();
+		editor.putString(Constants.URL,name);
+		editor.commit();
+	}
+
 	public int getMode(){
 		int mode = sp.getInt(Constants.mode, Constants.MODE);
 		return mode;

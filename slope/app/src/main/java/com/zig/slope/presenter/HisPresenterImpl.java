@@ -5,8 +5,7 @@ import android.util.Log;
 
 import com.zig.slope.common.base.BasePresenter;
 import com.zig.slope.common.base.bean.BaseResponseBean;
-import com.zig.slope.common.base.bean.HisReport;
-import com.zig.slope.common.base.bean.LoginMsg;
+import com.zig.slope.common.base.bean.HisBean;
 import com.zig.slope.contract.HisContract;
 import com.zig.slope.model.HisModel;
 
@@ -28,10 +27,10 @@ public class HisPresenterImpl extends BasePresenter<HisContract.HisReportView> {
     /**
      * 请求巡查历史
      */
-    public void requestLoginData(Context context,String admin){
-        model.getHisDatas(context,admin,new HisContract.IHisModelCallback() {
+    public void requestHisData(Context context,String admin,int page,String meths){
+        model.getHisDatas(context,admin,page,new HisContract.IHisModelCallback() {
             @Override
-            public void onSuccess(BaseResponseBean<List<HisReport>> response) {
+            public void onSuccess(BaseResponseBean<HisBean> response) {
                 if (getMvpView() != null) {
                     Log.i("zxy", "onSuccess: "+response.getData());
                     getMvpView().onHisSucess(response.getData());
@@ -44,7 +43,7 @@ public class HisPresenterImpl extends BasePresenter<HisContract.HisReportView> {
                     getMvpView().onHisFail(msg);
                 }
             }
-        });
+        },meths);
     }
 
     /**

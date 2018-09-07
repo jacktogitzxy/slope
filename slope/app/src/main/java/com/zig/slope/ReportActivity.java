@@ -4,20 +4,24 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.cjt2325.cameralibrary.util.FileUtil;
+import com.zig.slope.common.utils.CustomProgressDialog;
 import com.zig.slope.common.utils.PreferenceManager;
 import com.zig.slope.view.MyImageBt;
 import com.zig.slope.view.PicFragment;
@@ -41,7 +45,7 @@ import slope.zxy.com.login_module.LoginMActivity;
 
 
 public class ReportActivity extends BaseActivity {
-    private ImageView video_upload;//,photo_upload;
+    private AppCompatButton video_upload;//,photo_upload;
     // 文件路径
 //    private String path = "";
 //    private String vpath = "";
@@ -52,6 +56,8 @@ public class ReportActivity extends BaseActivity {
     private PreferenceManager pm;
     private String Pname,userName;
     private String TAG="REPORT";
+    private CustomProgressDialog progressDialog;
+    private double n,e;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +66,13 @@ public class ReportActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null && intent.getStringExtra("pname") != null) {
             Pname = intent.getStringExtra("pname");
+            n= intent.getDoubleExtra("x",0);
+            e= intent.getDoubleExtra("y",0);
+            Log.i(TAG, "onCreate: n="+n);
         }
         pm = PreferenceManager.getInstance(ReportActivity.this);
         userName = pm.getPackage("operatorName");
+        createProgressDialog(this,false);
         initView();
         initListener();
     }
@@ -107,7 +117,10 @@ public class ReportActivity extends BaseActivity {
                     MyImageBt btn = (MyImageBt) view;
                     btn.setType(0);
                     btn.setPath(null);
-                    btn.setImageResource(R.mipmap.addimage);
+                    btn.setScaleType(ImageView.ScaleType.CENTER);
+                    btn.setPadding(30,30,30,30);
+                    btn.setImageResource(R.mipmap.photodo);
+
                     return true;
                 }
             });
@@ -116,7 +129,7 @@ public class ReportActivity extends BaseActivity {
     }
 
     private void initView() {
-        video_upload = (ImageView) findViewById(R.id.video_upload);
+        video_upload = (AppCompatButton) findViewById(R.id.video_upload);
         plays = new MyImageBt[4];
         plays[0] = (MyImageBt) findViewById(R.id.play);
         plays[1] = (MyImageBt) findViewById(R.id.play0);
@@ -135,14 +148,18 @@ public class ReportActivity extends BaseActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
 //获取当前时间
         Date date = new Date(System.currentTimeMillis());
-        report_date.setText("上报日期：" + simpleDateFormat.format(date));
+        report_date.setText(getResources().getString(R.string.reportDate) + simpleDateFormat.format(date));
     }
 //上传数据
     public void startReportdo(View v) {
         String text = report_note.getText().toString();
         String slopeId = report_name1.getText().toString();
         String operatorID = pm.getPackage("operatorId");
-        upLaodImg(operatorID,slopeId,text,plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
+        if(slopeId==null){
+            Toast.makeText(ReportActivity.this,"请填写边坡编号",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
     }
 
     View.OnClickListener onclicks = new View.OnClickListener() {
@@ -185,6 +202,8 @@ public class ReportActivity extends BaseActivity {
                         plays[i].setType(1);
                         plays[i].setPath(FileUtil.saveBitmap("JCamera",bitmap.getBitmap()));
                     }
+                    plays[i].setPadding(0,0,0,0);
+                    plays[i].setScaleType(ImageView.ScaleType.FIT_XY);
                     plays[i].setImageBitmap(bitmap.getBitmap());
                     return;
                 }
@@ -200,12 +219,10 @@ public class ReportActivity extends BaseActivity {
 //http://divitone.3322.org:8081/fx/filesUpload?slopeCode=admin&patrollerID=277&isContainPic=1&isContainVideo=1&videoAddress=d:/123
 
     public void upLaodImg( final String... param) {
-        final ProgressDialog dia = new ProgressDialog(this);
-        dia.setMessage("上报中....");
-        dia.show();
+         showProgressDialog();
         RequestParams params = new RequestParams("http://divitone.3322.org:8081/fx/filesUpload");//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
-        for (int i = 3; i < param.length; i++) {
+        for (int i = 5; i < param.length; i++) {
             try {
                 list.add(new KeyValue("files",new File(param[i])));
             } catch (Exception e) {
@@ -215,6 +232,8 @@ public class ReportActivity extends BaseActivity {
         list.add(new KeyValue("patrollerID", param[0]));
         list.add(new KeyValue("newName", param[1]));
         list.add(new KeyValue("contents", param[2]));
+        list.add(new KeyValue("x", param[3]));
+        list.add(new KeyValue("y", param[4]));
         Log.i(TAG, "upLaodImg: list==="+list.size());
         //设置编码格式为UTF-8，保证参数不乱码
         MultipartBody body = new MultipartBody(list, "UTF-8");
@@ -230,7 +249,7 @@ public class ReportActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                dia.dismiss();
+                stopProgressDialog();
                 Toast.makeText(ReportActivity.this,"上传失败，服务器繁忙",Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "onError: ");
             }
@@ -243,7 +262,7 @@ public class ReportActivity extends BaseActivity {
             @Override
             public void onFinished() {
 
-                dia.dismiss();
+                stopProgressDialog();
                 Toast.makeText(ReportActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
               //  ReportActivity.this.finish();
                 Log.i(TAG, "onFinished: ");
@@ -251,4 +270,50 @@ public class ReportActivity extends BaseActivity {
             }
         });
     }
+
+    /**
+     * 创建进度条实例
+     */
+    public void createProgressDialog(Context cxt, boolean canCancle) {
+        try {
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
+            if (progressDialog == null) {
+                progressDialog = CustomProgressDialog.createDialog(cxt, canCancle);
+                progressDialog.setCanceledOnTouchOutside(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 启动加载进度条
+     */
+    public void showProgressDialog(){
+        try {
+            if (progressDialog != null) {
+                progressDialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 关闭加载进度条
+     */
+    public void stopProgressDialog() {
+        try {
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

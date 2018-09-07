@@ -1,7 +1,5 @@
 package com.zig.slope;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -11,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -26,15 +23,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -42,13 +41,12 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,18 +78,29 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.district.DistrictResult;
 import com.baidu.mapapi.search.district.OnGetDistricSearchResultListener;
 import com.baidu.mapapi.utils.CoordinateConverter;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yinglan.scrolllayout.ScrollLayout;
+import com.zig.slope.adapter.ListviewAdapter;
 import com.zig.slope.adapter.MyAdapter;
 import com.zig.slope.bean.User;
+import com.zig.slope.bean.UserLoacl;
+import com.zig.slope.callback.RequestCallBack;
+import com.zig.slope.charts.ListViewMultiChartActivity;
+import com.zig.slope.common.Constants.Constant;
+import com.zig.slope.common.base.BaseMvpActivity;
 import com.zig.slope.common.base.bean.LoginBean;
 import com.zig.slope.common.base.bean.LoginMsg;
+import com.zig.slope.common.base.bean.ProcessBean;
 import com.zig.slope.common.base.bean.SlopeBean;
 import com.zig.slope.common.utils.PreferenceManager;
-import com.zig.slope.test.ListviewAdapter;
-import com.zig.slope.test.MainActivity;
-import com.zig.slope.test.ScreenUtil;
+import com.zig.slope.contract.ProcessContract;
+import com.zig.slope.presenter.ProcessPresenterImpl;
+import com.zig.slope.util.OkhttpWorkUtil;
+import com.zig.slope.util.TimeUtils;
+import com.zig.slope.util.UdpMessageTool;
+import com.zig.slope.view.DoProgressDialog;
 import com.zig.slope.view.TakePhotoPopTop;
 import com.zig.slope.callback.AllInterface;
 import com.zig.slope.view.LeftDrawerLayout;
@@ -109,19 +118,23 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.bgabanner.BGABanner;
 
-import static android.content.ContentValues.TAG;
 
 /**
  */
 @Route(path = "/map/index")
-public class LocationdrawActivity extends BaseActivity implements SensorEventListener, AllInterface.OnMenuSlideListener,OnGetDistricSearchResultListener {
+public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.ProcessView,ProcessPresenterImpl> implements SensorEventListener, AllInterface.OnMenuSlideListener,OnGetDistricSearchResultListener,ProcessContract.ProcessView {
     String TAG = "LocationdrawActivity";
     // 定位相关
     LocationClient mLocClient;
@@ -137,7 +150,7 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     MapView mMapView;
     public BaiduMap mBaiduMap;
     View shadowView;
-    private ImageView splash_img,menu_icon;
+    private ImageView splash_img,menu_icon,message_new;
     private final int DISMISS_SPLASH = 0;
     private boolean isDestroy;
     private LoginMsg mg;
@@ -165,7 +178,19 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     private Intent websocketServiceIntent;
     private String operatorId,operatorName;
     private Spinner usersp;
+    private boolean isDrawerOpened = false;//点击穿透问题
+    private OkhttpWorkUtil okhttpWorkUtil;
 
+    List<ProcessBean> dataProcessBean;//治理进度
+    //定时发送位置
+    private ScheduledExecutorService pool = Executors.newScheduledThreadPool(2);
+    private TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            sendDataByUDP(operatorId+"_"+mCurrentLon+"_"+mCurrentLat);
+            Log.i(TAG, "run: ==============local="+mCurrentLat+","+mCurrentLon);
+        }
+    };
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -176,128 +201,14 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
                 setPMarks(slopes,0);
 
             }else{
-                    Animator animator = AnimatorInflater.loadAnimator(LocationdrawActivity.this, R.animator.splash);
-                    animator.setTarget(splash_img);
-                    animator.start();
-                    initCity();
-                    initData();
+//                    Animator animator = AnimatorInflater.loadAnimator(LocationdrawActivity.this, R.animator.splash);
+//                    animator.setTarget(splash_img);
+//                    animator.start();
+                initCity();
+                initData();
             }
         }
     };
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        Intent intent = getIntent();
-        mg = (LoginMsg) intent.getSerializableExtra("data");
-        pm = PreferenceManager.getInstance(LocationdrawActivity.this);
-        if(mg!=null) {
-            pm.putString("operatorName", mg.getOperators().getOperatorName());
-            pm.putString("operatorTel", mg.getOperators().getOperatorTel());
-            pm.putString("operatorId",mg.getOperators().getOperatorID());
-            pm.putString("operatorLevel",mg.getOperators().getOperatorLevel());
-            if(mg.getSlopeInfo()!=null){
-                slopes = mg.getSlopeInfo();
-            }
-        }
-        operatorName = pm.getPackage("operatorName");
-        operatorId = pm.getPackage("operatorId");
-
-        setContentView(R.layout.activity_locationdraw);
-        shadowView = (View) findViewById(R.id.shadow);
-        menu_icon = findViewById(R.id.menu_icon);
-        shadowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    closeMenu();
-            }
-        });
-        menu_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openMenu();
-            }
-        });
-        mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.id_drawerlayout);
-        FragmentManager fm = getSupportFragmentManager();
-        mMenuFragment = (LeftMenuFragment) fm.findFragmentById(R.id.id_container_menu);
-        mLeftDrawerLayout.setOnMenuSlideListener(this);
-//        setStatusBar();
-
-        if (mMenuFragment == null) {
-            fm.beginTransaction().add(R.id.id_container_menu, mMenuFragment = new LeftMenuFragment()).commit();
-        }
-        getPoints();
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);//获取传感器管理服务
-
-        // 地图初始化
-        mMapView = (MapView) findViewById(R.id.bmapView);
-        mBaiduMap = mMapView.getMap();
-        // 开启定位图层
-        mBaiduMap.setMyLocationEnabled(true);
-        // 定位初始化
-        mLocClient = new LocationClient(this);
-        mLocClient.registerLocationListener(myListener);
-        LocationClientOption option = new LocationClientOption();
-        option.setOpenGps(true); // 打开gps
-        option.setCoorType("bd09ll"); // 设置坐标类型
-        option.setScanSpan(1000);
-
-        mLocClient.setLocOption(option);
-        mLocClient.start();
-        initListener();
-        tvtypes = new TextView[4];
-        tvtypes[0] = findViewById(R.id.typeSolpe);
-        tvtypes[1] = findViewById(R.id.typeThree);
-        tvtypes[2] = findViewById(R.id.typeHouse);
-        tvtypes[3] = findViewById(R.id.typeWorker);
-        int level = Integer.parseInt(pm.getPackage("operatorLevel"));
-        if(level>1){
-            tvtypes[3].setVisibility(View.VISIBLE);
-        }else{
-            tvtypes[3].setVisibility(View.INVISIBLE);
-        }
-        initDrawerLayout();
-        relativeLayout = (RelativeLayout) findViewById(R.id.root);
-        mScrollLayout = (ScrollLayout) findViewById(R.id.scroll_down_layout);
-        listView = (ListView) findViewById(R.id.list_view);
-        toolbarmain = (Toolbar) findViewById(R.id.toolbarmain);
-        mainTitle = findViewById(R.id.maintitle);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-        toolbar.getBackground().setAlpha(0);
-        toolbar.setNavigationIcon(R.mipmap.return_icon);
-        toolbar.setTitleMarginStart(200);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mScrollLayout.scrollToExit();
-            }
-        });
-
-        mScrollLayout.setOnScrollChangedListener(mOnScrollChangedListener);
-        mScrollLayout.setToExit();
-        mScrollLayout.getBackground().setAlpha(0);
-        relativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mScrollLayout.scrollToExit();
-            }
-        });
-        bgaBanner = findViewById(R.id.poitBanner);
-        splash_img = (ImageView) findViewById(R.id.splash_img);
-        handler.sendEmptyMessageDelayed(DISMISS_SPLASH, 1000);
-         //消息
-        websocketServiceIntent = new Intent(this, WebSocketService.class);
-        startService(websocketServiceIntent);
-        initMsgView();
-        IntentFilter localIntentFilter = new IntentFilter();
-        localIntentFilter.addAction("com.zig.live");
-        registerReceiver(liverecever,localIntentFilter);
-    }
-
-
 
     BitmapDescriptor bdA = BitmapDescriptorFactory
             .fromResource(R.mipmap.icon_marka);
@@ -306,8 +217,7 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
      */
     private LatLng currentPt;
     private String touchType;
-
-    private void initListener() {
+    public void initListeners() {
         mBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
 
             @Override
@@ -396,6 +306,9 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
             }
         });
     }
+
+
+
     /**
      * 更新地图状态显示面板
      */
@@ -406,8 +319,8 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
             if(lastP!=null){
                 lastP.remove();
             }
-            MarkerOptions  ooA = new MarkerOptions().position(currentPt).icon(bdA);
-            lastP = (Marker) mBaiduMap.addOverlay(ooA);
+//            MarkerOptions  ooA = new MarkerOptions().position(currentPt).icon(bdA);
+//            lastP = (Marker) mBaiduMap.addOverlay(ooA);
         }
         MapStatus ms = mBaiduMap.getMapStatus();
         if(currentModel!=-1) {
@@ -435,6 +348,9 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     }
 
     public void updateMarker(int zoom){
+        if(markers==null||markers.size()==0){
+            return;
+        }
         for (int i = 0;i<markers.size();i++){
             Marker marker = markers.get(i);
             if (marker != null && marker.getExtraInfo() != null) {
@@ -442,7 +358,7 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
                 SlopeBean pk = (SlopeBean) marker.getExtraInfo().get("pk");
                 if (pk != null) {
                     View view = getIcon(pk,zoom);
-                    bitmap = BitmapDescriptorFactory.fromView(view);
+                    bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
                     marker.setIcon(bitmap);
                 }
             }
@@ -462,7 +378,6 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     public void setPMarks(List<SlopeBean> points,int zoom){
         for (int i = 0;i<points.size();i++){
             if(points.get(i).getN()!=null&&points.get(i).getE()!=null) {
-                Log.i(TAG, "setPMarks: ==========="+i);
                 setMark(points.get(i),zoom);
             }
         }
@@ -507,6 +422,8 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
 
     }
 
+
+
     /**
      * 定位SDK监听函数
      */
@@ -533,7 +450,7 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
                 LatLng ll = new LatLng(location.getLatitude(),
                         location.getLongitude());
                 MapStatus.Builder builder = new MapStatus.Builder();
-                builder.target(ll).zoom(16.0f);//设置缩放比例
+                builder.target(ll).zoom(12.0f);//设置缩放比例
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
         }
@@ -542,14 +459,11 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
         }
     }
 
-
-
     @Override
     protected void onPause() {
         mMapView.onPause();
         super.onPause();
     }
-
     @Override
     protected void onResume() {
         mMapView.onResume();
@@ -579,16 +493,18 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
         stopService(websocketServiceIntent);
         try{
             unregisterReceiver(liverecever);
+            task.cancel();
+            pool.shutdown();
         }catch (Exception e){
 
         }
         super.onDestroy();
     }
 
-    private PopupWindow mPopWindow;
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void showPopupWindow(final SlopeBean pk) {
-     //   showPopFormBottom(pk);
+        //   showPopFormBottom(pk);
         this. cpk = pk;
         if(mScrollLayout.getVisibility()==View.VISIBLE){
             mScrollLayout.scrollToExit();
@@ -607,97 +523,14 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
 
 
     private SlopeBean cpk = null;
-//    TakePhotoPopWin takePhotoPopWin =null;
-    TakePhotoPopTop takePhotoPopTop = null;
-//    public void showPopFormBottom(SlopeBean pk) {
-//        this. cpk = pk;
-//        takePhotoPopWin = new TakePhotoPopWin(this);
-////        设置Popupwindow显示位置（从底部弹出）
-//        takePhotoPopWin.setData(pk);
-//        takePhotoPopWin.showAtLocation(findViewById(R.id.bmapView), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-//        WindowManager.LayoutParams params = getWindow().getAttributes();
-//        //当弹出Popupwindow时，背景变半透明
-//        params.alpha = 0.7f;
-//        getWindow().setAttributes(params);
-//        //设置Popupwindow关闭监听，当Popupwindow关闭，背景恢复1f
-//        takePhotoPopWin.setOnDismissListener(new PopupWindow.OnDismissListener() {
-//            @Override
-//            public void onDismiss() {
-//                WindowManager.LayoutParams params = getWindow().getAttributes();
-//                params.alpha = 1f;
-//                getWindow().setAttributes(params);
-//            }
-//        });
-//    }
     public void showPopFormTop(View view) {
-        if(toolbar.getVisibility()==View.VISIBLE){
-            takePhotoPopTop = new TakePhotoPopTop(this,true);
-            takePhotoPopTop.showAtLocation(findViewById(R.id.topmenu_icon), Gravity.TOP | Gravity.RIGHT, 0, 220);
-            WindowManager.LayoutParams params = getWindow().getAttributes();
-            //当弹出Popupwindow时，背景变半透明
-            if(mScrollLayout.getVisibility()==View.INVISIBLE){
-                params.alpha = 0.0f;
-            }
-            getWindow().setAttributes(params);
-            //设置Popupwindow关闭监听，当Popupwindow关闭，背景恢复1f
-            takePhotoPopTop.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    WindowManager.LayoutParams params = getWindow().getAttributes();
-                    params.alpha = 1f;
-                    getWindow().setAttributes(params);
-                }
-            });
-        }else {
+        if(toolbar.getVisibility()!=View.VISIBLE){
             toggleRightSliding();
-        }
-
-//        if(mScrollLayout.getVisibility()==View.INVISIBLE){
-//            takePhotoPopTop = new TakePhotoPopTop(this,false);
-//        }else{
-//            takePhotoPopTop = new TakePhotoPopTop(this,true);
-//        }
-//        //  设置Popupwindow显示位置
-
-
-    }
-
-
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-//    public void morePage(View v){
-//        if(takePhotoPopWin!=null){
-//            takePhotoPopWin.dismiss();
-//            takePhotoPopWin= null;
-//        }
-//        //详情
-//        Log.i(TAG, "morePage: ");
-//        Intent intent = new Intent(this, ExpectAnimScrollActivity.class);
-//        intent.putExtra("pk",cpk);
-//        startActivity(intent);
-//        overridePendingTransition(R.anim.pop_enter_anim,R.anim.pop_exit_anim);
-//
-//    }
-//
-//    public void submitPage(View v){
-//        //详情
-//        Log.i(TAG, "submitPage: ");
-//        if(takePhotoPopWin!=null){
-//            takePhotoPopWin.dismiss();
-//            takePhotoPopWin= null;
-//        }
-//        //详情
-//        Log.i(TAG, "morePage: ");
-//        Intent intent = new Intent(this, ReportActivity.class);
-//        intent.putExtra("pk",cpk);
-//        startActivity(intent);
-//    }
-    public void Canclepoup(View v){
-        if(mPopWindow!=null){
-            mPopWindow.dismiss();
-            mPopWindow = null;
+            message_new.setVisibility(View.INVISIBLE);
         }
     }
+
+
     //读取json
     public  String getJson(String fileName,Context context) {
         //将json数据变成字符串
@@ -742,25 +575,25 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
                     latLng[0] = Double.parseDouble(point0.substring(0, 12));
                     latLng[1] = Double.parseDouble(point0.substring(13, 24));
                     name =newname.substring(0, newname.lastIndexOf("("));
-                         SlopeBean pk = new SlopeBean(jb.getString("name"),name,
-                        jb.getString("citynum"),
-                        jb.getString("street"),jb.getString("community"),
-                        jb.getString("company"),jb.getString("dangername"),
-                        jb.getString("address"),jb.getString("type"),
-                        jb.getString("x"),jb.getString("y"),
-                        latLng[0],latLng[1],
-                        jb.getString("features"),jb.getString("long"),
-                        jb.getString("height"),jb.getString("slope"),
-                        jb.getString("stability"),jb.getString("object"),
-                        jb.getString("number"),jb.getString("area"),
-                        jb.getString("peoples"),jb.getString("loss"),
-                        jb.getString("grade"),jb.getString("danger"),
-                        jb.getString("work"),jb.getString("contacts"),
-                        jb.getString("tel"),jb.getString("precautions"),
-                        jb.getString("process"),jb.getString("isdoing"),
-                        jb.getString("year"),jb.getString("management"),
-                        jb.getString("doself"),jb.getString("note")
-                );
+                    SlopeBean pk = new SlopeBean(jb.getString("name"),name,
+                            jb.getString("citynum"),
+                            jb.getString("street"),jb.getString("community"),
+                            jb.getString("company"),jb.getString("dangername"),
+                            jb.getString("address"),jb.getString("type"),
+                            jb.getString("x"),jb.getString("y"),
+                            latLng[0],latLng[1],
+                            jb.getString("features"),jb.getString("long"),
+                            jb.getString("height"),jb.getString("slope"),
+                            jb.getString("stability"),jb.getString("object"),
+                            jb.getString("number"),jb.getString("area"),
+                            jb.getString("peoples"),jb.getString("loss"),
+                            jb.getString("grade"),jb.getString("danger"),
+                            jb.getString("work"),jb.getString("contacts"),
+                            jb.getString("tel"),jb.getString("precautions"),
+                            jb.getString("process"),jb.getString("isdoing"),
+                            jb.getString("year"),jb.getString("management"),
+                            jb.getString("doself"),jb.getString("note")
+                    );
                     points.add(pk);
                 }
 
@@ -786,19 +619,10 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
             msg.what = 100;
             msg.obj = slopes;
             handler.sendMessage(msg);
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    slopes = getDefultPoints(getJson("points.json", LocationdrawActivity.this));
-//                    Message msg = new Message();
-//                    msg.what = 100;
-//                    msg.obj = slopes;
-//                    handler.sendMessage(msg);
-//                }
-//            }).start();
         }
     }
-    List<Marker> markers = new ArrayList<Marker>();;
+    List<Marker> markers = new ArrayList<Marker>();
+    List<OverlayOptions> oos = new ArrayList<OverlayOptions>();
     BitmapDescriptor bitmap;
     public void setMark(SlopeBean pk,int zoom){
         CoordinateConverter converter  = new CoordinateConverter();
@@ -806,52 +630,74 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
         // sourceLatLng待转换坐标
         //converter.coord(new LatLng( pk.getN(),pk.getE()));
         LatLng desLatLng = new LatLng( pk.getN(),pk.getE());
+
         View view = getIcon(pk,zoom);
         // 构建BitmapDescriptor
-        bitmap = BitmapDescriptorFactory.fromView(view);
-        Marker marker =(Marker) mBaiduMap.addOverlay( new MarkerOptions().position(desLatLng)
-                .zIndex(1)
-                .title(pk.getNewName())
-                .draggable(true)
-                .icon(bitmap));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
         Bundle bundle3 = new Bundle();
         bundle3.putSerializable("pk",pk);
-        marker.setExtraInfo(bundle3);
+        OverlayOptions oo =new MarkerOptions().position(desLatLng)
+                .zIndex(9)
+                .title(pk.getNewName())
+                .draggable(true)
+                .icon(bitmap)
+                .extraInfo(bundle3);
+        Marker marker =(Marker) mBaiduMap.addOverlay(oo);
         markers.add(marker);
+        oos.add(oo);
+    }
+    private Bitmap getViewBitmap(View addViewContent) {
+        addViewContent.setDrawingCacheEnabled(true);
+        addViewContent.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        addViewContent.layout(0, 0, addViewContent.getMeasuredWidth(), addViewContent.getMeasuredHeight());
+        addViewContent.buildDrawingCache();
+        Bitmap cacheBitmap = addViewContent.getDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+        return bitmap;
     }
 
+
     public View getIcon(SlopeBean pk,int zoom) {
-        View view = View.inflate(LocationdrawActivity.this, R.layout.markerv, null);
+        View view = View.inflate(LocationdrawActivity.this, R.layout.maker, null);
         // 填充数据
-        ImageView iconView = (ImageView) view.findViewById(R.id.point_icon);
-        TextView pnameView = (TextView) view.findViewById(R.id.point_dangername);
-        TextView infoView = (TextView) view.findViewById(R.id.point_info);
+        LinearLayout ll = view.findViewById(R.id.cont_1);
+        ImageView iconView = (ImageView) view.findViewById(R.id.m_icon);
+        TextView nameView = (TextView) view.findViewById(R.id.m_nameId);
+        TextView contacts = (TextView) view.findViewById(R.id.m_ontacts);
+        TextView tel = (TextView) view.findViewById(R.id.m_tel);
+        TextView adress = (TextView) view.findViewById(R.id.m_adress);
+
+        nameView.setText(pk.getNewName());
+        contacts.setText("联系人："+pk.getContacts());
+        tel.setText(pk.getTel());
+        adress.setText("地址："+pk.getDangerName());
         if(zoom==0){
-            pnameView.setVisibility(View.INVISIBLE);
-            infoView.setVisibility(View.INVISIBLE);
+            ll.setVisibility(View.GONE);
+            nameView.setVisibility(View.GONE);
+            adress.setVisibility(View.GONE);
         }
         if(zoom==1){
-            pnameView.setVisibility(View.INVISIBLE);
-            infoView.setVisibility(View.VISIBLE);
-            infoView.setText(pk.getNewName());
-            //   +",坡长:"+pk.getLongs()+",坡高:" +pk.getHeight()+",坡度:"+pk.getSlope());
+            ll.setVisibility(View.GONE);
+            nameView.setVisibility(View.VISIBLE);
+            adress.setVisibility(View.GONE);
         }
         if(zoom==2){
-            pnameView.setVisibility(View.VISIBLE);
-            infoView.setVisibility(View.VISIBLE);
-            pnameView.setText(pk.getDangerName());
-            //+",坡长:"+pk.getLongs()+",坡高:"+pk.getHeight()+",坡度:"+pk.getSlope());
-            infoView.setText(pk.getNewName());
-            //+",联系人:"+pk.getContacts()+",联系电话:"+pk.getTel()+",治理进度:"+pk.getProcess());
+            ll.setVisibility(View.VISIBLE);
+            nameView.setVisibility(View.VISIBLE);
+            adress.setVisibility(View.VISIBLE);
         }
-        if(pk.getDanger().equals(getResources().getString(R.string.gread1))){
+        if(pk.getDanger()!=null) {
+            if (pk.getDanger().equals(getResources().getString(R.string.gread1))) {
+                iconView.setImageResource(R.mipmap.slopegreen);
+            }
+            if (pk.getDanger().equals(getResources().getString(R.string.gread2))) {
+                iconView.setImageResource(R.mipmap.slopeyellow);
+            }
+            if (pk.getDanger().equals(getResources().getString(R.string.gread3))) {
+                iconView.setImageResource(R.mipmap.slopered);
+            }
+        }else{
             iconView.setImageResource(R.mipmap.slopegreen);
-        }
-        if(pk.getDanger().equals(getResources().getString(R.string.gread2))){
-            iconView.setImageResource(R.mipmap.slopeyellow);
-        }
-        if(pk.getDanger().equals(getResources().getString(R.string.gread3))){
-            iconView.setImageResource(R.mipmap.slopered);
         }
         return view;
     }
@@ -878,6 +724,8 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     //上报
     public  void StartReport(View v){
         Intent intent = new Intent(LocationdrawActivity.this,ReportActivity.class);
+        intent.putExtra("y",mCurrentLat);
+        intent.putExtra("x",mCurrentLon);
         startActivity(intent);
     }
     //个人
@@ -886,26 +734,31 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
         intent.putExtra("logindata",mMenuFragment.getBean());
         startActivity(intent);
     }
-    //签到
-    public void registers(View v){
-        Intent intent = new Intent(LocationdrawActivity.this,MainActivity.class);
-//        intent.putExtra("v1",);
-//        intent.putExtra("v2",);
-        startActivity(intent);
-    }
+
     //跳转到直播
     public void startLive(View view){
+        if(isDrawerOpened){
+            return;
+        }
         ARouter.getInstance().build("/rtmp/live").navigation();
     }
     //查询历史
     public void startHisReport(View view){
+        if(isDrawerOpened){
+            return;
+        }
         Intent intentHis = new Intent(this, HisReportActivity.class);
+        intentHis.putExtra("y",mCurrentLat);
+        intentHis.putExtra("x",mCurrentLon);
         startActivity(intentHis);
     }
 
     //行政信息
     public void  InformationAdm(View v){
-
+        if(isDrawerOpened){
+            return;
+        }
+        LocationdrawActivity.this.finish();
     }
     //引导
     public void StartGuide(View v){
@@ -992,49 +845,27 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     private TextView lastTv,currentTv;
     //分类标注 边坡，危房。。。。
     public void  selectType(View view){
-        if(takePhotoPopTop!=null){
-            takePhotoPopTop.dismiss();
-            takePhotoPopTop = null;
-        }
-       String tag = view.getTag().toString();
-        Log.i(TAG, "selectType: ==========tag="+tag);
-        switch (tag){
-            case "1":
+        int id = view.getId();
+        switch (id){
+            case R.id.typeSolpe://边坡
+                currentTv = (TextView) view;
+                changeColor(currentTv);
+                hiddenAllMarker();
+                showSlopes();
                 break;
-            case "2":
-                break;
-            case "3":
-                break;
-            case "4":
-                break;
-            case "5":
-                Intent intent = new Intent(this, ReportActivity.class);
-                intent.putExtra("pname",cpk.getNewName());
-                startActivity(intent);
-                break;
-            case "6":
-                Intent intentHis = new Intent(this, HisReportActivity.class);
-                startActivity(intentHis);
-                break;
-            case "7":
-                break;
-            case "8":
-                break;
-            case "9":
+            case R.id.typeThree://三防
                 currentTv = (TextView) view;
                 changeColor(currentTv);
                 break;
-            case "10":
+            case R.id.typeHouse://危房
                 currentTv = (TextView) view;
                 changeColor(currentTv);
                 break;
-            case "11":
+            case R.id.typeWorker://巡查员
                 currentTv = (TextView) view;
                 changeColor(currentTv);
-                break;
-            case "12":
-                currentTv = (TextView) view;
-                changeColor(currentTv);
+                hiddenAllMarker();
+                okhttpWorkUtil.postAsynHttp(Constant.BASE_URL+"queryAllOperatorPositionApp");
                 break;
         }
 
@@ -1050,7 +881,25 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
             return;
         }
         currentTv.setTextColor(getResources().getColor(R.color.orange_main));
-        mainTitle.setText(currentTv.getText());
+       // mainTitle.setText(currentTv.getText());
+        String s = currentTv.getText().toString();
+        if(s.contains(getResources().getString(R.string.type_slope))){
+            mainTitle.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.slopeyellow),
+                    null, null, null);
+        }
+        if(s.contains(getResources().getString(R.string.type_weater))){
+            mainTitle.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.sfyellow),
+                    null, null, null);
+        }
+        if(s.contains(getResources().getString(R.string.type_house))){
+            mainTitle.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.wfyellow),
+                    null, null, null);
+        }
+        if(s.contains(getResources().getString(R.string.type_worker))){
+            mainTitle.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.worker),
+                    null, null, null);
+        }
+
         lastTv.setTextColor(getResources().getColor(R.color.color_757575));
         lastTv = currentTv;
     }
@@ -1104,7 +953,6 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
         AlphaAnimation al = new AlphaAnimation(0,1);
         al.setDuration(300);
         mScrollLayout.setAnimation(al);
-
         bgaBanner = findViewById(R.id.poitBanner);
         bgaBanner.setDelegate(new BGABanner.Delegate() {
             @Override
@@ -1112,22 +960,53 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
                 //onclick
             }
         });
-        bgaBanner.setData(R.drawable.bga, R.drawable.bgb,R.drawable.bgc,R.drawable.bgd);
+        String img = pk.getImageAddress1().trim();
+        List<String> imgs = null;
+        if(img!=null&&img.length()>0) {
+            List<String>  imgsa = Arrays.asList(img.split("#"));
+            imgs = new ArrayList<>(imgsa);
+        }
+        if(imgs!=null&&imgs.size()>0){
+            bgaBanner.setAdapter(new BGABanner.Adapter<ImageView, String>() {
+                @Override
+                public void fillBannerItem(BGABanner banner, ImageView itemView, String model, int position) {
+                    if(model==null){
+                        return;
+                    }
+                    model = model.trim();
+                    if(model.endsWith("jpg")) {
+                        Glide.with(LocationdrawActivity.this)
+                                .load(Constant.BASE_URL + model)
+                                .placeholder(R.mipmap.webwxgetmsgimg5)
+                                .error(R.mipmap.webwxgetmsgimg5)
+                                .centerCrop()
+                                .dontAnimate()
+                                .into(itemView);
+                    }else{//unkunw
+                        Log.i("zxy", "fillBannerItem: unkunw  data  model=="+model);
+                    }
+                }
+            });
+            bgaBanner.setData(imgs,null);
+        }else {
+            bgaBanner.setData(R.mipmap.webwxgetmsgimg5);
+        }
     }
-    private long exitTime = 0;
+    //    private long exitTime = 0;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK){
             if(mScrollLayout.getVisibility()==View.VISIBLE){
                 mScrollLayout.scrollToExit();
                 return true;
-            }else{
-                if((System.currentTimeMillis() - exitTime) > 2000){
-                    Toast.makeText(LocationdrawActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-                    exitTime = System.currentTimeMillis();
-                    return true;
-                }
             }
+//            else{
+//                if((System.currentTimeMillis() - exitTime) > 2000){
+//                    Toast.makeText(LocationdrawActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//                    exitTime = System.currentTimeMillis();
+//                    return true;
+//                }
+//            }
         }
 
         return super.onKeyDown(keyCode, event);
@@ -1152,7 +1031,7 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
         //构建用户绘制多边形的Option对象
         OverlayOptions polygonOption = new PolygonOptions()
                 .points(pts)
-                .stroke(new Stroke(5, 0xAA39b500))
+                .stroke(new Stroke(5, 0xAAFF0000))
                 .fillColor(0x2239b500);
 
 //在地图上添加多边形Option，用于显示
@@ -1163,34 +1042,34 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     private void initDrawerLayout() {
         //注意：初始化的是drawerlayout整个大布局，不是初始化抽屉的那个id
         drawerLayout = (DrawerLayout) super.findViewById(R.id.drawer_layout);
-        drawerLayout.setScrimColor(Color.TRANSPARENT);
+//        drawerLayout.setScrimColor(Color.TRANSPARENT);
         //v4控件 actionbar上的抽屉开关，可以实现一些开关的动态效果
         toggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbarmain, R.mipmap.message_icon
                 , R.mipmap.message_icon) {
             @Override
             public void onDrawerClosed(View drawerView) {
+                isDrawerOpened = false;
                 super.onDrawerClosed(drawerView);//抽屉关闭后
-                shadowView.setBackgroundColor(Color.argb(0, 0, 0, 0));
-                shadowView.setVisibility(View.INVISIBLE);
+//                shadowView.setBackgroundColor(Color.argb(0, 0, 0, 0));
+//                shadowView.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
+                isDrawerOpened = true;
                 super.onDrawerOpened(drawerView);//抽屉打开后
-                shadowView.setVisibility(View.VISIBLE);
-                int alpha = (int) Math.round(255 * 0.4);
-                shadowView.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
+//                shadowView.setVisibility(View.VISIBLE);
+//                int alpha = (int) Math.round(255 * 0.4);
+//                shadowView.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
             }
         };
         drawerLayout.addDrawerListener(toggle);
     }
 
-    public void toggleRightSliding(){//该方法控制右侧边栏的显示和隐藏
+    public void toggleRightSliding(){//控制右侧边栏的显示和隐藏
         if(drawerLayout.isDrawerOpen(GravityCompat.END)){
             drawerLayout.closeDrawer(GravityCompat.END);//关闭抽屉
-
-
         }else{
             drawerLayout.openDrawer(GravityCompat.END);//打开抽屉
 
@@ -1198,6 +1077,7 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     }
 
     private void initMsgView() {
+        message_new = findViewById(R.id.message_new);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);
         et = (EditText) findViewById(R.id.et);
         tvSend = (TextView) findViewById(R.id.tvSend);
@@ -1224,23 +1104,29 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
     }
 
     private void initData() {
-                WebSocketService.webSocketConnect(new Inofation() {
-                    @Override
-                    public void onMsg(String msg) {
-                        Log.i(TAG, "onMsg: "+msg);
-                        getMessage(msg);
-                    }
+        WebSocketService.webSocketConnect(new Inofation() {
+            @Override
+            public void onMsg(String msg) {
+                Log.i(TAG, "onMsg: "+msg);
+                getMessage(msg);
+            }
 
-                    @Override
-                    public void onConnect() {
-                        Log.i(TAG, "onConnect: ");
-                    }
+            @Override
+            public void onConnect() {
+                Log.i(TAG, "onConnect: ");
+            }
 
+            @Override
+            public void onDisConnect(int code, String reason) {
+                handler.postDelayed(new Runnable() {
                     @Override
-                    public void onDisConnect(int code, String reason) {
-                        Log.i(TAG, "onDisConnect: ");
+                    public void run() {
+                        initData();
                     }
-                },operatorId);
+                },5000);
+                Log.i(TAG, "onDisConnect: ");
+            }
+        },operatorId);
 
         et.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1291,18 +1177,18 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
             usersOnline.add(new User("all","所有人"));
             usersp.setAdapter(new MyAdapter(LocationdrawActivity.this,usersOnline));
             if(currentUser!=null){
-               for (int i =0;i<usersOnline.size();i++){
-                   if(usersOnline.get(i).getOperatorID().equals(currentUser.getOperatorID())){
-                       usersp.setSelection(i,true);
-                       currentUser = usersOnline.get(i);
-                   }
-               }
+                for (int i =0;i<usersOnline.size();i++){
+                    if(usersOnline.get(i).getOperatorID().equals(currentUser.getOperatorID())){
+                        usersp.setSelection(i,true);
+                        currentUser = usersOnline.get(i);
+                    }
+                }
             }else {
                 usersp.setSelection(usersOnline.size() - 1, true);
                 currentUser = usersOnline.get(usersOnline.size() - 1);
             }
         }
-        if(lis.get(0).endsWith("2")){//返回消息
+        if(lis.get(0).equals("2")){//返回消息
             ArrayList<ItemModel> data = new ArrayList<>();
             ChatModel model = new ChatModel();
             View view = View.inflate(LocationdrawActivity.this, R.layout.icon_us, null);
@@ -1319,6 +1205,7 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
                 model.setIcons(icon);
                 data.add(new ItemModel(ItemModel.CHAT_A, model));
             }
+            message_new.setVisibility(View.VISIBLE);
             model.setContent(lis.get(3));
             adapter.addAll(data);
         }
@@ -1341,5 +1228,321 @@ public class LocationdrawActivity extends BaseActivity implements SensorEventLis
         }
     };
 
+    private UdpMessageTool mUdpMessageTool;
+    private void sendDataByUDP(String CONTENT) {
+        try {
+            mUdpMessageTool = UdpMessageTool.getInstance();
+            DatagramSocket mDatagramSocket = new DatagramSocket();
+            mDatagramSocket.setSoTimeout(5000);
+            mUdpMessageTool.setmDatagramSocket(mDatagramSocket);
+            // 向服务器发数据
+            mUdpMessageTool.send(Constant.BASE_HOST, Constant.BASE_UDP_PORT, CONTENT.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mUdpMessageTool.close();
+    }
+    RequestCallBack okcallBack = new RequestCallBack() {
+        @Override
+        public void onSuccess(List<UserLoacl> response) {
+            Log.i(TAG, "onSuccess: response======"+response.size());
+            if(response!=null&response.size()>=0){
+                for (int i=0;i<response.size();i++){
+                    setUserLocal(response.get(i));
+                }
+            }
+        }
+        @Override
+        public void onFail(String msg) {
+            Log.i(TAG, "onFail: ");
+        }
+    };
+    public void setUserLocal(UserLoacl user){
+        LatLng desLatLng = new LatLng( user.getY(),user.getX());
+        View view = View.inflate(LocationdrawActivity.this, R.layout.makeruser, null);
+        TextView m_name = view.findViewById(R.id.m_name);
+        m_name.setText(user.getRemark()+"  时间:"+ TimeUtils.transleteTime(user.getCreateTime()));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+        MarkerOptions  ooA = new MarkerOptions().position(desLatLng).icon(bitmap);
+        mBaiduMap.addOverlay(ooA);
+    }
 
+    //隐藏所有
+    public void hiddenAllMarker(){
+        mBaiduMap.clear();
+        initCity();
+    }
+    //显示所有slope
+    public void showSlopes(){
+        if(oos!=null&&oos.size()>0){
+//            mBaiduMap.addOverlays(oos);
+            markers.clear();
+            for (int i =0;i<oos.size();i++){
+                Marker marker =(Marker) mBaiduMap.addOverlay(oos.get(i));
+                markers.add(marker);
+            }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.msgmenu, menu);
+        return true;
+    }
+
+    Toolbar.OnMenuItemClickListener onMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            int id = item.getItemId();
+            Log.i(TAG, "onMenuItemClick: id=="+id);
+            switch (id){
+                case R.id.report_data_menu:
+                    Intent intent = new Intent(LocationdrawActivity.this, ReportActivity.class);
+                    intent.putExtra("pname",cpk.getNewName());
+                    intent.putExtra("y",mCurrentLat);
+                    intent.putExtra("x",mCurrentLon);
+                    LocationdrawActivity.this.startActivity(intent);
+                    break;
+                case R.id.change_imgs://修改图片
+                    Intent intentc = new Intent(LocationdrawActivity.this, ChangeImageActivity.class);
+                    intentc.putExtra("newName",cpk.getNewName());
+                    LocationdrawActivity.this.startActivity(intentc);
+                    break;
+                case R.id.cam_video://检测视频
+                    String url = cpk.getStreamAddress();
+                    ARouter.getInstance().build("/player/play").withString("url",url).navigation();
+                    break;
+                case R.id.cam_data ://检测数据
+                    Intent intentdata = new Intent(LocationdrawActivity.this, ListViewMultiChartActivity.class);
+                    LocationdrawActivity.this.startActivity(intentdata);
+                    break;
+                case R.id.do_process ://治理进度
+                    int level = Integer.parseInt(pm.getPackage("operatorLevel"));
+                    if(level<4) {
+                        createProgressDialog(LocationdrawActivity.this, true);
+                        if(dataProcessBean.size()>0) {
+                            int x=0;
+                            try {
+                                x = Integer.parseInt(cpk.getProcess());
+                            }catch (Exception e){
+                                x=0;
+                                e.printStackTrace();
+                            }
+                            showProgressDialog(dataProcessBean,x);
+                        }else{
+                            Toast.makeText(LocationdrawActivity.this,"网络繁忙!",Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        Toast.makeText(LocationdrawActivity.this,"您无权限!",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+            return true;
+        }
+    };
+
+    DoProgressDialog progressDialog;
+    /**
+     * 创建进度条实例
+     */
+    public void createProgressDialog(Context cxt, boolean canCancle) {
+        try {
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+                progressDialog = null;
+            }
+            if (progressDialog == null) {
+                progressDialog = DoProgressDialog.createDialog(cxt, canCancle);
+                progressDialog.setCanceledOnTouchOutside(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 启动加载进度条
+     */
+    public void showProgressDialog(List<ProcessBean> data,int x){
+        try {
+            if (progressDialog != null) {
+                progressDialog.setdata(data,x);
+                progressDialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_locationdraw;
+    }
+
+    @Override
+    protected ProcessPresenterImpl createPresenter() {
+        return new ProcessPresenterImpl();
+    }
+
+    @Override
+    protected void findViews() {
+        Intent intent = getIntent();
+        mg = (LoginMsg) intent.getSerializableExtra("data");
+        pm = PreferenceManager.getInstance(LocationdrawActivity.this);
+        okhttpWorkUtil =  new OkhttpWorkUtil(this,okcallBack);
+        if(mg!=null) {
+            pm.putString("operatorName", mg.getOperators().getOperatorName());
+            pm.putString("operatorTel", mg.getOperators().getOperatorTel());
+            pm.putString("operatorId",mg.getOperators().getOperatorID());
+            pm.putString("operatorLevel",mg.getOperators().getOperatorLevel());
+            if(mg.getSlopeInfo()!=null){
+                slopes = mg.getSlopeInfo();
+            }
+        }
+        operatorName = pm.getPackage("operatorName");
+        operatorId = pm.getPackage("operatorId");
+        shadowView = (View) findViewById(R.id.shadow);
+        menu_icon = findViewById(R.id.menu_icon);
+        mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.id_drawerlayout);
+        FragmentManager fm = getSupportFragmentManager();
+        mMenuFragment = (LeftMenuFragment) fm.findFragmentById(R.id.id_container_menu);
+
+        if (mMenuFragment == null) {
+            fm.beginTransaction().add(R.id.id_container_menu, mMenuFragment = new LeftMenuFragment()).commit();
+        }
+        getPoints();
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);//获取传感器管理服务
+        // 地图初始化
+        mMapView = (MapView) findViewById(R.id.bmapView);
+        mBaiduMap = mMapView.getMap();
+        // 开启定位图层
+        mBaiduMap.setMyLocationEnabled(true);
+        // 定位初始化
+        mLocClient = new LocationClient(this);
+        mLocClient.registerLocationListener(myListener);
+        LocationClientOption option = new LocationClientOption();
+        option.setOpenGps(true); // 打开gps
+        option.setCoorType("bd09ll"); // 设置坐标类型
+        option.setScanSpan(1000);
+        mLocClient.setLocOption(option);
+        mLocClient.start();
+        tvtypes = new TextView[4];
+        tvtypes[0] = findViewById(R.id.typeSolpe);
+        tvtypes[1] = findViewById(R.id.typeThree);
+        tvtypes[2] = findViewById(R.id.typeHouse);
+        tvtypes[3] = findViewById(R.id.typeWorker);
+        int level = Integer.parseInt(pm.getPackage("operatorLevel"));
+        if(level<4){
+            tvtypes[3].setVisibility(View.VISIBLE);
+        }else{
+            tvtypes[3].setVisibility(View.INVISIBLE);
+        }
+        initDrawerLayout();
+        relativeLayout = (RelativeLayout) findViewById(R.id.root);
+        mScrollLayout = (ScrollLayout) findViewById(R.id.scroll_down_layout);
+        listView = (ListView) findViewById(R.id.list_view);
+        toolbarmain = (Toolbar) findViewById(R.id.toolbarmain);
+        mainTitle = findViewById(R.id.maintitle);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+        toolbar.getBackground().setAlpha(0);
+        toolbar.setNavigationIcon(R.mipmap.return_icon);
+        toolbar.setTitleMarginStart(250);
+        setSupportActionBar(toolbar);
+        bgaBanner = findViewById(R.id.poitBanner);
+        splash_img = (ImageView) findViewById(R.id.splash_img);
+        //消息
+        websocketServiceIntent = new Intent(this, WebSocketService.class);
+        startService(websocketServiceIntent);
+        initMsgView();
+
+
+    }
+    @Override
+    protected void setViews() {
+        shadowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeMenu();
+            }
+        });
+        menu_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openMenu();
+            }
+        });
+        mLeftDrawerLayout.setOnMenuSlideListener(this);
+        initListeners();
+        toolbar.setOnMenuItemClickListener(onMenuItemClickListener);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mScrollLayout.scrollToExit();
+            }
+        });
+
+        mScrollLayout.setOnScrollChangedListener(mOnScrollChangedListener);
+        mScrollLayout.setToExit();
+        mScrollLayout.getBackground().setAlpha(0);
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mScrollLayout.scrollToExit();
+            }
+        });
+
+        handler.sendEmptyMessageDelayed(DISMISS_SPLASH, 1000);//隐藏splash
+        IntentFilter localIntentFilter = new IntentFilter();
+        localIntentFilter.addAction("com.zig.live");
+        registerReceiver(liverecever,localIntentFilter);
+        pool.scheduleAtFixedRate(task, 10, 10*60, TimeUnit.SECONDS);
+    }
+    @Override
+    protected void getData() {
+        int level = Integer.parseInt(pm.getPackage("operatorLevel"));
+        if(level<4) {
+            getPresenter().requestProcessData(LocationdrawActivity.this);
+        }
+    }
+
+    @Override
+    public void onProcessSucess(List<ProcessBean> data) {
+        Log.i(TAG, "onProcessSucess: data===="+data.size());
+        this.dataProcessBean = data;
+
+    }
+
+    @Override
+    public void onProcessFail(String msg) {
+        Log.i(TAG, "onProcessFail: msg===="+msg);
+    }
+
+    public void processClick(View v){
+        if(v.getId()==R.id.pop_btn_cancel){
+            if(progressDialog!=null){
+                progressDialog.cancel();
+                progressDialog.dismiss();
+            }
+        }
+        if(v.getId()==R.id.pop_btn_enter){
+            if(progressDialog!=null){
+                final int currentprocess = progressDialog.getSelectProcess();
+                okhttpWorkUtil.postAsynHttpProcess(Constant.BASE_URL + "modifySlopeinfoApp", currentprocess + "", cpk.getNewName(), new RequestCallBack() {
+                    @Override
+                    public void onSuccess(List<UserLoacl> response) {
+                        cpk.setProcess(currentprocess+"");
+                        progressDialog.cancel();
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFail(String msg) {
+                    }
+                });
+
+            }
+        }
+
+    }
 }

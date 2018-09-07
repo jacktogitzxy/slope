@@ -22,8 +22,10 @@ import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sh.RTMP_Pusher.BuildConfig;
 import com.sh.RTMP_Pusher.R;
 import com.sh.camera.service.MainService;
 import com.sh.camera.util.CameraFileUtil;
@@ -257,8 +260,7 @@ public class FileActivity extends Activity {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				if(fs!=null&&fs.length>0){
 					for (int i = 0; i < fs.length; i++) {
-						//Log.d("CMD", "file dirtionary:"+fs[i].getAbsolutePath());
-						String name = fs[i].getName();		
+						String name = fs[i].getName();
 						if(!name.endsWith("jpg") && !name.endsWith("mp4"))
 							continue;
 						if(camera==0||name.subSequence(0, 1).equals(String.valueOf(camera))){
@@ -331,31 +333,37 @@ public class FileActivity extends Activity {
 
 
 	void openmp4(int i){
-
-		if(Constants.ExtPlayer==true)
-		{
-			Intent intent = new Intent(Intent.ACTION_VIEW); 
-			Uri uri = Uri.parse("file://"+data.get(i).get("path")); 
-			Log.d("PLAY","file uri= "+uri);
-			intent.setDataAndType(uri, "video/*"); 
-			startActivity(intent);
-		}else
-		{		
-			Intent movieIntent = new Intent();
-			movieIntent.putExtra("uri",(Uri.parse("file://"+data.get(i).get("path"))).toString());
-			movieIntent.putStringArrayListExtra("filelist",mFileList);
-			//Log.d(TAG,"filelist = "+mFileList);
-			movieIntent.setClass(this,MoviePlayer.class); 	    	
-			startActivity(movieIntent);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+			if (Constants.ExtPlayer == true) {
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				Uri uri = Uri.parse("file://" + data.get(i).get("path"));
+				Log.d("PLAY", "file uri= " + uri);
+				intent.setDataAndType(uri, "video/*");
+				startActivity(intent);
+			} else {
+				Intent movieIntent = new Intent();
+				movieIntent.putExtra("uri", (Uri.parse("file://" + data.get(i).get("path"))).toString());
+				movieIntent.putStringArrayListExtra("filelist", mFileList);
+				//Log.d(TAG,"filelist = "+mFileList);
+				movieIntent.setClass(this, MoviePlayer.class);
+				startActivity(movieIntent);
+			}
 		}
 
 
 	}
 	void openjpg(int i){
-		Intent intent = new Intent(Intent.ACTION_VIEW); 
-		Uri uri = Uri.parse("file://"+data.get(i).get("path")); 
-		intent.setDataAndType(uri, "image/*"); 
-		startActivity(intent);
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//			intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//			Uri contentUri = FileProvider.getUriForFile(FileActivity.this, "com.zig.slope.provider", new File(data.get(i).get("path")));
+//			intent.setDataAndType(contentUri, "image/*");
+		} else {
+			Uri uri = Uri.parse("file://" + data.get(i).get("path"));
+			intent.setDataAndType(uri, "image/*");
+			startActivity(intent);
+		}
+
 	}
 
 

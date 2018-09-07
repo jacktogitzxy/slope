@@ -46,7 +46,7 @@ public class TakePhotoPopTop extends PopupWindow {
         buttons[3] = view.findViewById(R.id.btn4);
         if(isOpen){
             buttons[0].setText(R.string.type_report);
-            buttons[1].setText(R.string.type_his);
+            buttons[1].setText(R.string.type_addimg);
             buttons[2].setText(R.string.type_data);
             buttons[3].setText(R.string.type_video);
             buttons[0].setTag(5);

@@ -24,6 +24,7 @@
         android:layout_toLeftOf="@+id/ic_user"
         android:background="@drawable/bg_tvb"
         android:gravity="center"
+        android:textSize="13sp"
         android:paddingBottom="6dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"

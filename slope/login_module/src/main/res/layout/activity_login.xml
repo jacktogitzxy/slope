@@ -98,7 +98,7 @@
             android:layout_width="@dimen/image_height_litter"
             android:layout_height="@dimen/image_height_litter"
             android:src="@drawable/image_password_bg"
-            android:layout_centerVertical="true"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:scaleType="fitXY"
             />

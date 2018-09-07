@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/person_layout"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="120dp"
         android:layout_marginLeft="35dp"
         android:layout_marginTop="80dp">
 
@@ -17,35 +17,37 @@
             android:id="@+id/user_photo"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
             android:scaleType="fitXY"
-            android:src="@drawable/bga" />
+            android:src="@mipmap/webwxgetmsgimg5" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/user_photo">
-
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/user_photo"
+          >
             <TextView
                 android:id="@+id/user_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="zxy"
+                android:gravity="center"
                 android:textColor="@color/color_393939"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/user_id"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/user_name"
+                android:layout_marginTop="@dimen/dp_10"
                 android:text="156****9705"
+                android:gravity="center"
                 android:textColor="@color/color_393939"
-                android:textSize="16sp" />
+                android:textSize="12sp" />
 
         </RelativeLayout>
 
@@ -54,9 +56,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="35dp"
-        android:layout_marginTop="80dp"
+        android:paddingLeft="@dimen/dp_30"
+        android:paddingRight="@dimen/dp_20"
+        android:layout_marginTop="40dp"
         android:orientation="vertical">
 
 
@@ -77,10 +79,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <ImageView style="@style/menu_right_arrow_style" />
+            <!--<ImageView style="@style/menu_right_arrow_style" />-->
         </LinearLayout>
 
-        <View style="@style/menu_divider_style" />
+        <!--<View style="@style/menu_divider_style" />-->
 
         <LinearLayout style="@style/menu_layout_style"
             android:onClick="StartReport" >
@@ -98,11 +100,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <ImageView style="@style/menu_right_arrow_style"
-                android:onClick="StartReport"  />
+            <!--<ImageView style="@style/menu_right_arrow_style"-->
+                <!--android:onClick="StartReport"  />-->
         </LinearLayout>
 
-        <View style="@style/menu_divider_style" />
+        <!--<View style="@style/menu_divider_style" />-->
 
         <LinearLayout style="@style/menu_layout_style"
             android:onClick="StartGuide">
@@ -120,13 +122,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <ImageView style="@style/menu_right_arrow_style"
-                android:onClick="StartGuide"/>
+            <!--<ImageView style="@style/menu_right_arrow_style"-->
+                <!--android:onClick="StartGuide"/>-->
         </LinearLayout>
 
 
 
-        <View style="@style/menu_divider_style" />
+        <!--<View style="@style/menu_divider_style" />-->
 
         <LinearLayout style="@style/menu_layout_style"
             android:onClick="StartSetting">
@@ -144,51 +146,51 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <ImageView style="@style/menu_right_arrow_style" />
+            <!--<ImageView style="@style/menu_right_arrow_style" />-->
         </LinearLayout>
 
-        <View style="@style/menu_divider_style" />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:minWidth="100dip"
-            android:orientation="vertical"
-            android:padding="2dp" >
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/radioGroup_text" >
+        <!--<View style="@style/menu_divider_style" />-->
 
-                <RadioButton
-                    android:id="@+id/defaulticon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:padding="@dimen/dp_10"
-                    android:textSize="@dimen/text_size_normal"
-                    android:layout_gravity="center"
-                    android:textColor="@color/top_bar_normal_bg"
-                    android:text="@string/nomal_map" >
-                </RadioButton>
-
-                <RadioButton
-                    android:id="@+id/customicon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/top_bar_normal_bg"
-                    android:padding="@dimen/dp_10"
-                    android:textSize="@dimen/text_size_normal"
-                    android:layout_gravity="center"
-                    android:text="@string/other_map" >
-                </RadioButton>
-
-            </RadioGroup>
-        </LinearLayout>
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_100"
+        android:paddingLeft="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_70"
+        android:orientation="vertical"
+         >
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/radioGroup_text" >
 
+            <RadioButton
+                android:id="@+id/defaulticon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:padding="@dimen/dp_10"
+                android:textSize="@dimen/text_size_normal"
+                android:layout_gravity="center"
+                android:textColor="@color/top_bar_normal_bg"
+                android:text="@string/nomal_map" >
+            </RadioButton>
+
+            <RadioButton
+                android:id="@+id/customicon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/top_bar_normal_bg"
+                android:padding="@dimen/dp_10"
+                android:textSize="@dimen/text_size_normal"
+                android:layout_gravity="center"
+                android:text="@string/other_map" >
+            </RadioButton>
+
+        </RadioGroup>
+    </LinearLayout>
 
 </LinearLayout>
 

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="slope.zxy.com.login_module.MainDoActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="@string/appName"
+            android:focusable="true"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/color_back"
+            android:layout_gravity="center_horizontal"
+            />
+        <cn.bingoogolapple.bgabanner.BGABanner
+            android:id="@+id/poitBanner"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_height="200dp"
+            app:banner_pageChangeDuration="1000"
+            app:banner_pointAutoPlayInterval="3000"
+            app:banner_pointAutoPlayAble="true"
+            app:banner_transitionEffect="defaultEffect"
+            app:banner_placeholderDrawable="@mipmap/webwxgetmsgimg5"
+            android:layout_gravity="center_horizontal"
+            app:banner_indicatorGravity="bottom|center_horizontal"
+            app:banner_pointContainerBackground="@android:color/transparent"
+            app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
+            app:banner_pointContainerLeftRightPadding="10dp"
+            app:banner_pointTopBottomMargin="5dp"
+            app:banner_pointLeftRightMargin="3dp"/>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="@string/typeall"
+            android:focusable="true"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/color_back"
+            android:layout_gravity="center_horizontal"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/typeSlope"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg"
+                android:clickable="true"
+                android:text="@string/type_slope"
+                android:onClick="toMapMain"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"/>
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/typeSf"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg"
+                android:clickable="true"
+                android:onClick="toMapMain"
+                android:text="@string/type_weater"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"/>
+
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/typeHouse"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg"
+                android:clickable="true"
+                android:text="@string/type_house"
+                android:onClick="toMapMain"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/typeDx"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg"
+                android:clickable="true"
+                android:text="@string/type_dx"
+                android:onClick="toMapMain"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/typegd"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg"
+                android:clickable="true"
+                android:text="@string/type_gd"
+                android:focusable="true"
+                android:onClick="toMapMain"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
+
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/typehd"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg"
+                android:clickable="true"
+                android:text="@string/type_hd"
+                android:onClick="toMapMain"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
+
+        </LinearLayout>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="@string/typegaverment"
+            android:focusable="true"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/color_back"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/btn_gt"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_bg"
+                android:clickable="true"
+                android:text="@string/type_gt"
+                android:onClick="msgType"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp" />
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/btn_jt"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_bg_no"
+                android:clickable="true"
+                android:onClick="msgType"
+                android:text="@string/type_jt"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp" />
+
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/btn_zj"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_bg_no"
+                android:clickable="true"
+                android:text="@string/type_zj"
+                android:focusable="true"
+                android:gravity="center"
+                android:onClick="msgType"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp" />
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/btn_hs"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_bg_no"
+                android:clickable="true"
+                android:text="@string/type_hs"
+                android:focusable="true"
+                android:onClick="msgType"
+                android:gravity="center"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp" />
+
+        </LinearLayout>
+
+        <ScrollView
+            android:id="@+id/contentScro"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:layout_margin="@dimen/dp_10"
+           >
+            <TextView
+                android:id="@+id/news_item_content_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:text="@string/gt_content"
+                android:textColor="@color/tv_gray_deep" />
+
+        </ScrollView>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/appnote"
+            android:focusable="true"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:layout_marginBottom="@dimen/dp_3"
+            android:textColor="@color/color_back"
+            android:layout_gravity="center_horizontal"
+            />
+
+    </LinearLayout>
+    <!-- 欢迎-->
+    <ImageView
+        android:id="@+id/splash_img1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/wellcom"
+        android:scaleType="fitXY"
+        />
+
+</android.support.design.widget.CoordinatorLayout>

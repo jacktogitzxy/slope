@@ -15,7 +15,7 @@ import com.zig.slope.callback.AllInterface;
  */
 
 public class LeftDrawerLayout extends ViewGroup {
-    private static final int MIN_DRAWER_MARGIN = 64; // dp
+    private static final int MIN_DRAWER_MARGIN = 124; // dp
     /**
      * Minimum velocity that will be detected as a fling
      */

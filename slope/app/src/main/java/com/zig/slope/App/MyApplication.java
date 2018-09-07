@@ -26,7 +26,7 @@ public class MyApplication extends BaseApplication {
         super.onCreate();
 
         // for compatibility
-        Bugly.init(getApplicationContext(), "9c4b0e3ce3", false);
+        Bugly.init(getApplicationContext(), "c5379a7e5e", false);
         Beta.checkUpgrade(false,false);
         // 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
         SDKInitializer.initialize(this);
