@@ -260,16 +260,16 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void run() {
             long length = mVideoPlayer1.getCurrentPosition2();
-
+            Log.i(TAG, "run: length=========="+length);
             if (length == 0) {
                 mLastReceivedLength = 0;
             }
             if (length < mLastReceivedLength) {
                 mLastReceivedLength = 0;
             }
-            int x = (int) ((length - mLastReceivedLength)/30);
-            int num = (int) ((Math.random() * 10));
-            stream_bps.setText(x+num + "Kbps");
+            int x = (int) ((length - mLastReceivedLength)/1024/1024);
+           // int num = (int) ((Math.random() * 10));
+            stream_bps.setText(x + "Kbps");
             mLastReceivedLength = length;
 
             mHandler.postDelayed(this, 1000);

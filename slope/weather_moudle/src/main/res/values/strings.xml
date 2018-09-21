@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">weather_moudle</string>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="white">#fffffa</color>
+    <color name="cityselect_content_bg">#F3F3F3</color>
+    <color name="cityselect_common_bg">#FAFAFA</color>
+    <string name="cityselect_select_city">选择城市</string>
+    <string name="weatherCity">天气预报</string>
+    <color name="cityselect_theme_gray">#646464</color>
+    <color name="cityselect_shadow">#AAEBEBEB</color>
+    <string name="cityselect_hint_search_box">请输入城市名或拼音</string>
+    <color name="cityselect_gray">#8c8c8c</color>
+    <color name="cityselect_alpha_gray">#CC646464</color>
+    <string name="cityselect_nothing_found">没有搜索结果~</string>
+    <color name="cityselect_gray_deep">#5c5c5c</color>
+    <string name="cityselect_hot_city">热门城市</string>
+    <string name="cityselect_located_city">定位城市</string>
+    <string name="cityselect_locating">正在定位…</string>
+    <string name="cityselect_located_failed">定位失败</string>
+    <color name="cityselect_divider">#E5E5E5</color>
+    <color name="md_blue_800_color_code">#3b50ce</color>
+    <color name="md_grey_900_color_code">#212121</color>
+    <color name="md_grey_800_color_code">#424242</color>
+    <color name="md_blue_grey_900_color_code">#263238</color>
+</resources>

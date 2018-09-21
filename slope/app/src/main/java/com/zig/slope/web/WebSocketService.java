@@ -37,6 +37,7 @@ public class WebSocketService extends Service {
     private static boolean isExitApp = false;
     private static String websocketHost = Constant.SOCKET_URL+"websocket?operatorID=";//"ws://192.168.1.133:8080/WebSocketTest/ws/websocket"; //websocket服务端的url,,,ws是协议,和http一样,我写的时候是用的我们公司的服务器所以这里不能贴出来
     private static String mid;
+    private static Inofation infs;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -51,7 +52,7 @@ public class WebSocketService extends Service {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                webSocketConnect(null,mid);
+                                webSocketConnect(infs,mid);
                             }
                         },2000);
                         Toast.makeText(getApplicationContext(), "网络已断开，请重新连接", Toast.LENGTH_SHORT).show();
@@ -60,7 +61,7 @@ public class WebSocketService extends Service {
                             webSocketConnection.disconnect();
                         }
                         if (isClosed) {
-                            webSocketConnect(null,mid);
+                            webSocketConnect(infs,mid);
                         }
                     }
 
@@ -90,10 +91,14 @@ public class WebSocketService extends Service {
     }
 
     public static void webSocketConnect(final Inofation inf,String id){
+        Log.i(TAG, "webSocketConnect: inf==="+inf+"**************id==="+id);
         if(inf!=null){
+           infs=inf;
             if (id!=null){
                 mid =id;
             }
+        }else{
+            return;
         }
         webSocketConnection = new WebSocketConnection();
         Log.i(TAG, "webSocketConnect: host ="+websocketHost+id);
@@ -155,12 +160,21 @@ public class WebSocketService extends Service {
         }
     }
 
-    public static void sendMsg(String s,String fromUser,String toUser) {
+    public static int sendMsg(String s,String fromUser,String toUser) {
+        if(infs==null){
+            Log.d(TAG, "infs = null return -1");
+            return -1;
+        }
         Log.d(TAG, "sendMsg = " + s);
         if (!TextUtils.isEmpty(s))
             if (webSocketConnection != null) {
+                Log.d(TAG, "webSocketConnection !=null ");
                 webSocketConnection.sendTextMessage(toUser+"#"+fromUser+"#"+s);
+                return 0;
+            }else{
+                return -2;
             }
+            return 0;
     }
 
     @Override

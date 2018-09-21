@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/login_module" />
             <option value="$PROJECT_DIR$/player_moudle" />
             <option value="$PROJECT_DIR$/rtmp_moudle" />
+            <option value="$PROJECT_DIR$/weather_moudle" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

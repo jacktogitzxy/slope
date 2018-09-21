@@ -23,7 +23,7 @@ public class MyAxisValueFormatter implements IAxisValueFormatter
         }else if(model==2){
             return mFormat.format(value) + " mm";
         }else{
-            return mFormat.format(value) + " Pa";
+            return mFormat.format(value) + " KPa";
         }
     }
 }

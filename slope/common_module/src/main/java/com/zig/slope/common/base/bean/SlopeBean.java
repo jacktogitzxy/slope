@@ -1,5 +1,7 @@
 package com.zig.slope.common.base.bean;
 
+import com.zig.slope.common.utils.TimeUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -455,7 +457,7 @@ public class SlopeBean implements Serializable {
         lists.add("纳入年度防治方案治理计划:"+this.year);
         lists.add("管理维护单位:"+this.management);
         lists.add("自行治理:"+this.remark);
-        lists.add("备注:"+this.createTime);
+        lists.add("备注:"+ TimeUtils.transleteTime(this.createTime));
         return lists;
     }
 }

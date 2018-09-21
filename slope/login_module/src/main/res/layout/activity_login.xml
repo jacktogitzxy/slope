@@ -3,27 +3,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="@mipmap/wellcom2"
     android:paddingTop="@dimen/dp_20"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/login"
-        android:gravity="center"
-        android:textSize="30sp"
-        />
-    <View android:layout_width="match_parent" android:layout_height="@dimen/dp_1"
-        android:background="@color/orange_main"
-        />
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:text="@string/login"-->
+        <!--android:gravity="center"-->
+        <!--android:textSize="30sp"-->
+        <!--/>-->
+    <!--<View android:layout_width="match_parent" android:layout_height="@dimen/dp_1"-->
+        <!--android:background="@color/orange_main"-->
+        <!--/>-->
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_height_normal"
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginRight="@dimen/margin_large"
-        android:layout_marginTop="@dimen/dp_120">
+        android:layout_marginTop="@dimen/dp_170">
 
         <ImageView
             android:id="@+id/img_account"
@@ -33,7 +33,7 @@
             android:layout_marginBottom="@dimen/margin_tiny"
             android:layout_marginLeft="@dimen/margin_tiny"
             android:scaleType="fitXY"
-            android:src="@mipmap/icon_login_account"/>
+            android:src="@mipmap/account"/>
 
         <EditText
             android:id="@+id/et_account"
@@ -57,7 +57,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="@dimen/margin_normal"
             android:layout_toRightOf="@+id/img_account"
-            android:background="@color/orange_light"/>
+            android:background="@color/white"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -74,7 +74,7 @@
             android:layout_marginBottom="@dimen/margin_tiny"
             android:layout_marginLeft="@dimen/margin_tiny"
             android:scaleType="fitXY"
-            android:src="@mipmap/icon_login_pw"/>
+            android:src="@mipmap/password"/>
 
         <EditText
             android:id="@+id/et_password"
@@ -95,12 +95,13 @@
         <ImageView
             android:id="@+id/iv_see_password"
             android:tag="iv_see_password"
-            android:layout_width="@dimen/image_height_litter"
-            android:layout_height="@dimen/image_height_litter"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_20"
             android:src="@drawable/image_password_bg"
+            android:padding="@dimen/dp_5"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
             />
         <View
             android:layout_width="match_parent"
@@ -108,7 +109,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="@dimen/margin_normal"
             android:layout_toRightOf="@+id/img_pw"
-            android:background="@color/orange_light"/>
+            android:background="@color/white"/>
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -130,7 +131,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/check_password"
-            android:textColor="@color/top_bar_normal_bg"
+            android:textColor="@color/white"
             android:checked="false"/>
         <CheckBox
             android:id="@+id/checkBox_login"
@@ -141,23 +142,22 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/check_login"
-            android:textColor="@color/top_bar_normal_bg" android:checked="false"/>
+            android:textColor="@color/white" android:checked="false"/>
 
     </LinearLayout>
     <Button
         android:id="@+id/btn_login"
         android:tag="btn_login"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
-        android:layout_marginTop="@dimen/margin_huge"
-        android:paddingBottom="@dimen/margin_small"
-        android:paddingTop="@dimen/margin_small"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_32"
+        android:gravity="center"
         android:text="@string/login"
         android:background="@drawable/btn_orange_selector"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_normal"/>
+        android:textColor="@color/color_backnor"
+        android:textSize="18sp"/>
 
 
 </LinearLayout>

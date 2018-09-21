@@ -5,126 +5,114 @@
  */
 package org.careye.activity;
 
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.view.WindowManager;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.careye.rtmp.careyeplayer.R;
 
 import org.careye.player.media.EyeVideoView;
-import org.careye.util.PicUtils;
-
+@Route(path = "/player/plays")
 public class MoreLiveActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private final String TAG = "DemoActivity";
-
-    private String       mURL       = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
-
-    private EyeVideoView mVideoPlayer1;
-    private EyeVideoView mVideoPlayer2;
-    private EyeVideoView mVideoPlayer3;
-    private EyeVideoView mVideoPlayer4;
-
-    private Button mBtnMorePlay;
-    private Button mBtnMoreStop;
+    private final String TAG = "MoreLiveActivity";
+    private String       mURL       = "";
+    private EyeVideoView[] mVideoPlayers;
+    private Toolbar toolbar;
+    private String newName;
+    private int size=1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_more);
-
+        Intent intent = getIntent();
+        mURL = intent.getStringExtra("url");
+        newName = intent.getStringExtra("newName");
         initView();
         initListener();
     }
 
     private void initListener() {
-        mBtnMorePlay.setOnClickListener(this);
-        mBtnMoreStop.setOnClickListener(this);
-    }
-
-    private void initView() {
-        mVideoPlayer1 = findViewById(R.id.video_player1);
-        mVideoPlayer2 = findViewById(R.id.video_player2);
-        mVideoPlayer3 = findViewById(R.id.video_player3);
-        mVideoPlayer4 = findViewById(R.id.video_player4);
-
-        mBtnMoreStop = findViewById(R.id.btn_more_stop);
-        mBtnMorePlay = findViewById(R.id.btn_more_play);
+        for (int i =0;i<mVideoPlayers.length;i++){
+            mVideoPlayers[i].setOnClickListener(this);
+        }
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        play();
-    }
-
-    @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
         stop();
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        return super.dispatchTouchEvent(ev);
+    protected void onResume() {
+        super.onResume();
+        play();
     }
 
-    private void play() {
+    private void initView() {
+        mVideoPlayers = new EyeVideoView[8];
+        mVideoPlayers[0] = findViewById(R.id.video_player1);
+        mVideoPlayers[1] = findViewById(R.id.video_player2);
+        mVideoPlayers[2] = findViewById(R.id.video_player3);
+        mVideoPlayers[3] = findViewById(R.id.video_player4);
+        mVideoPlayers[4] = findViewById(R.id.video_player5);
+        mVideoPlayers[5] = findViewById(R.id.video_player6);
+        mVideoPlayers[6] = findViewById(R.id.video_player7);
+        mVideoPlayers[7] = findViewById(R.id.video_player8);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.return_icon);
+        toolbar.setTitleMarginStart(120);
+        toolbar.setTitle("编号："+newName+"监控视频列表");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MoreLiveActivity.this.finish();
+            }
+        });
+    }
 
+    @Override
+    public void onDestroy() {
         stop();
+        super.onDestroy();
+    }
 
-        mVideoPlayer1.setVideoPath(mURL);
-        mVideoPlayer1.start();
 
-        mVideoPlayer2.setVideoPath(mURL);
-        mVideoPlayer2.start();
 
-        mVideoPlayer3.setVideoPath(mURL);
-        mVideoPlayer3.start();
-
-        mVideoPlayer4.setVideoPath(mURL);
-        mVideoPlayer4.start();
+    private void play() {
+        stop();
+        for (int i =0;i<size;i++){
+            mVideoPlayers[i].setVideoPath(mURL);
+            mVideoPlayers[i].start();
+        }
     }
 
     public void stop() {
-        mVideoPlayer1.stopPlayback();
-        mVideoPlayer1.release(true);
-        mVideoPlayer1.stopBackgroundPlay();
-
-        mVideoPlayer2.stopPlayback();
-        mVideoPlayer2.release(true);
-        mVideoPlayer2.stopBackgroundPlay();
-
-        mVideoPlayer3.stopPlayback();
-        mVideoPlayer3.release(true);
-        mVideoPlayer3.stopBackgroundPlay();
-
-        mVideoPlayer4.stopPlayback();
-        mVideoPlayer4.release(true);
-        mVideoPlayer4.stopBackgroundPlay();
+        for (int i =0;i<size;i++){
+            mVideoPlayers[i].stopPlayback();
+            mVideoPlayers[i].release(true);
+            mVideoPlayers[i].stopBackgroundPlay();
+        }
     }
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-
-        if (id == R.id.btn_more_play) {
-            play();
-        } else if (id == R.id.btn_more_stop) {
+        Log.i(TAG, "onClick: v=="+v.getTag());
+        int tag= Integer.parseInt( v.getTag().toString());
+        if(mVideoPlayers[tag].isPlaying()) {
             stop();
+            Intent intent = new Intent(MoreLiveActivity.this, PlayerActivity.class);
+            intent.putExtra("url", mURL);
+            startActivity(intent);
         }
     }
 }

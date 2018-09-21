@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sh.RTMP_Pusher"
+    android:versionCode="2"
+    android:versionName="2.0" >
+
+    <uses-sdk
+        android:minSdkVersion="17"
+        android:targetSdkVersion="27" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true" >
+        <activity android:name="com.sh.camera.MainActivity" >
+        </activity>
+        <activity android:name="com.sh.camera.FileActivity" />
+        <activity android:name="com.sh.camera.SelectTimeActivity" />
+        <activity android:name="com.sh.camera.SetActivity" />
+        <!-- <activity android:name="com.sh.camera.UpdateActivity" > -->
+        <!-- </activity> -->
+        <activity android:name="com.sh.camera.vedioPlay.MoviePlayer" />
+
+        <!-- <service android:name="com.sh.camera.service.MainService"></service> -->
+
+        <activity android:name="com.sh.camera.LiveActivity" >
+        </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.zig.slope.provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+    </application>
+
+</manifest>

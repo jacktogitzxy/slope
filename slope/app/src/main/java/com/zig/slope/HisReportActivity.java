@@ -200,9 +200,20 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
             datap = data;
         }
         }else{
-            datap.clear();
+            if(datap!=null) {
+                datap.clear();
+            }
             datap = data;
-            adapter.updateData(data,true);
+            if (data == null || data.size() == 0) {
+                showEmptyView(true);
+                return;
+            }
+            showEmptyView(false);
+            if(adapter==null){
+                adapter = new HisAdapter(HisReportActivity.this, data);
+            }else {
+                adapter.updateData(data, true);
+            }
             isCurrentType = true;
         }
 

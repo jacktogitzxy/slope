@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.SeekBar;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -19,11 +20,12 @@ import com.zig.slope.charts.MyMarkerView;
 public class LineChartItem extends ChartItem {
 
     private Typeface mTf;
+    private int mode=1;
 
-    public LineChartItem(ChartData<?> cd, Context c) {
+    public LineChartItem(ChartData<?> cd, Context c,int mode) {
         super(cd);
-
         mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
+        this.mode = mode;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class LineChartItem extends ChartItem {
         // holder.chart.setValueTypeface(mTf);
         holder.chart.getDescription().setEnabled(false);
         holder.chart.setDrawGridBackground(false);
-        IAxisValueFormatter custom = new MyAxisValueFormatter(1);
+        IAxisValueFormatter custom = new MyAxisValueFormatter(mode);
         XAxis xAxis = holder.chart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
         xAxis.setTypeface(mTf);

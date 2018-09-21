@@ -5,9 +5,7 @@ import android.util.Log;
 
 import com.zig.slope.common.base.BasePresenter;
 import com.zig.slope.common.base.bean.BaseResponseBean;
-import com.zig.slope.common.base.bean.HisBean;
 import com.zig.slope.common.base.bean.ProcessBean;
-import com.zig.slope.contract.HisContract;
 import com.zig.slope.contract.ProcessContract;
 import com.zig.slope.model.ProcessModel;
 

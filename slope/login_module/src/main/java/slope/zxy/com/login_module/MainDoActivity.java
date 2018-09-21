@@ -8,14 +8,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.bumptech.glide.Glide;
+import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.base.bean.LoginMsg;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import cn.bingoogolapple.bgabanner.BGABanner;
 import slope.zxy.com.login_module.widget.LoadingDialog;
@@ -26,7 +35,7 @@ public class MainDoActivity extends AppCompatActivity {
     private ScrollView contentScro;
     private LoginMsg data;
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
-    private ImageView splash_img;
+//    private ImageView splash_img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,27 +43,38 @@ public class MainDoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         data = (LoginMsg) intent.getSerializableExtra("data");
         bgaBanner = findViewById(R.id.poitBanner);
-        Log.i("zxy", "onCreate: bgaBanner=="+bgaBanner);
-        bgaBanner.setData(R.mipmap.webwxgetmsgimg, R.mipmap.webwxgetmsgimg2, R.mipmap.webwxgetmsgimg3, R.mipmap.webwxgetmsgimg4,
-                R.mipmap.webwxgetmsgimg5, R.mipmap.webwxgetmsgimg6, R.mipmap.webwxgetmsgimg7, R.mipmap.webwxgetmsgimg8,
-                R.mipmap.webwxgetmsgimg9 );
+        LayoutInflater layoutInflater =LayoutInflater.from(this);
+        List<String> bannerList =  Arrays.asList(data.getBannerList().split("#"));
+        List<View> mods = new ArrayList<>();
+        for (int i=0;i<bannerList.size();i++){
+          //  View v1 = layoutInflater.inflate(R.layout.banner_img,null);
+         //   ImageView vb = v1.findViewById(R.id.bannimg);
+            ImageView view = new ImageView(MainDoActivity.this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            view.setLayoutParams(params);
+            view.setScaleType(ImageView.ScaleType.FIT_XY);
+            Glide.with(this).load(Constant.BASE_URL+bannerList.get(i).trim()).placeholder(R.mipmap.webwxgetmsgimg5).into(view);
+            mods.add(view);
+        }
+        bgaBanner.setData(mods);
         contentv = findViewById(R.id.news_item_content_text_view);
         contentScro = findViewById(R.id.contentScro);
-        splash_img = (ImageView) findViewById(R.id.splash_img1);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startSplsh();
-            }
-        },1000);
+//        splash_img = (ImageView) findViewById(R.id.splash_img1);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                startSplsh();
+//            }
+//        },1000);
     }
-    private View lastv;
+    private TextView lastv;
     public void msgType(View view){
         if(lastv==null){
             lastv = findViewById(R.id.btn_gt);
         }
-        lastv.setBackground(getResources().getDrawable(R.drawable.item_text_bg_no));
-        lastv = view;
+        lastv.setBackgroundColor(0);
+        lastv.setTextColor(getResources().getColor(R.color.c_gray_6));
+        lastv = (TextView) view;
         contentScro.scrollTo(0,0);
         if(view.getId()==R.id.btn_gt){
             contentv.setText(R.string.gt_content);
@@ -68,7 +88,8 @@ public class MainDoActivity extends AppCompatActivity {
         if(view.getId()==R.id.btn_hs){
             contentv.setText(R.string.hs_content);
         }
-        view.setBackground(getResources().getDrawable(R.drawable.item_text_bg));
+        lastv.setTextColor(getResources().getColor(R.color.white));
+        lastv.setBackgroundColor(getResources().getColor(R.color.color_back));
     }
 
 
@@ -121,9 +142,9 @@ public class MainDoActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public void startSplsh(){
-        Animator animator = AnimatorInflater.loadAnimator(MainDoActivity.this, R.animator.splashlogin);
-        animator.setTarget(splash_img);
-        animator.start();
-    }
+//    public void startSplsh(){
+//        Animator animator = AnimatorInflater.loadAnimator(MainDoActivity.this, R.animator.splashlogin);
+//        animator.setTarget(splash_img);
+//        animator.start();
+//    }
 }

@@ -228,6 +228,9 @@
     <dimen name="dp_500">500dp</dimen>
     <dimen name="dp_600">600dp</dimen>
     <dimen name="dp_640">640dp</dimen>
+    <dimen name="dp_700">700dp</dimen>
+    <dimen name="dp_750">750dp</dimen>
+    <dimen name="dp_780">780dp</dimen>
     <dimen name="dp_800">800dp</dimen>
     <dimen name="drawer_width">240dp</dimen>
     <dimen name="iv_width">20dp</dimen>

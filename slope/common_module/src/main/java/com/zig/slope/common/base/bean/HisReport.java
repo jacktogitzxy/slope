@@ -26,7 +26,7 @@ public class HisReport implements Serializable {
         private String leaders;
         private String leadersContent;
         private String remark;
-
+        private String remark1;
     public int getId() {
         return id;
     }
@@ -163,7 +163,15 @@ public class HisReport implements Serializable {
         this.remark = remark;
     }
 
-    public HisReport(int id, String patrollerID, String newName, String createTime, String contents, int controlFlag1, String url1, int controlFlag2, String url2, int controlFlag3, int controlFlag4, int flag, String admins, String adminsContent, String leaders, String leadersContent, String remark) {
+    public String getRemark1() {
+        return remark1;
+    }
+
+    public void setRemark1(String remark1) {
+        this.remark1 = remark1;
+    }
+
+    public HisReport(int id, String patrollerID, String newName, String createTime, String contents, int controlFlag1, String url1, int controlFlag2, String url2, int controlFlag3, int controlFlag4, int flag, String admins, String adminsContent, String leaders, String leadersContent, String remark,String remark1) {
         this.id = id;
         this.patrollerID = patrollerID;
         this.newName = newName;
@@ -181,5 +189,7 @@ public class HisReport implements Serializable {
         this.leaders = leaders;
         this.leadersContent = leadersContent;
         this.remark = remark;
+        this.remark1 = remark1;
+
     }
 }

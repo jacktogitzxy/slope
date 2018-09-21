@@ -79,14 +79,17 @@ import com.baidu.mapapi.search.district.DistrictResult;
 import com.baidu.mapapi.search.district.OnGetDistricSearchResultListener;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yinglan.scrolllayout.ScrollLayout;
+import com.zig.slope.adapter.ChatsAdapter;
 import com.zig.slope.adapter.ListviewAdapter;
 import com.zig.slope.adapter.MyAdapter;
 import com.zig.slope.bean.User;
 import com.zig.slope.bean.UserLoacl;
 import com.zig.slope.callback.RequestCallBack;
+import com.zig.slope.callback.RequestWeatherCallBack;
 import com.zig.slope.charts.ListViewMultiChartActivity;
 import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.base.BaseMvpActivity;
@@ -95,10 +98,10 @@ import com.zig.slope.common.base.bean.LoginMsg;
 import com.zig.slope.common.base.bean.ProcessBean;
 import com.zig.slope.common.base.bean.SlopeBean;
 import com.zig.slope.common.utils.PreferenceManager;
+import com.zig.slope.common.utils.TimeUtils;
 import com.zig.slope.contract.ProcessContract;
 import com.zig.slope.presenter.ProcessPresenterImpl;
 import com.zig.slope.util.OkhttpWorkUtil;
-import com.zig.slope.util.TimeUtils;
 import com.zig.slope.util.UdpMessageTool;
 import com.zig.slope.view.DoProgressDialog;
 import com.zig.slope.view.TakePhotoPopTop;
@@ -129,6 +132,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.bgabanner.BGABanner;
+import slope.zxy.com.weather_moudle.bean.WeatherBean;
 
 
 /**
@@ -171,7 +175,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     private RecyclerView recyclerView;
-    private ChatAdapter adapter;
+    private ChatsAdapter adapter;
     private EditText et;
     private TextView tvSend;
     private String content;//消息内容
@@ -180,8 +184,15 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     private Spinner usersp;
     private boolean isDrawerOpened = false;//点击穿透问题
     private OkhttpWorkUtil okhttpWorkUtil;
-
+    private String locationCity;
+    private TextView maintitle_weather;
+    private ImageView weather_icon;
     List<ProcessBean> dataProcessBean;//治理进度
+    public static boolean isForeground = false;
+    public static final String MESSAGE_RECEIVED_ACTION = "com.zig.slope.MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
     //定时发送位置
     private ScheduledExecutorService pool = Executors.newScheduledThreadPool(2);
     private TimerTask task = new TimerTask() {
@@ -435,6 +446,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             if (location == null || mMapView == null) {
                 return;
             }
+            locationCity =location.getCity();
             mCurrentLat = location.getLatitude();
             mCurrentLon = location.getLongitude();
             mCurrentAccracy = location.getRadius();
@@ -461,12 +473,14 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
 
     @Override
     protected void onPause() {
+        isForeground = false;
         mMapView.onPause();
         super.onPause();
     }
     @Override
     protected void onResume() {
         mMapView.onResume();
+        isForeground = true;
         super.onResume();
         //为系统的方向传感器注册监听器
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
@@ -482,6 +496,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
 
     @Override
     protected void onDestroy() {
+        Log.i(TAG, "onDestroy: ");
         isDestroy = true;
         // 退出时销毁定位
         mLocClient.stop();
@@ -496,7 +511,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             task.cancel();
             pool.shutdown();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         super.onDestroy();
     }
@@ -771,13 +786,16 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         exitAnimation.setFillAfter(true);
         closeMenu();
         View view = findViewById(R.id.topmenu_icon);
-        View view1 = findViewById(R.id.menu_icon);
+        View view1 = findViewById(R.id.item_bt1);
+        View view2 = findViewById(R.id.item_bt2);
+        View view3 = findViewById(R.id.item_bt3);
+        View view4 = findViewById(R.id.item_bt4);
         NewbieGuide.with(this)
                 .setLabel("guide1")
                 .alwaysShow(true)//总是显示，调试时可以打开
                 .addGuidePage(
                         GuidePage.newInstance()//创建一个实例
-                                .addHighLight(view, HighLight.Shape.CIRCLE, 5)//添加高亮的view
+                                .addHighLight(view, HighLight.Shape.OVAL, 5)//添加高亮的view
 
                                 .setLayoutRes(R.layout.view_guide)//设置引导页布局
                                 .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
@@ -785,7 +803,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                                     public void onLayoutInflated(View view) {
                                         //引导页布局填充后回调，用于初始化
                                         TextView tv = view.findViewById(R.id.textView);
-                                        tv.setText("点击打开分类菜单");
+                                        tv.setText("点击打开通讯消息");
                                     }
                                 })
                                 .setEnterAnimation(enterAnimation)//进入动画
@@ -793,14 +811,14 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 )
                 .addGuidePage(//添加一页引导页
                         GuidePage.newInstance()//创建一个实例
-                                .addHighLight(view1, HighLight.Shape.CIRCLE, 5)//添加高亮的view
+                                .addHighLight(menu_icon, HighLight.Shape.OVAL, 5)//添加高亮的view
                                 .setLayoutRes(R.layout.view_guide2)//设置引导页布局
                                 .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
                                     @Override
                                     public void onLayoutInflated(View view) {
                                         //引导页布局填充后回调，用于初始化
                                         TextView tv = view.findViewById(R.id.textView2);
-                                        tv.setText("点击打开左侧菜单");
+                                        tv.setText("点击打开个人菜单");
                                     }
                                 })
                                 .setEnterAnimation(enterAnimation)//进入动画
@@ -808,34 +826,77 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 )
                 .addGuidePage(//添加一页引导页
                         GuidePage.newInstance()//创建一个实例
-                                .addHighLight(view1)//添加高亮的view
+                                .addHighLight(tvtypes[0])//添加高亮的view
                                 .setLayoutRes(R.layout.view_guide3)//设置引导页布局
                                 .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
                                     @Override
                                     public void onLayoutInflated(View view) {
                                         //引导页布局填充后回调，用于初始化
                                         TextView tv = view.findViewById(R.id.textView3);
-                                        tv.setText("点击地图标注的地点显示更多信息");
+                                        tv.setText("点击查看业务分类");
+                                    }
+                                })
+                                .setEnterAnimation(enterAnimation)//进入动画
+                                .setExitAnimation(exitAnimation)//退出动画
+                ).addGuidePage(//添加一页引导页
+                GuidePage.newInstance()//创建一个实例
+                        .addHighLight(view1)//添加高亮的view
+                        .setLayoutRes(R.layout.view_guide4)//设置引导页布局
+                        .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                            @Override
+                            public void onLayoutInflated(View view) {
+                                //引导页布局填充后回调，用于初始化
+                                TextView tv = view.findViewById(R.id.textView4);
+                                tv.setText("点击上报数据");
+                            }
+                        })
+                        .setEnterAnimation(enterAnimation)//进入动画
+                        .setExitAnimation(exitAnimation)//退出动画
+                )
+                .addGuidePage(//添加一页引导页
+                        GuidePage.newInstance()//创建一个实例
+                                .addHighLight(view2)//添加高亮的view
+                                .setLayoutRes(R.layout.view_guide4)//设置引导页布局
+                                .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                                    @Override
+                                    public void onLayoutInflated(View view) {
+                                        //引导页布局填充后回调，用于初始化
+                                        TextView tv = view.findViewById(R.id.textView4);
+                                        tv.setText("点击手机直播");
                                     }
                                 })
                                 .setEnterAnimation(enterAnimation)//进入动画
                                 .setExitAnimation(exitAnimation)//退出动画
                 )
-//                .addGuidePage(//添加一页引导页
-//                        GuidePage.newInstance()//创建一个实例
-//                                .addHighLight(group,HighLight.Shape.CIRCLE, 5)//添加高亮的view
-//                                .setLayoutRes(R.layout.view_guide4)//设置引导页布局
-//                                .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
-//                                    @Override
-//                                    public void onLayoutInflated(View view) {
-//                                        //引导页布局填充后回调，用于初始化
-//                                        TextView tv = view.findViewById(R.id.textView4);
-//                                        tv.setText("点击切换地图模式");
-//                                    }
-//                                })
-//                                .setEnterAnimation(enterAnimation)//进入动画
-//                                .setExitAnimation(exitAnimation)//退出动画
-//                )
+                .addGuidePage(//添加一页引导页
+                        GuidePage.newInstance()//创建一个实例
+                                .addHighLight(view3)//添加高亮的view
+                                .setLayoutRes(R.layout.view_guide4)//设置引导页布局
+                                .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                                    @Override
+                                    public void onLayoutInflated(View view) {
+                                        //引导页布局填充后回调，用于初始化
+                                        TextView tv = view.findViewById(R.id.textView4);
+                                        tv.setText("点击查看巡查上报记录");
+                                    }
+                                })
+                                .setEnterAnimation(enterAnimation)//进入动画
+                                .setExitAnimation(exitAnimation)//退出动画
+                ) .addGuidePage(//添加一页引导页
+                GuidePage.newInstance()//创建一个实例
+                        .addHighLight(view4)//添加高亮的view
+                        .setLayoutRes(R.layout.view_guide4)//设置引导页布局
+                        .setOnLayoutInflatedListener(new OnLayoutInflatedListener() {
+                            @Override
+                            public void onLayoutInflated(View view) {
+                                //引导页布局填充后回调，用于初始化
+                                TextView tv = view.findViewById(R.id.textView4);
+                                tv.setText("点击返回主页面");
+                            }
+                        })
+                        .setEnterAnimation(enterAnimation)//进入动画
+                        .setExitAnimation(exitAnimation)//退出动画
+        )
 
                 .show();
     }
@@ -861,6 +922,18 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 currentTv = (TextView) view;
                 changeColor(currentTv);
                 break;
+            case R.id.typeDx://地陷
+                currentTv = (TextView) view;
+                changeColor(currentTv);
+                break;
+            case R.id.typeGd://工地
+                currentTv = (TextView) view;
+                changeColor(currentTv);
+                break;
+            case R.id.typeHd://河道
+                currentTv = (TextView) view;
+                changeColor(currentTv);
+                break;
             case R.id.typeWorker://巡查员
                 currentTv = (TextView) view;
                 changeColor(currentTv);
@@ -881,6 +954,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             return;
         }
         currentTv.setTextColor(getResources().getColor(R.color.orange_main));
+        currentTv.setBackground(getResources().getDrawable(R.drawable.item_text_bg));
        // mainTitle.setText(currentTv.getText());
         String s = currentTv.getText().toString();
         if(s.contains(getResources().getString(R.string.type_slope))){
@@ -901,6 +975,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }
 
         lastTv.setTextColor(getResources().getColor(R.color.color_757575));
+        lastTv.setBackground(null);
         lastTv = currentTv;
     }
 
@@ -1083,7 +1158,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         tvSend = (TextView) findViewById(R.id.tvSend);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(adapter = new ChatAdapter());
+//        recyclerView.setAdapter(adapter = new ChatsAdapter());
         usersp = findViewById(R.id.userOnline);
         usersp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -1101,6 +1176,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
 
             }
         });
+
+
+
     }
 
     private void initData() {
@@ -1147,13 +1225,19 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             public void onClick(View v) {
                 if(currentUser!=null){
                     String opid = currentUser.getOperatorID();
+                    int data = 0;
                     if(opid.equals("all")){
-                        WebSocketService.sendMsg(content,operatorId,"0");
+                        data= WebSocketService.sendMsg(content,operatorId,"0");
                     }else{
-                        WebSocketService.sendMsg(content,operatorId,opid);
+                        data= WebSocketService.sendMsg(content,operatorId,opid);
+                    }
+                    lastsendMsgTime = System.currentTimeMillis();
+                    handler.postDelayed(checkSocket,3000);
+                    if(data==-1||data==-2){
+                        Log.i(TAG, "onClick: WebSocketService.infs===null start restart WebSocketService");
+                        restartSocket();
                     }
                 }
-
                 et.setText("");
                 hideKeyBorad(et);
 
@@ -1162,9 +1246,11 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     }
     List<User> usersOnline = new ArrayList<>();
     private User currentUser = null;
+    private long lastgetMsgTime = 0;
+    private long lastsendMsgTime = 0;
     @SuppressLint("ResourceAsColor")
     private void getMessage(String msg) {
-
+        Log.i(TAG, "getMessage: msg=="+msg);
         List<String> lis = Arrays.asList(msg.split("#"));
         if(lis.get(0).equals("100")){//直播
 
@@ -1189,17 +1275,21 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             }
         }
         if(lis.get(0).equals("2")){//返回消息
+            Log.i(TAG, "getMessage: getmsg 2,removeCallbacks  checkSocket");
+            handler.removeCallbacks(checkSocket);
             ArrayList<ItemModel> data = new ArrayList<>();
             ChatModel model = new ChatModel();
             View view = View.inflate(LocationdrawActivity.this, R.layout.icon_us, null);
             TextView name = view.findViewById(R.id.name_info);
             name.setText(lis.get(1));
             if(lis.get(1).equals(operatorName)) {//发送的
+                Log.i(TAG, "getMessage: lis.get(0).equals(\"2\")send");
                 name.setBackgroundColor(R.color.color_2c6edf);
                 Bitmap icon = BitmapDescriptorFactory.fromView(view).getBitmap();
                 model.setIcons(icon);
                 data.add(new ItemModel(ItemModel.CHAT_B, model));
             }else{//收到的
+                Log.i(TAG, "getMessage: lis.get(0).equals(\"2\")resive");
                 name.setBackgroundColor(R.color.orange_main);
                 Bitmap icon = BitmapDescriptorFactory.fromView(view).getBitmap();
                 model.setIcons(icon);
@@ -1207,7 +1297,13 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             }
             message_new.setVisibility(View.VISIBLE);
             model.setContent(lis.get(3));
-            adapter.addAll(data);
+            if(adapter==null){
+                adapter = new ChatsAdapter(LocationdrawActivity.this,data);
+                recyclerView.setAdapter(adapter);
+            }else {
+                adapter.updateData(data, false);
+            }
+            lastgetMsgTime = System.currentTimeMillis();
         }
 
 
@@ -1309,11 +1405,12 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     LocationdrawActivity.this.startActivity(intentc);
                     break;
                 case R.id.cam_video://检测视频
-                    String url = cpk.getStreamAddress();
-                    ARouter.getInstance().build("/player/play").withString("url",url).navigation();
+                    String url = "rtmp://47.107.32.201:1935/live/livestream";//cpk.getStreamAddress();
+                    ARouter.getInstance().build("/player/plays").withString("url",url).withString("newName",cpk.getNewName()).navigation();
                     break;
                 case R.id.cam_data ://检测数据
                     Intent intentdata = new Intent(LocationdrawActivity.this, ListViewMultiChartActivity.class);
+                    intentdata.putExtra("newName",cpk.getNewName());
                     LocationdrawActivity.this.startActivity(intentdata);
                     break;
                 case R.id.do_process ://治理进度
@@ -1359,7 +1456,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             e.printStackTrace();
         }
     }
-
     /**
      * 启动加载进度条
      */
@@ -1399,6 +1495,8 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 slopes = mg.getSlopeInfo();
             }
         }
+        maintitle_weather = findViewById(R.id.maintitle_weather);
+        weather_icon =findViewById(R.id.weather_today_icon);
         operatorName = pm.getPackage("operatorName");
         operatorId = pm.getPackage("operatorId");
         shadowView = (View) findViewById(R.id.shadow);
@@ -1455,8 +1553,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         websocketServiceIntent = new Intent(this, WebSocketService.class);
         startService(websocketServiceIntent);
         initMsgView();
-
-
+        getWeather();
     }
     @Override
     protected void setViews() {
@@ -1535,7 +1632,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                         progressDialog.cancel();
                         progressDialog.dismiss();
                     }
-
                     @Override
                     public void onFail(String msg) {
                     }
@@ -1544,5 +1640,50 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             }
         }
 
+    }
+
+    public void restartSocket(){
+        Toast.makeText(LocationdrawActivity.this,getResources().getString(R.string.restartsocket),Toast.LENGTH_SHORT).show();
+        WebSocketService.closeWebsocket(false);
+        stopService(websocketServiceIntent);
+        startService(websocketServiceIntent);
+        initData();
+    }
+    Runnable checkSocket = new Runnable() {
+        @Override
+        public void run() {
+            if(lastgetMsgTime==0){//第一次没收到
+                restartSocket();
+            }else if(lastsendMsgTime>lastgetMsgTime){//3秒后没收到
+                restartSocket();
+            }
+        }
+    };
+
+    public void startWeather(View view){
+        Log.i(TAG, "startWeather: city=="+locationCity);
+        ARouter.getInstance().build("/weather/index").withString("city",locationCity).navigation();
+    }
+
+    public void getWeather(){
+            okhttpWorkUtil.postAsynHttpWeather(Constant.BASE_URL + "getWeather?cityName=深圳", new RequestWeatherCallBack() {
+                @Override
+                public void onSuccess(WeatherBean response) {
+                    setWeatherData(response);
+                }
+
+                @Override
+                public void onFail(String msg) {
+
+                }
+            });
+            
+    }
+
+    public void setWeatherData(WeatherBean weatherData){
+        maintitle_weather.setText("深圳:"+weatherData.getmTodayWeatherBean().getmNight_Air_Temperature() + "°~"+
+                weatherData.getmTodayWeatherBean().getmDay_Air_Temperature() + "°");
+        Glide.with(LocationdrawActivity.this).load(weatherData.getmNowWeatherBean().getmWeather_Pic()).diskCacheStrategy(DiskCacheStrategy.ALL).
+                into(weather_icon);
     }
 }

@@ -10,134 +10,195 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:logo="@drawable/ic_launcher">
-        <!-- <ImageView
-             android:layout_width="30dp"
-             android:layout_height="30dp"
-             android:layout_marginLight="52"
-             />-->
-        <TextView
-            android:layout_width="98dp"
-            android:layout_height="match_parent"
-            android:text="@string/app_name"
-            android:textColor="#fff"
-            android:textSize="18dp" />
-
-        <ImageButton
-            android:id="@+id/toolbar_help"
-            style="@style/Base.Widget.AppCompat.ActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:src="@android:drawable/ic_menu_help" />
-
-        <ImageButton
-            android:id="@+id/toolbar_setting"
-            style="@style/Base.Widget.AppCompat.ActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_action_setting" />
-        <!--  <ImageButton
-              android:layout_width="wrap_content"
-              android:src="@drawable/ic_action_multiplay"
-              android:id="@+id/toolbar_multiplay"
-              style="@style/Base.Widget.AppCompat.ActionButton"
-              android:onClick="onMultiplay"
-              android:layout_gravity="end"
-              android:layout_height="wrap_content" />-->
-        <ImageButton
-            android:id="@+id/toolbar_add"
-            style="@style/Base.Widget.AppCompat.ActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:src="@android:drawable/ic_media_pause"
-            android:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/toolbar_play"
-            style="@style/Base.Widget.AppCompat.ActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:src="@android:drawable/ic_media_play"
-            android:visibility="gone" />
-    </android.support.v7.widget.Toolbar>
-
-    <EditText
-        android:id="@+id/et_input_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="请输入流地址"
-        android:text="rtmp://live.hkstv.hk.lxdns.com/live/hks" />
-
-
+        />
     <LinearLayout
-        android:layout_weight="1"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+        android:layout_height="140dp">
+        <FrameLayout
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:tag="0"
+            android:clickable="true"
+            android:background="@drawable/boldervideo"
+            android:onClick="onClick"
+            android:layout_width="0dp"
             android:layout_height="match_parent">
-
             <org.careye.player.media.EyeVideoView
-                android:layout_weight="1"
                 android:id="@+id/video_player1"
+                android:layout_gravity="center_horizontal|top"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-            <org.careye.player.media.EyeVideoView
-                android:layout_weight="1"
-                android:id="@+id/video_player2"
+                android:layout_height="wrap_content"/>
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:gravity="center"
+                android:text="监测点1"/>
+        </FrameLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
+        <FrameLayout
             android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:tag="1"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:layout_width="0dp"
+            android:background="@drawable/boldervideo"
             android:layout_height="match_parent">
-
             <org.careye.player.media.EyeVideoView
-                android:layout_weight="1"
-                android:id="@+id/video_player3"
+                android:id="@+id/video_player2"
+                android:layout_gravity="center_horizontal|top"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-            <org.careye.player.media.EyeVideoView
-                android:layout_weight="1"
-                android:id="@+id/video_player4"
+                android:layout_height="wrap_content"/>
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:gravity="center"
+                android:text="监测点2"/>
+        </FrameLayout>
 
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="140dp">
+        <FrameLayout
+            android:layout_weight="1"
+            android:tag="2"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:background="@drawable/boldervideo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <org.careye.player.media.EyeVideoView
+                android:id="@+id/video_player3"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:gravity="center"
+                android:text="监测点3"/>
+        </FrameLayout>
 
-        <Button
-            android:id="@+id/btn_more_play"
-            android:text="play"
-            android:layout_width="60dp"
-            android:layout_height="match_parent" />
+        <FrameLayout
+            android:layout_weight="1"
+            android:tag="3"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:layout_width="0dp"
+            android:background="@drawable/boldervideo"
+            android:layout_height="match_parent">
+            <org.careye.player.media.EyeVideoView
+                android:id="@+id/video_player4"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:gravity="center"
+                android:text="监测点4"/>
+        </FrameLayout>
 
-        <Button
-            android:id="@+id/btn_more_stop"
-            android:layout_marginLeft="5dp"
-            android:text="stop"
-            android:layout_width="60dp"
-            android:layout_height="match_parent" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="140dp">
+        <FrameLayout
+            android:layout_weight="1"
+            android:tag="4"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:layout_width="0dp"
+            android:background="@drawable/boldervideo"
+            android:layout_height="match_parent">
+            <org.careye.player.media.EyeVideoView
+                android:id="@+id/video_player5"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:gravity="center"
+                android:text="监测点5"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_weight="1"
+            android:tag="5"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:layout_width="0dp"
+            android:background="@drawable/boldervideo"
+            android:layout_height="match_parent">
+            <org.careye.player.media.EyeVideoView
+                android:id="@+id/video_player6"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:gravity="center"
+                android:text="监测点6"/>
+        </FrameLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="140dp">
+        <FrameLayout
+            android:layout_weight="1"
+            android:tag="6"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:layout_width="0dp"
+            android:background="@drawable/boldervideo"
+            android:layout_height="match_parent">
+            <org.careye.player.media.EyeVideoView
+                android:id="@+id/video_player7"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:gravity="center"
+                android:text="监测点7"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_weight="1"
+            android:tag="7"
+            android:clickable="true"
+            android:onClick="onClick"
+            android:layout_width="0dp"
+            android:background="@drawable/boldervideo"
+            android:layout_height="match_parent">
+            <org.careye.player.media.EyeVideoView
+                android:id="@+id/video_player8"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:gravity="center"
+                android:text="监测点8"/>
+        </FrameLayout>
+
     </LinearLayout>
 
 </LinearLayout>

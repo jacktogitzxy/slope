@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -58,6 +59,7 @@ public class ReportActivity extends BaseActivity {
     private String TAG="REPORT";
     private CustomProgressDialog progressDialog;
     private double n,e;
+     private CheckBox[] boxs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +143,11 @@ public class ReportActivity extends BaseActivity {
         report_date = (TextView) findViewById(R.id.report_date);
         report_note = (EditText) findViewById(R.id.report_note);
         report_worker.setText(pm.getPackage("operatorName"));
+        boxs = new CheckBox[4];
+        boxs[0] = findViewById(R.id.danager_cb1);
+        boxs[1] = findViewById(R.id.danager_cb2);
+        boxs[2] = findViewById(R.id.danager_cb3);
+        boxs[3] = findViewById(R.id.danager_cb4);
         if (Pname != null) {//补充数据
             report_name1.setText(Pname);
         }
@@ -155,11 +162,27 @@ public class ReportActivity extends BaseActivity {
         String text = report_note.getText().toString();
         String slopeId = report_name1.getText().toString();
         String operatorID = pm.getPackage("operatorId");
-        if(slopeId==null){
+
+        if(slopeId==null||slopeId.equals("")){
             Toast.makeText(ReportActivity.this,"请填写边坡编号",Toast.LENGTH_SHORT).show();
             return;
         }
-        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
+//        if(text==null||text.equals("")){
+//            Toast.makeText(ReportActivity.this,"请填写描述信息",Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+        String remark1 ="";
+        for (int i = 0;i<boxs.length;i++){
+            String value = boxs[i].getText().toString();
+            boolean isChecked = boxs[i].isChecked();
+            if(isChecked){
+                remark1=remark1+value+"#";
+            }else{
+                remark1=remark1+"无"+"#";
+            }
+        }
+        Log.i(TAG, "startReportdo: remark1="+remark1);
+        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),remark1,plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
     }
 
     View.OnClickListener onclicks = new View.OnClickListener() {
@@ -222,7 +245,7 @@ public class ReportActivity extends BaseActivity {
          showProgressDialog();
         RequestParams params = new RequestParams("http://divitone.3322.org:8081/fx/filesUpload");//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
-        for (int i = 5; i < param.length; i++) {
+        for (int i = 6; i < param.length; i++) {
             try {
                 list.add(new KeyValue("files",new File(param[i])));
             } catch (Exception e) {
@@ -234,6 +257,7 @@ public class ReportActivity extends BaseActivity {
         list.add(new KeyValue("contents", param[2]));
         list.add(new KeyValue("x", param[3]));
         list.add(new KeyValue("y", param[4]));
+        list.add(new KeyValue("remark1", param[5]));
         Log.i(TAG, "upLaodImg: list==="+list.size());
         //设置编码格式为UTF-8，保证参数不乱码
         MultipartBody body = new MultipartBody(list, "UTF-8");

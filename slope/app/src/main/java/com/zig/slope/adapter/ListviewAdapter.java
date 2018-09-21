@@ -52,15 +52,15 @@ public class ListviewAdapter extends BaseAdapter {
         } else {
             viewholder = (ViewHolder) convertView.getTag();
         }
+        String content = list.get(position);
 
-        viewholder.textView.setText(list.get(position));
+        viewholder.textView.setText(content.replace("null",""));
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Toast.makeText(mContext, "点击了" + position, Toast.LENGTH_SHORT).show();
-            }
-        });
+//        convertView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
 
         return convertView;
     }

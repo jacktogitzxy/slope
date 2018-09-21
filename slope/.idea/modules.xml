@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/player_moudle/player_moudle.iml" filepath="$PROJECT_DIR$/player_moudle/player_moudle.iml" />
       <module fileurl="file://$PROJECT_DIR$/rtmp_moudle/rtmp_moudle.iml" filepath="$PROJECT_DIR$/rtmp_moudle/rtmp_moudle.iml" />
       <module fileurl="file://$PROJECT_DIR$/slope.iml" filepath="$PROJECT_DIR$/slope.iml" />
+      <module fileurl="file://$PROJECT_DIR$/weather_moudle/weather_moudle.iml" filepath="$PROJECT_DIR$/weather_moudle/weather_moudle.iml" />
     </modules>
   </component>
 </project>

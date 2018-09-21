@@ -10,6 +10,7 @@ import java.util.List;
 public class LoginMsg implements Serializable {
     private LoginBean operators;
     private List<SlopeBean> slopeInfo;
+    private String bannerList;
 
     public LoginBean getOperators() {
         return operators;
@@ -27,5 +28,11 @@ public class LoginMsg implements Serializable {
         this.slopeInfo = slopeInfo;
     }
 
+    public String getBannerList() {
+        return bannerList;
+    }
 
+    public void setBannerList(String bannerList) {
+        this.bannerList = bannerList;
+    }
 }

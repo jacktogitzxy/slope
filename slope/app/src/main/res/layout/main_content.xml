@@ -35,8 +35,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
+
+                android:paddingRight="@dimen/dp_15"
                 >
                 <ImageView
                     android:id="@+id/menu_icon"
@@ -44,30 +44,59 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
+                    android:paddingLeft="@dimen/dp_15"
                     android:clickable="true"
                     android:src="@mipmap/axq" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
                 <TextView
                     android:id="@+id/maintitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
                     android:drawableLeft="@mipmap/slopeyellow"
                     android:gravity="bottom"
                     android:textColor="@color/color_aa343333"
                     android:textSize="14sp" />
-                <FrameLayout
+
+                <TextView
+                    android:id="@+id/maintitle_weather"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/maintitle"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:text="深圳:30°~ 32°"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:onClick="startWeather"
+                    android:textColor="@color/color_aa343333"
+                    android:textSize="14sp" />
+                <ImageView
+                    android:id="@+id/weather_today_icon"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_toRightOf="@+id/maintitle_weather"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/weatherd"
+                    android:onClick="startWeather"
+                    android:scaleType="fitCenter"/>
+                </RelativeLayout>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/dp_15"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_15"
+                    android:onClick="showPopFormTop"
                     >
                     <ImageView
                         android:id="@+id/topmenu_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="true"
-                        android:onClick="showPopFormTop"
+
                         android:src="@mipmap/message_icon" />
                     <ImageView
                         android:id="@+id/message_new"
@@ -78,49 +107,96 @@
                         android:src="@mipmap/a8q"/>
                 </FrameLayout>
             </RelativeLayout>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dp_20"
                 android:orientation="horizontal">
                 <TextView
                     android:id="@+id/typeSolpe"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="@dimen/dp_55"
+                    android:gravity="center"
+                    android:layout_height="@dimen/dp_30"
                     android:text="@string/type_slope"
+                    android:layout_marginLeft="@dimen/dp_3"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:background="@drawable/item_text_bg"
                     android:onClick="selectType"
                     android:textColor="@color/orange_main"
                     android:textSize="15sp" />
                 <TextView
                     android:id="@+id/typeThree"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="@dimen/dp_55"
+                    android:gravity="center"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_marginRight="@dimen/dp_10"
                     android:onClick="selectType"
                     android:text="@string/type_weater"
                     android:textColor="@color/color_757575"
                     android:textSize="15sp" />
                 <TextView
                     android:id="@+id/typeHouse"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="@dimen/dp_55"
+                    android:gravity="center"
+                    android:layout_height="@dimen/dp_30"
                     android:onClick="selectType"
                     android:text="@string/type_house"
                     android:textColor="@color/color_757575"
                     android:textSize="15sp" />
+
+
+                <TextView
+                    android:id="@+id/typeDx"
+                    android:layout_width="@dimen/dp_55"
+                    android:gravity="center"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:onClick="selectType"
+                    android:text="@string/type_dx"
+                    android:textColor="@color/color_757575"
+                    android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/typeGd"
+                    android:layout_width="@dimen/dp_55"
+                    android:gravity="center"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_height="@dimen/dp_30"
+                    android:onClick="selectType"
+                    android:text="@string/type_gd"
+                    android:textColor="@color/color_757575"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/typeHd"
+                    android:layout_width="@dimen/dp_55"
+                    android:gravity="center"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_height="@dimen/dp_30"
+                    android:onClick="selectType"
+                    android:text="@string/type_hd"
+                    android:textColor="@color/color_757575"
+                    android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/typeWorker"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/dp_55"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:gravity="center"
+                    android:layout_height="@dimen/dp_30"
                     android:visibility="invisible"
-                    android:layout_weight="1"
                     android:onClick="selectType"
                     android:text="@string/type_worker"
                     android:textColor="@color/color_757575"
                     android:textSize="15sp" />
             </LinearLayout>
+                </HorizontalScrollView>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
@@ -329,6 +405,7 @@
            android:background="@color/white"
            android:layout_alignParentBottom="true">
                    <LinearLayout
+                       android:id="@+id/item_bt1"
                        android:layout_width="0dp"
                        android:layout_height="match_parent"
                        android:layout_weight="1"
@@ -350,7 +427,7 @@
                            android:textColor="@color/color_757575" />
                    </LinearLayout>
                    <LinearLayout
-                       android:id="@+id/llFriends"
+                       android:id="@+id/item_bt2"
                        android:layout_width="0dp"
                        android:layout_height="match_parent"
                        android:layout_weight="1"
@@ -372,7 +449,7 @@
                            android:textColor="@color/color_757575" />
                    </LinearLayout>
                    <LinearLayout
-                       android:id="@+id/llContacts"
+                       android:id="@+id/item_bt3"
                        android:layout_width="0dp"
                        android:layout_height="match_parent"
                        android:layout_weight="1"
@@ -394,7 +471,7 @@
                            android:textColor="@color/color_757575" />
                    </LinearLayout>
                    <LinearLayout
-                       android:id="@+id/llSettings"
+                       android:id="@+id/item_bt4"
                        android:layout_width="0dp"
                        android:layout_height="match_parent"
                        android:layout_weight="1"
@@ -497,7 +574,7 @@
         android:id="@+id/splash_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/wellcom"
+        android:src="@mipmap/wellcom2"
         android:visibility="gone"
         android:scaleType="fitXY"
         />

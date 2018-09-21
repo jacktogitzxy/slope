@@ -75,6 +75,7 @@ public class DoProgressDialog extends Dialog {
         seekBar = view.findViewById(R.id.seekbar);
         text_process_view = view.findViewById(R.id.text_process_view);
         text_process_view.setText("当前治理进度："+process);
+        seekBar.setMax(data.size());
         seekBar.setProgress(process);
         seekBar.setEnabled(false);
         processsp = view.findViewById(R.id.processsp);

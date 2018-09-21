@@ -19,6 +19,7 @@ import java.util.HashMap;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -353,6 +354,7 @@ public class FileActivity extends Activity {
 
 	}
 	void openjpg(int i){
+//		openFile(FileActivity.this,new File(data.get(i).get("path")));
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 //			intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -365,7 +367,25 @@ public class FileActivity extends Activity {
 		}
 
 	}
-
+	public  void openFile(Context context, File file) {
+		Log.i("zxy", "openFile: file=="+file.exists());
+		Intent intent = new Intent();
+		intent.setAction(android.content.Intent.ACTION_VIEW);
+		Uri uri;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+			intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			Log.i("zxy", "openFile: ============"+context.getApplicationContext().getPackageName() + ".provider");
+			Uri contentUri = FileProvider.getUriForFile(context,
+					context.getApplicationContext().getPackageName() + ".provider",
+					file);
+			intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+		} else {
+			uri = Uri.fromFile(file);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.setDataAndType(uri, "application/vnd.android.package-archive");
+		}
+		context.startActivity(intent);
+	}
 
 	void nofile(){
 		Toast.makeText(FileActivity.this, "摄像头文件不存在", Toast.LENGTH_SHORT).show();

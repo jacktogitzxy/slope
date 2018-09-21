@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/main_title"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/cityselect_common_bg">
+
+        <ImageView
+            android:id="@+id/back"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:scaleType="center"
+            android:src="@mipmap/return_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/main_title_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/cityselect_select_city"
+            android:textSize="20sp"
+            android:textColor="@color/cityselect_theme_gray" />
+        <TextView
+            android:id="@+id/title_add_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="#fff"
+            android:background="@drawable/ic_add_city"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:text=""/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/cityselect_shadow"/>
+</LinearLayout>

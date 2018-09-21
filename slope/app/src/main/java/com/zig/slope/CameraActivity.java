@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -125,5 +126,12 @@ public class CameraActivity extends Activity {
     protected void onPause() {
         super.onPause();
         jCameraView.onPause();
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

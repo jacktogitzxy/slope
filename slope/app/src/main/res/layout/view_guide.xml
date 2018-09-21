@@ -6,7 +6,7 @@
 
     <ImageView
         android:layout_marginRight="20dp"
-        android:src="@drawable/youshang"
+        android:src="@drawable/guidea"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
@@ -15,11 +15,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-
-        android:layout_marginTop="@dimen/dp_50"
-        android:layout_marginLeft="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_80"
+        android:layout_marginLeft="@dimen/dp_80"
         android:textSize="25sp"
-        android:textStyle="bold"
+        android:textStyle="bold|italic"
         android:textColor="@android:color/white"
          />
 </RelativeLayout>

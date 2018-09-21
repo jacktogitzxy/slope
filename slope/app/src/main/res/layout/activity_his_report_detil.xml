@@ -78,7 +78,62 @@
             android:textSize="13sp"
             android:textColor="@android:color/black"
             />
-
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_view_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:drawablePadding="8dp"
+                android:paddingLeft="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_8"
+                android:drawableRight="@drawable/green_circle_bg"
+                android:gravity="center_vertical"
+                android:text="@string/danger1"
+                android:textSize="13sp"
+                android:textColor="@android:color/black"
+                />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_view_cb1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:drawablePadding="8dp"
+                android:paddingLeft="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_8"
+                android:drawableRight="@drawable/green_circle_bg"
+                android:gravity="center_vertical"
+                android:text="@string/danger2"
+                android:textSize="13sp"
+                android:textColor="@android:color/black"
+                />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_view_cb2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:drawablePadding="8dp"
+                android:paddingLeft="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_8"
+                android:drawableEnd="@drawable/green_circle_bg"
+                android:gravity="center_vertical"
+                android:text="@string/danger3"
+                android:textSize="13sp"
+                android:textColor="@android:color/black"
+                />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_view_cb3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:drawablePadding="8dp"
+                android:paddingLeft="@dimen/dp_6"
+                android:layout_marginTop="@dimen/dp_8"
+                android:drawableRight="@drawable/green_circle_bg"
+                android:gravity="center_vertical"
+                android:text="@string/danger4"
+                android:textSize="13sp"
+                android:textColor="@android:color/black"
+                />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_view_content"
             android:layout_width="wrap_content"

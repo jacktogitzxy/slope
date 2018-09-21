@@ -23,8 +23,8 @@ import com.zig.slope.bean.UserLoacl;
 import com.zig.slope.callback.RequestCallBack;
 import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.base.bean.HisReport;
+import com.zig.slope.common.utils.TimeUtils;
 import com.zig.slope.util.OkhttpWorkUtil;
-import com.zig.slope.util.TimeUtils;
 import com.zig.slope.view.PicFragment;
 import com.zig.slope.view.VideoFragment;
 import java.util.ArrayList;
@@ -45,7 +45,9 @@ public class HisReportDetilActivity extends AppCompatActivity {
     private ScrollView msgView;
     private LinearLayout place_search_layout;
     private EditText place_edit;
-    private AppCompatTextView start_place_edit,destination_edit,start_place_edit2,destination_edit2,enterbt;
+    private  AppCompatTextView[]cbs;
+    private AppCompatTextView start_place_edit,destination_edit,start_place_edit2,destination_edit2,
+            enterbt;
     String tagc = "0";
     private String operatorLevel,operatorName;
     private int flag;
@@ -71,7 +73,6 @@ public class HisReportDetilActivity extends AppCompatActivity {
     }
     List<String> imgs = null;
     private void initData(HisReport data) {
-         //if("3".equals(operatorLevel)||"2".equals(operatorLevel)||"1".equals(operatorLevel)){
         if("3".equals(operatorLevel)&&flag==1) {
             enterbt.setVisibility(View.VISIBLE);
             if(okhttpWorkUtil==null){
@@ -133,6 +134,24 @@ public class HisReportDetilActivity extends AppCompatActivity {
         });
         bgaBanner.setData(imgs,null);
         bgaBanner.setDelegate(dl);
+        String remark1 = data.getRemark1();
+        if(remark1!=null&&!remark1.equals("")){
+            List<String>  valuesa = Arrays.asList(remark1.split("#"));
+            if(valuesa!=null&&valuesa.size()==4){
+                for (int i = 0;i<4;i++){
+                    Log.i("zxy", "initData: valuesa.get(i)="+valuesa.get(i));
+                    if(valuesa.get(i).trim().equals("无")){
+                        cbs[i].setText(cbs[i].getText()+"            正常");}
+                        else {
+                        cbs[i].setText(cbs[i].getText()+"            异常");
+                    }
+                }
+            }
+        }else{
+            for (int i = 0;i<4;i++){
+                    cbs[i].setText(cbs[i].getText()+"            正常");
+                }
+            }
     }
 
     BGABanner.Delegate dl = new BGABanner.Delegate() {
@@ -185,6 +204,11 @@ public class HisReportDetilActivity extends AppCompatActivity {
                 HisReportDetilActivity.this.finish();
             }
         });
+        cbs = new AppCompatTextView[4];
+        cbs[0] = findViewById(R.id.text_view_cb);
+        cbs[1] = findViewById(R.id.text_view_cb1);
+        cbs[2] = findViewById(R.id.text_view_cb2);
+        cbs[3] = findViewById(R.id.text_view_cb3);
     }
     public void showInputDestination(View view) {
         if(enterbt.getVisibility()==View.VISIBLE){

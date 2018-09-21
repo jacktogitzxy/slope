@@ -2,6 +2,7 @@ package com.zig.slope.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -10,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zig.slope.HisReportDetilActivity;
 import com.zig.slope.bean.UserLoacl;
 import com.zig.slope.callback.RequestCallBack;
+import com.zig.slope.callback.RequestWeatherCallBack;
 import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.utils.CustomProgressDialog;
 
@@ -23,6 +25,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import slope.zxy.com.weather_moudle.bean.WeatherBean;
+import slope.zxy.com.weather_moudle.utils.Utility;
 
 /**
  * Created by 17120 on 2018/8/31.
@@ -211,4 +215,41 @@ public class OkhttpWorkUtil {
         });
     }
 
+
+    public void postAsynHttpWeather(String url, final RequestWeatherCallBack callBackc2) {
+        OkHttpClient mOkHttpClient = new OkHttpClient();
+        RequestBody formBody = new FormBody.Builder().build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(callBackc2!=null){
+                            callBackc2.onFail(null);
+                        }
+                        Toast.makeText(activity, "网络繁忙，访问失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+            @Override
+            public void onResponse(final Call call, Response response) throws IOException {
+                final WeatherBean weather = Utility.handleWeatherResponse(response.body().string());
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(callBackc2!=null&&weather!=null){
+                            callBackc2.onSuccess(weather);
+                        }
+                    }
+                });
+            }
+        });
+    }
 }

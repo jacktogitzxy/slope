@@ -184,42 +184,97 @@
         </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:gravity="center_vertical|left"
-            android:layout_gravity="center_vertical|left"
-            android:layout_marginBottom="@dimen/margin_tiny"
-            android:layout_marginLeft="@dimen/margin_normal"
-            android:layout_marginTop="@dimen/dp_2"
-            android:textColor="@android:color/black"
-            android:textColorHint="@color/tv_gray_deep"
-            android:text="情况描述："
-            />
-        <EditText
-            android:id="@+id/report_note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:background="@null"
-            android:textSize="13sp"
-            android:gravity="center_vertical|left"
-            android:layout_gravity="center_vertical|left"
-            android:layout_marginBottom="@dimen/margin_tiny"
-            android:layout_marginLeft="@dimen/margin_normal"
-            android:layout_marginTop="@dimen/dp_2"
-            android:textColor="@android:color/black"
-            android:textColorHint="@color/tv_gray_deep"
-            android:hint="请录入信息"
-            />
 
-    </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/danager_cb1"
+                    android:textSize="13sp"
+                    android:layout_gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/danger1"
+                    android:textColor="@android:color/black"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/danager_cb2"
+                    android:textSize="13sp"
+                    android:layout_gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/danger2"
+                    android:textColor="@android:color/black" android:checked="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/danager_cb3"
+                    android:textSize="13sp"
+                    android:layout_gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/danger3"
+                    android:textColor="@android:color/black"
+                    android:checked="false"/>
+                <CheckBox
+                    android:id="@+id/danager_cb4"
+                    android:textSize="13sp"
+                    android:layout_gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/danger4"
+                    android:textColor="@android:color/black" android:checked="false"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:gravity="center_vertical|left"
+                    android:layout_gravity="center_vertical|left"
+                    android:layout_marginBottom="@dimen/margin_tiny"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/tv_gray_deep"
+                    android:text="情况描述："
+                    />
+                <EditText
+                    android:id="@+id/report_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:background="@null"
+                    android:textSize="13sp"
+                    android:gravity="center_vertical|left"
+                    android:layout_gravity="center_vertical|left"
+                    android:layout_marginBottom="@dimen/margin_tiny"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/tv_gray_deep"
+                    android:hint="请录入信息"
+                    />
+
+            </LinearLayout>
         </LinearLayout>
 
         </RelativeLayout>

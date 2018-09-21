@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
@@ -713,4 +714,12 @@ public class LiveActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

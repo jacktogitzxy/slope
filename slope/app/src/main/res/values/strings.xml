@@ -60,4 +60,10 @@
     <string name="admindo">&#160;&#160;管理审核</string>
     <string name="leaderdo">&#160;&#160;领导审核</string>
     <string name="reportDate">上报日期：&#160;&#160;&#160;&#160;</string>
+    <string name="restartsocket">网络波动，连接超时！已重连。请重新发送！</string>
+    <string name="danger1">表面出现较大裂缝</string>
+    <string name="danger2">坡体出现局部位移</string>
+    <string name="danger3">土壤含水显著上升</string>
+    <string name="danger4">表面植被严重破坏</string>
+    <string name="manageftime">修改周期</string>
 </resources>

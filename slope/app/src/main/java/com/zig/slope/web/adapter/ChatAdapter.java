@@ -37,6 +37,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
     public void addAll(ArrayList<ItemModel> list) {
         if (dataList != null && list != null) {
             dataList.addAll(list);
+            Log.i("zxy", "addAll:  list==="+list.size());
+            Log.i("zxy", "addAll:  dataList==="+dataList.size());
             notifyItemRangeInserted(dataList.size(),list.size());
         }
 

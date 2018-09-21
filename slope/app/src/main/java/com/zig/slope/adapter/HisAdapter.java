@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.zig.slope.R;
 import com.zig.slope.common.base.bean.HisReport;
-import com.zig.slope.util.TimeUtils;
+import com.zig.slope.common.utils.TimeUtils;
 
 import java.util.List;
 
