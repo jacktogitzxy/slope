@@ -10,89 +10,121 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_20"
-
+        android:padding="@dimen/dp_10"
         >
     <Button
+        android:id="@+id/bt_time_1"
         android:tag="1"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:onClick="openPM"
         android:layout_margin="@dimen/dp_5"
-        android:text="@string/p_cam"
+        android:text="@string/time_1"
         android:background="@drawable/buttonred"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_large"/>
 
     <Button
+        android:id="@+id/bt_time_2"
         android:tag="2"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_margin="@dimen/dp_5"
-        android:onClick="openPM"
-        android:text="@string/p_sound"
+        android:text="@string/time_2"
         android:background="@drawable/buttonyell"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_large"/>
+        <Button
+            android:id="@+id/bt_time_3"
+            android:tag="3"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_margin="@dimen/dp_5"
+            android:text="@string/time_3"
+            android:background="@drawable/buttonbg"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_large"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_20">
+        android:padding="@dimen/dp_10">
     <Button
-        android:tag="3"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:onClick="openPM"
-        android:layout_margin="@dimen/dp_5"
-        android:text="@string/p_flash"
-        android:background="@drawable/buttonyell"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_large"/>
-
-    <Button
+        android:id="@+id/bt_time_4"
         android:tag="4"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:onClick="openPM"
         android:layout_margin="@dimen/dp_5"
-        android:text="@string/p_loca"
+        android:text="@string/time_4"
+        android:background="@drawable/buttonyell"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_large"/>
+
+    <Button
+        android:id="@+id/bt_time_5"
+        android:tag="5"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_margin="@dimen/dp_5"
+        android:text="@string/time_5"
         android:background="@drawable/buttonbg"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_large"/>
+        <Button
+            android:id="@+id/bt_time_6"
+            android:tag="6"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_margin="@dimen/dp_5"
+            android:text="@string/time_6"
+            android:background="@drawable/buttonred"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_large"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_20">
+        android:padding="@dimen/dp_10">
         <Button
-            android:tag="5"
+            android:id="@+id/bt_time_7"
+            android:tag="7"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:onClick="openPM"
             android:layout_margin="@dimen/dp_5"
-            android:text="@string/p_net"
+            android:text="@string/time_7"
             android:background="@drawable/buttonbg"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_large"/>
 
         <Button
-            android:tag="6"
+            android:id="@+id/bt_time_8"
+            android:tag="8"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:onClick="openPM"
             android:layout_margin="@dimen/dp_5"
-            android:text="@string/p_GPS"
+            android:text="@string/time_8"
             android:background="@drawable/buttonred"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_large"/>
+        <Button
+            android:id="@+id/bt_time_9"
+            android:tag="9"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_margin="@dimen/dp_5"
+            android:text="@string/time_9"
+            android:background="@drawable/buttonbg"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_large"/>
     </LinearLayout>

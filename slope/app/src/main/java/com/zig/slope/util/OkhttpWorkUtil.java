@@ -252,4 +252,44 @@ public class OkhttpWorkUtil {
             }
         });
     }
+    public void postAsynF(String url, String id, String time) {
+        showProgressDialog();
+        OkHttpClient mOkHttpClient = new OkHttpClient();
+        RequestBody formBody = new FormBody.Builder()
+                .add("sensorId", id)
+                .add("frequence", time)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopProgressDialog();
+                        Toast.makeText(activity, "网络繁忙，访问失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            @Override
+            public void onResponse(final Call call, Response response) throws IOException {
+                final String str = response.body().string();
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i("zxy", "run: str=="+str);
+                        if(str.contains("5")) {
+                            stopProgressDialog();
+                            Toast.makeText(activity, "修改成功", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
 }

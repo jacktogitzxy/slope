@@ -2,6 +2,7 @@
     <string name="app_name">云城建</string>
     <string name="radioGroup_text">定位icon</string>
     <string name="takephoto">拍照上传</string>
+    <string name="navigation">去这里</string>
 
     <string name="nomal_map">普通地图</string>
     <string name="other_map">卫星地图</string>
@@ -29,7 +30,7 @@
     <string name="type_addimg">替换图片</string>
     <string name="type_report">上报数据</string>
     <string name="type_hisdetil">巡查详情</string>
-
+    <string name="type_danager">监测预警</string>
     <string name="net_set">网络设置</string>
     <string name="p_set">权限设置</string>
 
@@ -48,6 +49,9 @@
     <string name="gread2">中</string>
     <string name="gread3">大</string>
     <string name="empty_text">这里空空的</string>
+    <string name="empty_tip">暂无数据</string>
+    <string name="sensorWarning">监测预警</string>
+    <string name="sensorWarning2">监测预报</string>
     <string name="full_text">已全部加载完了！！！</string>
     <string name="refresh_text">刷新成功！</string>
     <string name="network_error">网络不可用</string>
@@ -66,4 +70,18 @@
     <string name="danger3">土壤含水显著上升</string>
     <string name="danger4">表面植被严重破坏</string>
     <string name="manageftime">修改周期</string>
+    <string name="titlew">边坡编号：%s，地质监测点%d，传感器编号：%S，传感器类型：%s</string>
+    <string name="inner_navi">内置导航</string>
+    <string name="baidu_navi">百度地图</string>
+    <string name="gaode_navi">高德地图</string>
+    <string name="no_navi">未安装地图百度，高德等地图app</string>
+    <string name="time_1">30秒</string>
+    <string name="time_2">1分钟</string>
+    <string name="time_3">5分钟</string>
+    <string name="time_4">10分钟</string>
+    <string name="time_5">30分钟</string>
+    <string name="time_6">1小时</string>
+    <string name="time_7">5小时</string>
+    <string name="time_8">10小时</string>
+    <string name="time_9">24小时</string>
 </resources>

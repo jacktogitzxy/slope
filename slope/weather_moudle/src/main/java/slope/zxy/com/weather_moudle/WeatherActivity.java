@@ -311,12 +311,7 @@ public class WeatherActivity extends SlidingActivity {
         mNowWeatherRelativeLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, mNowWeatherHeight));
     }
     public void requestWeather(final String cityName) {
-        String u = "http://divitone.3322.org:8081/fx/getWeather?cityName="+cityName;
-//        Date date = new Date();
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-//        String dateString = formatter.format(date);
-//        String u = "https://route.showapi.com/9-2?area="+cityName+"&areaid=&need3HourForcast=1&needAlarm=1&needHourData=1&needIndex=1&needMoreDay=1&showapi_appid=75352&showapi_timestamp="+dateString+"&showapi_sign=0b08cc9ab76a4024ab5710ac8c5298a0";
-        Log.i("zxy", "requestWeather: u=="+u);
+        String u = "http://120.79.174.224:8081/fx/getWeather?cityName="+cityName;
         HttpUtil.sendOkHttpRequest(u, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -374,8 +369,9 @@ public class WeatherActivity extends SlidingActivity {
             }
             if(w.contains("雷")){
                 Glide.with(this).load(R.drawable.leiyu).into(weather_gif);
+            }else{
+                Glide.with(this).load(R.drawable.sun).into(weather_gif);
             }
-
 
         }
         //hourlist数据显示

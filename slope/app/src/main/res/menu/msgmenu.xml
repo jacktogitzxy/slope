@@ -38,4 +38,11 @@
         android:icon="@drawable/ic_all_inclusive_black_24dp"
         android:title="@string/type_process"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/do_danger"
+        android:orderInCategory="500"
+        android:icon="@drawable/ic_sms_failed_black_24dp"
+        android:title="@string/type_danager"
+        app:showAsAction="never" />
 </menu>

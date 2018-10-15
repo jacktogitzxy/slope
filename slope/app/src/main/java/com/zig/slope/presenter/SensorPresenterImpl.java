@@ -24,7 +24,7 @@ public class SensorPresenterImpl extends BasePresenter<SensorContract.SensorView
     }
 
     /**
-     * 请求巡查历史
+     * 请求监测点
      */
     public void requestSensorData(Context context,String newName){
         model.getSensorDatas(context,newName,new SensorContract.ISensorModelCallback() {

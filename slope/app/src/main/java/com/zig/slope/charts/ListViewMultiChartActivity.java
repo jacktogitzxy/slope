@@ -11,9 +11,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -26,8 +31,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -41,8 +49,12 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.zig.slope.HisReportActivity;
+import com.zig.slope.HisReportDetilActivity;
 import com.zig.slope.R;
 import com.zig.slope.adapter.ChartDataAdapter;
+import com.zig.slope.bean.UserLoacl;
+import com.zig.slope.callback.RequestCallBack;
 import com.zig.slope.charts.listviewitems.BarChartItem;
 import com.zig.slope.charts.listviewitems.ChartItem;
 import com.zig.slope.charts.listviewitems.LineChartItem;
@@ -53,30 +65,47 @@ import com.zig.slope.common.base.bean.DataBean;
 import com.zig.slope.common.base.bean.MySensor;
 import com.zig.slope.contract.SensorContract;
 import com.zig.slope.presenter.SensorPresenterImpl;
+import com.zig.slope.util.ToolUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.SensorView,SensorPresenterImpl>
         implements SensorContract.SensorView  {
-    private ScrollView myDataScro;
+//    private ScrollView myDataScro;
     private SurfaceView mSurface;
     private SurfaceHolder mHolder;
     private ListView    lv;
     private List<DataBean> dataBeans;
     private  String newName;
     private boolean isCurrentType = true;
-
-
-
-
-
+    private NestedScrollView nestedScrollView;
+    private SwipeRefreshLayout refreshLayout;
+    private ChartDataAdapter cda;
+    private LinearLayout emptyView;
+    public void ClearDraw(){
+        Canvas canvas = null;
+        try{
+            canvas = mHolder.lockCanvas(null);
+            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
+        }catch(Exception e){
+        }finally{
+            if(canvas != null){
+                mHolder.unlockCanvasAndPost(canvas);
+            }
+        }
+    }
     @SuppressLint("ResourceAsColor")
     private void draw(String temp,String moveSize,String a,String b) {
+        ClearDraw();
         float tem1 = Float.parseFloat(temp)/10;
         int y = 260 - (int) ((tem1 - 5) * 20);
         if(y<0){
             y=0;
+        }
+        if(y>270){
+            y=270;
         }
         Canvas canvas = mHolder.lockCanvas();
         Paint mPaint = new Paint();
@@ -85,11 +114,6 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         canvas.drawRect(40, 50, 60, 280, mPaint);
         Paint paintCircle = new Paint();
         paintCircle.setColor(Color.GREEN);
-//        Shader mShader = new LinearGradient(0, 0, 100, 100,
-//                new int[] { Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW,
-//                        Color.LTGRAY }, null, Shader.TileMode.REPEAT);
-//
-//        paintCircle.setShader(mShader);
         Paint paintLine = new Paint();
         paintLine.setColor(Color.BLUE);
         canvas.drawRect(40, y, 60, 280, paintCircle);
@@ -153,9 +177,9 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         canvas.drawLine(800, y1-10, 800-14, y1-6-10, linePaint);//X轴箭头。
         canvas.drawLine(800, y1-10, 800-14, y1+6-10, linePaint);
         //画z轴
-        canvas.drawLine(gridX, y1-10, gridX+80,y1+100, linePaint);//z
-        canvas.drawLine(gridX+78, y1+80, gridX+80,y1+100, linePaint);
-        canvas.drawLine(gridX+60, y1+90, gridX+80,y1+100, linePaint);
+        canvas.drawLine(gridX, y1-10, gridX-70,y1+100, linePaint);//z
+        canvas.drawLine(gridX-72, y1+85, gridX-70,y1+100, linePaint);
+        canvas.drawLine(gridX-55, y1+92, gridX-70,y1+100, linePaint);
         //画角度
         canvas.drawLine(gridX, y1-10, 800, 120, paintCircle);//β
         //RectF oval1=new RectF(150,20,180,40);
@@ -167,9 +191,10 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         canvas.drawArc(oval1, 180, 180, false, linePaint);//小弧形
         canvas.drawText("β",gridX+20 , y1-100, mPaint);
         mPaint.setTextSize(40);
-        canvas.drawText( "水压:"+tem1+"KPa", 10, 400, mPaint);
+        canvas.drawText( "水压:"+temp+"KPa", 10, 400, mPaint);
         canvas.drawText( "位移:"+moveSize+"mm", 300, 400, mPaint);
-        canvas.drawText("α="+a+"°;"+"β="+b+"°",gridX , 400, mPaint);
+        canvas.drawText("α="+a+"°",gridX , 400, mPaint);
+        canvas.drawText("β="+b+"°",gridX , 350, mPaint);
         canvas.drawText("孔隙水压",20 , 40, mPaint);
         canvas.drawText("表面变形",300 , 40, mPaint);
         canvas.drawText("深部位移",600 , 40, mPaint);
@@ -193,7 +218,7 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         Intent intent = getIntent();
         newName = intent.getStringExtra("newName");
         lv = findViewById(R.id.listView1);
-        myDataScro = findViewById(R.id.myDataScro);
+//        myDataScro = findViewById(R.id.myDataScro);
         mSurface = (SurfaceView) findViewById(R.id.surface);
         mHolder = mSurface.getHolder();
         mSurface.setZOrderOnTop(true);
@@ -238,6 +263,25 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
                 return true;
             }
         });
+        emptyView = findViewById(R.id.empty_view);
+        nestedScrollView = findViewById(R.id.nested_scroll_view);
+        refreshLayout = findViewById(R.id.refresh_layout);
+        refreshLayout.setColorSchemeColors(ContextCompat.getColor(ListViewMultiChartActivity.this, R.color.colorPrimary));
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+            }
+        });
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    Toast.makeText(ListViewMultiChartActivity.this,getResources().getString(R.string.full_text),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -247,22 +291,38 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
 
     @Override
     protected void getData() {
-        getPresenter().requestSensorData(ListViewMultiChartActivity.this,"409");
+        getPresenter().requestSensorData(ListViewMultiChartActivity.this,newName);
     }
-
     @Override
     public void onSensorSucess(BaseResponseBean<List<DataBean>> data) {
         dataBeans = data.getData();
+        if(data.getCode()==2){
+            showEmptyView(true);
+            Toast.makeText(ListViewMultiChartActivity.this,getResources()
+                    .getString(R.string.empty_tip),Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showEmptyView(false);
         drawData(0);
         Log.i("zxy", "onSensorSucess: dataBeans=="+dataBeans.size());
     }
 
     @Override
     public void onSensorFail(String msg) {
+        showEmptyView(true);
         Log.i("zxy", "onSensorFail: msg="+msg);
     }
 
-
+    public void showEmptyView(boolean toShow) {
+        refreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.setRefreshing(false);
+            }
+        });
+        emptyView.setVisibility(toShow?View.VISIBLE:View.INVISIBLE);
+        nestedScrollView.setVisibility(!toShow?View.VISIBLE:View.INVISIBLE);
+    }
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -277,6 +337,7 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
     }
 
     public void drawData(int i){
+
         DataBean dataBean =  dataBeans.get(i);
         List<MySensor>mySensors =dataBean.getData();
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
@@ -284,34 +345,36 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         for (int x = 0;x<mySensors.size();x++){
             MySensor mySensor = mySensors.get(x);
             int type = mySensor.getType_s();
-            String sensorId = mySensor.getSensorId();
-            List<MySensor.MySensorData> datas = mySensor.getData();
+            final String sensorId = mySensor.getSensorId();
+            final List<MySensor.MySensorData> datas = mySensor.getData();
             if(type==1) {//表面位移
-                m=datas.get(0).getXdata();
-                String[]labs = new String[]{"x","y表面变形(mm)         周期（"+datas.get(0).getFrequency()+"）"};
-                list.add(new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,2));
+                m=datas.get(datas.size()-1).getXdata();
+                String[]labs = new String[]{"x","y表面变形(mm)         周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
+                LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,2,sensorId);
+                list.add(lineChartItem);
             }
             if(type==2){//内部位移
-                a=datas.get(0).getXdata();
-                b=datas.get(0).getXdata();
-                String[]labs = new String[]{"x","y深部位移(°)         周期（"+datas.get(0).getFrequency()+"）"};
-                list.add(new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,1));
+                a=datas.get(datas.size()-1).getXdata();
+                b=datas.get(datas.size()-1).getYdata();
+                String[]labs = new String[]{"x","y深部位移(°)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
+                LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,1,sensorId);
+                list.add(lineChartItem);
             }
             if (type==3){//水压
-                p=datas.get(0).getXdata();
-                String[]labs = new String[]{"孔隙水压(kpa)         周期（"+datas.get(0).getFrequency()+"）"};
-                list.add(new BarChartItem(getDataBar(datas,labs),ListViewMultiChartActivity.this));
+                p=datas.get(datas.size()-1).getXdata();
+                String[]labs = new String[]{"孔隙水压(kpa)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
+                BarChartItem barChartItem=new BarChartItem(getDataBar(datas,labs),ListViewMultiChartActivity.this,sensorId);
+                list.add(barChartItem);
             }
         }
         Log.i("zxy", "drawData: list=="+list.size());
-        ChartDataAdapter cda = new ChartDataAdapter(getApplicationContext(), list);
-        lv.setAdapter(cda);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                myDataScro.scrollTo(0,0);
-            }
-        },1000);
+        if(cda==null) {
+            cda = new ChartDataAdapter(getApplicationContext(), list);
+            lv.setAdapter(cda);
+        }else{
+            cda.updateData(list,true);
+        }
+
         draw(p,m,a,b);
 
 
@@ -328,10 +391,10 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         d2.setHighLightColor(Color.rgb(244, 117, 117));
         d2.setColor(ColorTemplate.VORDIPLOM_COLORS[0]);
         d2.setCircleColor(ColorTemplate.VORDIPLOM_COLORS[0]);
-        d2.setDrawValues(true);
+        d2.setDrawValues(false);
         d2.setDrawFilled(true);
         d1.setHighLightColor(Color.rgb(55, 247, 201));
-        d1.setDrawValues(true);
+        d1.setDrawValues(false);
         d1.setDrawFilled(true);
         ArrayList<ILineDataSet> sets = new ArrayList<ILineDataSet>();
         sets.add(d1);
@@ -350,11 +413,9 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         BarDataSet d = new BarDataSet(entries, labs[0]);
         d.setColors(ColorTemplate.VORDIPLOM_COLORS);
         d.setHighLightAlpha(255);
+        d.setDrawValues(false);
         BarData cd = new BarData(d);
         cd.setBarWidth(0.9f);
         return cd;
-    }
-    public void changeFrequency(View v){
-
     }
 }

@@ -1,8 +1,12 @@
 
 package com.zig.slope.charts.listviewitems;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
@@ -14,18 +18,35 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.zig.slope.HisReportDetilActivity;
 import com.zig.slope.R;
+import com.zig.slope.bean.UserLoacl;
+import com.zig.slope.callback.RequestCallBack;
 import com.zig.slope.charts.MyMarkerView;
+import com.zig.slope.common.Constants.Constant;
+import com.zig.slope.util.OkhttpWorkUtil;
+import com.zig.slope.view.TakePhotoPopLeft;
+import com.zig.slope.view.TakePhotoPopTop;
+
+import java.util.List;
 
 public class LineChartItem extends ChartItem {
-
     private Typeface mTf;
     private int mode=1;
-
-    public LineChartItem(ChartData<?> cd, Context c,int mode) {
+    private String sid ;
+    private OkhttpWorkUtil okhttpWorkUtil;
+    private TakePhotoPopLeft poup ;
+    private Activity activity;
+    public LineChartItem(ChartData<?> cd, Activity c, int mode, String sid ) {
         super(cd);
         mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
         this.mode = mode;
+        this.sid = sid;
+        this.activity=c;
+        if(okhttpWorkUtil==null){
+            okhttpWorkUtil = new OkhttpWorkUtil(c,null);
+        }
+        poup = new TakePhotoPopLeft(c,onClickListener);
     }
 
     @Override
@@ -39,19 +60,21 @@ public class LineChartItem extends ChartItem {
         ViewHolder holder = null;
 
         if (convertView == null) {
-
             holder = new ViewHolder();
-
             convertView = LayoutInflater.from(c).inflate(
                     R.layout.list_item_linechart, null);
             holder.chart = convertView.findViewById(R.id.chart);
-
+            convertView.findViewById(R.id.bt_f).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i("zxy", "onClick: sid=="+sid);
+                    poup.showAtLocation(view, Gravity.BOTTOM,0,0);
+                }
+            });
             convertView.setTag(holder);
-
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
         // apply styling
         // holder.chart.setValueTypeface(mTf);
         holder.chart.getDescription().setEnabled(false);
@@ -63,14 +86,26 @@ public class LineChartItem extends ChartItem {
         xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(true);
         xAxis.setLabelCount(10);
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(20);
 
         YAxis leftAxis = holder.chart.getAxisLeft();
         leftAxis.setTypeface(mTf);
-        leftAxis.setLabelCount(5, false);
+        leftAxis.setLabelCount(10, false);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
         leftAxis.setValueFormatter(custom);
+        if(mode==2) {
+            leftAxis.setAxisMinimum(0);
+            leftAxis.setAxisMaximum(100);
+        }
+        if(mode==1) {
+            leftAxis.setAxisMinimum(-100);
+            leftAxis.setAxisMaximum(100);
+        }
+
 
         YAxis rightAxis = holder.chart.getAxisRight();
+        rightAxis.setEnabled(false);
         rightAxis.setTypeface(mTf);
         rightAxis.setLabelCount(5, false);
         rightAxis.setDrawGridLines(false);
@@ -84,9 +119,19 @@ public class LineChartItem extends ChartItem {
         // do not forget to refresh the chart
         // holder.chart.invalidate();
         holder.chart.animateX(750);
-
         return convertView;
     }
-
-
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.i("zxy", "onClick: view=="+view.getTag().toString());
+            int i = Integer.parseInt(view.getTag().toString())-1;
+            Resources res = activity.getResources();
+            String[] times = res.getStringArray(R.array.times);
+            if(okhttpWorkUtil!=null){
+                okhttpWorkUtil.postAsynF(Constant.BASE_URL+"modifySlopeSendorFrequence",sid,times[i]);
+            }
+            poup.dismiss();
+        }
+    };
 }

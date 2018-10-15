@@ -2,6 +2,8 @@ package com.zig.slope;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +31,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -75,9 +79,13 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviParaOption;
 import com.baidu.mapapi.search.district.DistrictResult;
 import com.baidu.mapapi.search.district.OnGetDistricSearchResultListener;
 import com.baidu.mapapi.utils.CoordinateConverter;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -90,6 +98,7 @@ import com.zig.slope.bean.User;
 import com.zig.slope.bean.UserLoacl;
 import com.zig.slope.callback.RequestCallBack;
 import com.zig.slope.callback.RequestWeatherCallBack;
+import com.zig.slope.charts.DataWarningActivity;
 import com.zig.slope.charts.ListViewMultiChartActivity;
 import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.base.BaseMvpActivity;
@@ -101,16 +110,17 @@ import com.zig.slope.common.utils.PreferenceManager;
 import com.zig.slope.common.utils.TimeUtils;
 import com.zig.slope.contract.ProcessContract;
 import com.zig.slope.presenter.ProcessPresenterImpl;
+import com.zig.slope.util.AMapUtil;
 import com.zig.slope.util.OkhttpWorkUtil;
+import com.zig.slope.util.ToolUtils;
 import com.zig.slope.util.UdpMessageTool;
 import com.zig.slope.view.DoProgressDialog;
-import com.zig.slope.view.TakePhotoPopTop;
+import com.zig.slope.view.NaviSelectDialog;
 import com.zig.slope.callback.AllInterface;
 import com.zig.slope.view.LeftDrawerLayout;
 import com.zig.slope.view.LeftMenuFragment;
 import com.zig.slope.web.Inofation;
 import com.zig.slope.web.WebSocketService;
-import com.zig.slope.web.adapter.ChatAdapter;
 import com.zig.slope.web.model.ChatModel;
 import com.zig.slope.web.model.ItemModel;
 
@@ -210,7 +220,12 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 Log.i("zxy", "handleMessage: points="+slopes.size());
                 currentModel=0;
                 setPMarks(slopes,0);
-
+                if(mg!=null) {
+                    mMenuFragment.setdata(mg.getOperators());
+                }else {//本地缓存
+                    String loacalLoginData = pm.getPackage("logindata");
+                    mMenuFragment.setdata(new Gson().fromJson(loacalLoginData, LoginBean.class));
+                }
             }else{
 //                    Animator animator = AnimatorInflater.loadAnimator(LocationdrawActivity.this, R.animator.splash);
 //                    animator.setTarget(splash_img);
@@ -519,7 +534,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void showPopupWindow(final SlopeBean pk) {
-        //   showPopFormBottom(pk);
         this. cpk = pk;
         if(mScrollLayout.getVisibility()==View.VISIBLE){
             mScrollLayout.scrollToExit();
@@ -640,8 +654,8 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     List<OverlayOptions> oos = new ArrayList<OverlayOptions>();
     BitmapDescriptor bitmap;
     public void setMark(SlopeBean pk,int zoom){
-        CoordinateConverter converter  = new CoordinateConverter();
-        converter.from(CoordinateConverter.CoordType.COMMON);
+//        CoordinateConverter converter  = new CoordinateConverter();
+//        converter.from(CoordinateConverter.CoordType.COMMON);
         // sourceLatLng待转换坐标
         //converter.coord(new LatLng( pk.getN(),pk.getE()));
         LatLng desLatLng = new LatLng( pk.getN(),pk.getE());
@@ -717,12 +731,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         return view;
     }
     public void openMenu() {
-        if(mg!=null) {
-            mMenuFragment.setdata(mg.getOperators());
-        }else {//本地缓存
-            String loacalLoginData = pm.getPackage("logindata");
-            mMenuFragment.setdata(new Gson().fromJson(loacalLoginData, LoginBean.class));
-        }
+
         mLeftDrawerLayout.openDrawer();
         shadowView.setVisibility(View.VISIBLE);
     }
@@ -1009,7 +1018,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         public void onScrollFinished(ScrollLayout.Status currentStatus) {
             if (currentStatus.equals(ScrollLayout.Status.EXIT)) {
                 mScrollLayout.setVisibility(View.INVISIBLE);
-
+                showImg(false);
             }
         }
 
@@ -1020,7 +1029,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     };
 
     public void showInfo(SlopeBean pk){
-
+        showImg(true);
         toolbar.setTitle("编号:"+pk.getNewName());
         listView.setAdapter(new ListviewAdapter(this,pk.PltoList()));
         mScrollLayout.setVisibility(View.VISIBLE);
@@ -1433,7 +1442,15 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                         Toast.makeText(LocationdrawActivity.this,"您无权限!",Toast.LENGTH_SHORT).show();
                     }
                     break;
+                case R.id.do_danger ://预警
+                  Intent  i = new Intent(LocationdrawActivity.this, DataWarningActivity.class);
+                  i.putExtra("newName",cpk.getNewName());
+                  startActivity(i);
+                    break;
             }
+
+
+
             return true;
         }
     };
@@ -1636,7 +1653,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     public void onFail(String msg) {
                     }
                 });
-
             }
         }
 
@@ -1661,8 +1677,8 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     };
 
     public void startWeather(View view){
-        Log.i(TAG, "startWeather: city=="+locationCity);
-        ARouter.getInstance().build("/weather/index").withString("city",locationCity).navigation();
+
+       ARouter.getInstance().build("/weather/index").withString("city",locationCity).navigation();
     }
 
     public void getWeather(){
@@ -1679,11 +1695,79 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             });
             
     }
-
     public void setWeatherData(WeatherBean weatherData){
         maintitle_weather.setText("深圳:"+weatherData.getmTodayWeatherBean().getmNight_Air_Temperature() + "°~"+
                 weatherData.getmTodayWeatherBean().getmDay_Air_Temperature() + "°");
         Glide.with(LocationdrawActivity.this).load(weatherData.getmNowWeatherBean().getmWeather_Pic()).diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(weather_icon);
     }
+
+
+    public  void showChoiceNaviWayDialog(final Activity activity, final LatLng startLL, final LatLng endLL) {
+        final ArrayList<String> mapApps = new ArrayList<String>();
+        if (ToolUtils.hasApp(activity, ToolUtils.APP_BAIDU_MAP)) {
+            mapApps.add(activity.getString(R.string.baidu_navi));
+        }
+        if (ToolUtils.hasApp(activity, ToolUtils.APP_AMAP)) {
+            mapApps.add(activity.getString(R.string.gaode_navi));
+        }
+        if(mapApps.size()==0){
+            Toast.makeText(activity,getResources().getString(R.string.no_navi),Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final NaviSelectDialog rcd = new NaviSelectDialog(activity);
+        rcd.setCanceledOnTouchOutside(false);
+        rcd.setCancelable(false);
+        rcd.setItems(mapApps, new NaviSelectDialog.OnDlgItemClickListener() {
+            @Override
+            public void onEnsureClicked(Dialog dialog, String value, boolean isChecked) {
+                dialog.dismiss();
+                if (activity.getString(R.string.baidu_navi).equals(value)) {
+                    startNavi(activity, startLL, endLL);
+                } else if (activity.getString(R.string.gaode_navi).equals(value)) {
+                    double[]gps = AMapUtil.bd09_To_Gcj02(cpk.getN(),cpk.getE());
+                    AMapUtil.goToNaviActivity(activity,"test",null,
+                            gps,"1","2");
+                }
+                if (isChecked) {
+                    //记住我的选择
+                }
+            }
+
+            @Override
+            public void onCancleClicked(Dialog dialog) {
+                dialog.dismiss();
+            }
+        }, true).show();
+    }
+
+
+
+//开启百度导航
+    public void startNavi(Activity activity, LatLng startLL, LatLng endLL) {
+        NaviParaOption para = new NaviParaOption();
+        para.startPoint(startLL);
+        para.startName("从这里开始");
+        para.endPoint(endLL);
+        para.endName("到这里结束");
+        try {
+            BaiduMapNavigation.openBaiduMapNavi(para, activity);
+        } catch (BaiduMapAppNotSupportNaviException e) {
+            e.printStackTrace();
+            Toast.makeText(activity,"您尚未安装百度地图或地图版本过低",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void showImg(boolean ishow){
+        if(ishow) {
+            findViewById(R.id.showImage).setVisibility(View.VISIBLE);
+        }else {
+            findViewById(R.id.showImage).setVisibility(View.GONE);
+        }
+    }
+    public void showNai(View view){
+        showChoiceNaviWayDialog(LocationdrawActivity.this,new LatLng(mCurrentLat,mCurrentLon),new LatLng(cpk.getN(),cpk.getE()));
+    }
+
 }

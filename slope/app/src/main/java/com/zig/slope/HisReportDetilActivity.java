@@ -1,5 +1,6 @@
 package com.zig.slope;
 
+import android.annotation.SuppressLint;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -143,6 +144,7 @@ public class HisReportDetilActivity extends AppCompatActivity {
                     if(valuesa.get(i).trim().equals("无")){
                         cbs[i].setText(cbs[i].getText()+"            正常");}
                         else {
+                        cbs[i].setTextColor(getResources().getColor(R.color.red));
                         cbs[i].setText(cbs[i].getText()+"            异常");
                     }
                 }

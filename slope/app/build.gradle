@@ -48,12 +48,12 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //选择要添加的对应cpu类型的.so库。
-            abiFilters  'armeabi-v7a'
+            abiFilters 'armeabi-v7a'
         }
         manifestPlaceholders = [
-                JPUSH_PKGNAME : "com.zig.slope",
+                JPUSH_PKGNAME: "com.zig.slope",
                 JPUSH_APPKEY : "228fa04f0cb8465e44177d19", //JPush上注册的包名对应的appkey.
-                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
         //ARouter
         javaCompileOptions {

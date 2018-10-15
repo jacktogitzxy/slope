@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.zig.slope.LocationdrawActivity;
+import com.zig.slope.charts.DataWarningActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,10 +48,38 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
                 Log.i(TAG, "onReceive: bundle"+bundle.get("cn.jpush.android.EXTRA"));
                 //打开自定义的Activity
-                Intent i = new Intent(context, LocationdrawActivity.class);
-                i.putExtras(bundle);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
-                context.startActivity(i);
+                String extra = bundle.get("cn.jpush.android.EXTRA").toString();
+                JSONObject jsonObject = new JSONObject(extra);
+                int type = jsonObject.getInt("type");
+                Intent i = null;
+                if(type==1) {
+                    //消息
+                    i = new Intent(context, LocationdrawActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
+                    context.startActivity(i);
+                }else if(type==2){
+                    //预警
+                    i = new Intent(context, DataWarningActivity.class);
+                    i.putExtra("type",type);
+                    i.putExtra("newName","409");
+                    i.putExtra("currentType",2);
+                    i.putExtra("currentPonit",1);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
+                    context.startActivity(i);
+                }else if(type==3){
+                    //天气
+                    ARouter.getInstance().build("/weather/index").withString("city","深圳").navigation();
+                }else if(type==4){
+                    //预报
+                    i = new Intent(context, DataWarningActivity.class);
+                    i.putExtra("type",type);
+                    i.putExtra("newName","409");
+                    i.putExtra("currentType",2);
+                    i.putExtra("currentPonit",1);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
+                    context.startActivity(i);
+                }
+
 
             } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
                 Log.d(TAG, "[MyReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));

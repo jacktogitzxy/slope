@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_10"
+    android:layout_margin="@dimen/dp_10"
+    android:orientation="vertical"
+    android:background="@drawable/report_state"
+    >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_30"
+            android:paddingLeft="@dimen/dp_30"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/titlew"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"/>
+            <SurfaceView android:id="@+id/surfacew"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_160" />
+        </LinearLayout>
+        <ListView
+            android:id="@+id/listVieww"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_270" >
+        </ListView>
+    <TextView
+        android:id="@+id/s1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="数据解读。。。。"
+        android:gravity="center_horizontal"/>
+    <TextView
+        android:id="@+id/s2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="解决策略。。。。。"
+        android:gravity="center_horizontal"/>
+</LinearLayout>

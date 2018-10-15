@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.cjt2325.cameralibrary.util.FileUtil;
+import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.utils.CustomProgressDialog;
 import com.zig.slope.common.utils.PreferenceManager;
 import com.zig.slope.view.MyImageBt;
@@ -243,7 +244,7 @@ public class ReportActivity extends BaseActivity {
 
     public void upLaodImg( final String... param) {
          showProgressDialog();
-        RequestParams params = new RequestParams("http://divitone.3322.org:8081/fx/filesUpload");//参数是路径地址
+        RequestParams params = new RequestParams(Constant.BASE_URL+"filesUpload");//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
         for (int i = 6; i < param.length; i++) {
             try {

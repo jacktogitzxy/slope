@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="times">
+        　　        <item>000030</item>
+        　　        <item>000100</item>
+        　　        <item>000500</item>
+        　　        <item>001000</item>
+        　　        <item>003000</item>
+                    <item>010000</item>
+        　　        <item>050000</item>
+        　　        <item>100000</item>
+        　　        <item>240000</item>
+     </string-array>
+</resources>

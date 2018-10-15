@@ -14,9 +14,10 @@ import java.util.List;
  */
 
 public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
-
+    List<ChartItem> objects;
     public ChartDataAdapter(Context context, List<ChartItem> objects) {
         super(context, 0, objects);
+        this.objects=objects;
     }
 
     @Override
@@ -30,6 +31,14 @@ public class ChartDataAdapter extends ArrayAdapter<ChartItem> {
         return getItem(position).getItemType();
     }
 
+    public void updateData(List<ChartItem> list,boolean isRefresh){
+        if(isRefresh){
+            objects.clear();
+        }
+        objects.addAll(list);
+        notifyDataSetChanged();
+
+    }
     @Override
     public int getViewTypeCount() {
         return 3; // we have 3 different item-types

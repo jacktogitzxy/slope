@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    android:id="@+id/drawer_layout"
+<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 <RelativeLayout
     android:id="@+id/root"
     android:layout_width="match_parent"
@@ -210,7 +210,24 @@
         android:layout_below="@id/title_layout"
         android:layout_marginBottom="@dimen/dp_70"
         android:clickable="true" />
-    <!--菜单选项-->
+    <!--导航-->
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/showImage"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_35"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_7"
+        android:drawableLeft="@drawable/ic_transfer_within_a_station_black_24dp"
+        android:background="@drawable/button_myn_style"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:visibility="gone"
+        android:onClick="showNai"
+        android:text="@string/navigation"
+        tools:text="Button" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
