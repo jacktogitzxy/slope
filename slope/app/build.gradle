@@ -45,6 +45,7 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //选择要添加的对应cpu类型的.so库。
@@ -103,5 +104,4 @@ dependencies {
     implementation project(':rtmp_moudle')
     implementation project(':player_moudle')
     implementation project(':weather_moudle')
-
 }

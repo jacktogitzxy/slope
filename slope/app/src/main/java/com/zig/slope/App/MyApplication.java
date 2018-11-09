@@ -1,6 +1,7 @@
 package com.zig.slope.App;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -69,6 +70,8 @@ public class MyApplication extends BaseApplication {
         ARouter.init(this); // 尽可能早，推荐在Application中初始化
         x.Ext.init(this);
     }
-
-
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+    }
 }

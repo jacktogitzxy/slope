@@ -70,11 +70,12 @@
     <string name="danger3">土壤含水显著上升</string>
     <string name="danger4">表面植被严重破坏</string>
     <string name="manageftime">修改周期</string>
-    <string name="titlew">边坡编号：%s，地质监测点%d，传感器编号：%S，传感器类型：%s</string>
+    <string name="titlew">地质监测点: %s \n传感器编号：%S \n传感器类型：%s</string>
     <string name="inner_navi">内置导航</string>
     <string name="baidu_navi">百度地图</string>
     <string name="gaode_navi">高德地图</string>
     <string name="no_navi">未安装地图百度，高德等地图app</string>
+
     <string name="time_1">30秒</string>
     <string name="time_2">1分钟</string>
     <string name="time_3">5分钟</string>
@@ -84,4 +85,19 @@
     <string name="time_7">5小时</string>
     <string name="time_8">10小时</string>
     <string name="time_9">24小时</string>
+    <string name="shenbu">数值解读: \n导轮式测斜仪通过重力加速度传感器测量X/Y两个方向倾斜变化，计算得出测量点的倾斜方向与倾斜角度；用于观测山体边坡、土石坝、海边堤防以及建筑物基坑等土体内部的水平方向位移变化大小。当X或Y方向的变化角度大于警戒值时，表示土体内部已经产生位移，大面积滑坡的可能性极大，需要启动相关应急响应机制。\n
+X和Y方向角度变化的正常值范围为：0到25度</string>
+    <string name="shuiya">数值解读:孔隙水压计根据压力与水深成正比关系的静水压力原理，运用水压敏传感器测量不同地质层面的孔隙水压力或渗水压力。当传感器固定在水下某一测点时，该测点以上水柱压力高度加上该点高程，即可间接地测出水位高低，以观察测点处土壤的含水量。当孔隙水压值大于警戒值时，表示土壤的含水量已接近饱和，发生大面积滑坡的可能性较大，需要启动相关应急响应机制。\n
+孔隙水压的正常值范围为：0到150KPa</string>
+    <string name="biaomian">数值解读: \n  滑坡表面裂缝和位移计是由位移计本体、柔性芯钢丝、锚固头等组成。传感器原理为电感调频类，位移计本体内有一个圆柱形金属螺旋线圈，线圈内有一个可以移动的磁芯测杆，在实际应用中通过线圈的电感变化来观察测杆的位移。当测杆的位移大于警戒值时，表示坡体表面产生较大裂缝或者位移，后续出现滑坡的可能性较大，需要启动相关应急响应机制。\n
+表面裂缝和位移的正常值范围为：0到70mm</string>
+    <string name="consoles">应急对策</string>
+    <string name="console_1">应急调查</string>
+    <string name="console_2">危险性评估</string>
+    <string name="console_3">启动突发性地质灾害应急预案</string>
+    <string name="dangers">4级响应</string>
+    <string name="danger_1">4级（蓝色）24小时内发灾可能较小</string>
+    <string name="danger_2">3级（黄色）24小时内发灾可能性较大</string>
+    <string name="danger_3">2级（橙色）24小时内发灾可能性大</string>
+    <string name="danger_4">1级（红色）24小时内发灾可能性很大</string>
 </resources>

@@ -1,7 +1,12 @@
 package slope.zxy.com.login_module;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -40,8 +45,8 @@ import slope.zxy.com.login_module.widget.LoadingDialog;
  * 登录界面
  */
 @Route(path = "/login/index")
-public class LoginMActivity extends BaseMvpActivity<LoginContract.LoginView,LoginPresenterImpl>
-        implements LoginContract.LoginView,View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class LoginMActivity extends BaseMvpActivity<LoginContract.LoginView, LoginPresenterImpl>
+        implements LoginContract.LoginView, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     //布局内的控件
     private EditText et_name;
     private EditText et_password;
@@ -93,10 +98,10 @@ public class LoginMActivity extends BaseMvpActivity<LoginContract.LoginView,Logi
         loadCheckBoxState();
         pm = PreferenceManager.getInstance(LoginMActivity.this);
         Gson gson = new Gson();
-        pm.putString("localdata",gson.toJson(data.getSlopeInfo()));
-        pm.putString("logindata",gson.toJson(data.getOperators()));
-        Intent intent = new Intent(LoginMActivity.this,MainDoActivity.class);
-        intent.putExtra("data",data);
+        pm.putString("localdata", gson.toJson(data.getSlopeInfo()));
+        pm.putString("logindata", gson.toJson(data.getOperators()));
+        Intent intent = new Intent(LoginMActivity.this, MainDoActivity.class);
+        intent.putExtra("data", data);
         startActivity(intent);
         LoginMActivity.this.finish();
 //        ARouter.getInstance().build("/map/index").withSerializable("data",data).navigation();
@@ -120,7 +125,7 @@ public class LoginMActivity extends BaseMvpActivity<LoginContract.LoginView,Logi
 
     @Override
     public void onLoginFail(String msg) {
-       Toast.makeText(LoginMActivity.this,"登录失败:"+msg,Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginMActivity.this, "登录失败:" + msg, Toast.LENGTH_SHORT).show();
     }
 
     private void initData() {
@@ -243,18 +248,31 @@ public class LoginMActivity extends BaseMvpActivity<LoginContract.LoginView,Logi
     private void login() {
 
         //先做一些基本的判断，比如输入的用户命为空，密码为空，网络不可用多大情况，都不需要去链接服务器了，而是直接返回提示错误
-        if (getAccount().isEmpty()){
+        if (getAccount().isEmpty()) {
             showToast("你输入的账号为空！");
             return;
         }
 
-        if (getPassword().isEmpty()){
+        if (getPassword().isEmpty()) {
             showToast("你输入的密码为空！");
             return;
         }
-        getPresenter().requestLoginData(this,getAccount(),getPassword());
+
+        getPresenter().requestLoginData(this, getAccount(), getPassword());
     }
 
+//    @SuppressLint("MissingPermission")
+//    public String getNativePhoneNumber() {
+//        String nativePhoneNumber = "N/A";
+//        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+//        nativePhoneNumber = tm.getLine1Number();
+//        String deviceid = tm.getDeviceId();//获取智能设备唯一编号
+//        Log.i("zxy", "getNativePhoneNumber: deviceid=="+deviceid);
+//        String te1  = tm.getLine1Number();//获取本机号码
+//        String imei = tm.getSimSerialNumber();//获得SIM卡的序号
+//        String imsi = tm.getSubscriberId();//得到用户Id
+//        return nativePhoneNumber;
+//    }
 
     /**
      * 保存用户账号
@@ -449,7 +467,7 @@ public class LoginMActivity extends BaseMvpActivity<LoginContract.LoginView,Logi
         permissionItems.add(new PermissionItem(Manifest.permission.CAMERA, "打开相机", R.drawable.permission_ic_camera));
         permissionItems.add(new PermissionItem(Manifest.permission.RECORD_AUDIO, "打开录音", R.drawable.permission_ic_micro_phone));
         permissionItems.add(new PermissionItem(Manifest.permission.READ_EXTERNAL_STORAGE, "读写sd卡", R.drawable.permission_ic_storage));
-        //permissionItems.add(new PermissionItem(Manifest.permission.SYSTEM_ALERT_WINDOW, "通知", R.drawable.permission_ic_sms));
+       // permissionItems.add(new PermissionItem(Manifest.permission.READ_PHONE_NUMBERS, "电话号码", R.drawable.permission_ic_phone));
         HiPermission.create(this)
                 .title("权限授请")
                 .msg("为了能够正常使用，请开启这些权限吧！")

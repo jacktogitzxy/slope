@@ -17,7 +17,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_10"
-        android:background="@color/greend"/>
+        android:background="@color/red"/>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_marginTop="@dimen/dp_20"
@@ -36,6 +36,17 @@
                     android:layout_height="match_parent"
                     android:background="@color/color_393939"
                     android:orientation="vertical">
+                    <com.baidu.mapapi.map.MapView
+                        android:id="@+id/bmapView"
+                        android:layout_width="fill_parent"
+                        android:layout_height="@dimen/dp_200"
+                        android:clickable="true" />
+                        <GridView
+                            android:id="@+id/videogride"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_125"
+                            android:numColumns="2"/>
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
@@ -48,33 +59,6 @@
                         android:visibility="visible"
                         tools:listitem="@layout/data_warning_item" />
                 </LinearLayout>
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:orientation="vertical">-->
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginTop="@dimen/dp_20"-->
-                        <!--android:paddingRight="@dimen/dp_30"-->
-                        <!--android:paddingLeft="@dimen/dp_30"-->
-                        <!--android:orientation="vertical">-->
-                        <!--<TextView-->
-                            <!--android:id="@+id/titlew"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:gravity="center_horizontal"/>-->
-                        <!--<SurfaceView android:id="@+id/surfacew"-->
-                            <!--android:layout_marginTop="@dimen/dp_20"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="@dimen/dp_160" />-->
-                    <!--</LinearLayout>-->
-                    <!--<ListView-->
-                        <!--android:id="@+id/listVieww"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="@dimen/dp_270" >-->
-                    <!--</ListView>-->
-                <!--</LinearLayout>-->
 
             </android.support.v4.widget.NestedScrollView>
 

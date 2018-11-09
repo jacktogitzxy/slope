@@ -22,6 +22,7 @@ public class SensorContract {
     public interface SensorModel{
         //请求数据，回调
         void getSensorDatas(Context context,String newName, ISensorModelCallback callback);
+        void getSensorForcastDatas(Context context,String newName, ISensorModelCallback callback);
         //取消请求
         void cancleHttpRequest();
 

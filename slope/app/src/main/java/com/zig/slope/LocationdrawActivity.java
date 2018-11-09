@@ -15,32 +15,27 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
@@ -49,7 +44,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -85,18 +79,20 @@ import com.baidu.mapapi.navi.NaviParaOption;
 import com.baidu.mapapi.search.district.DistrictResult;
 import com.baidu.mapapi.search.district.OnGetDistricSearchResultListener;
 import com.baidu.mapapi.utils.CoordinateConverter;
-import com.baidu.mapapi.utils.DistanceUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.yinglan.scrolllayout.ScrollLayout;
 import com.zig.slope.adapter.ChatsAdapter;
 import com.zig.slope.adapter.ListviewAdapter;
 import com.zig.slope.adapter.MyAdapter;
 import com.zig.slope.bean.User;
 import com.zig.slope.bean.UserLoacl;
+import org.careye.util.VideoBean;
 import com.zig.slope.callback.RequestCallBack;
+import com.zig.slope.callback.RequestVideoCallBack;
 import com.zig.slope.callback.RequestWeatherCallBack;
 import com.zig.slope.charts.DataWarningActivity;
 import com.zig.slope.charts.ListViewMultiChartActivity;
@@ -131,7 +127,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
+import java.io.Serializable;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -182,7 +178,8 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     private RelativeLayout relativeLayout;
     private TextView mainTitle;
     //消息
-    private DrawerLayout drawerLayout;
+//    private DrawerLayout drawerLayout;
+    private  SlidingMenu menu;
     private ActionBarDrawerToggle toggle;
     private RecyclerView recyclerView;
     private ChatsAdapter adapter;
@@ -203,6 +200,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     public static final String KEY_TITLE = "title";
     public static final String KEY_MESSAGE = "message";
     public static final String KEY_EXTRAS = "extras";
+    private LatLng defaultll = new LatLng(22.747520986909,113.92984114558);
     //定时发送位置
     private ScheduledExecutorService pool = Executors.newScheduledThreadPool(2);
     private TimerTask task = new TimerTask() {
@@ -477,7 +475,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 LatLng ll = new LatLng(location.getLatitude(),
                         location.getLongitude());
                 MapStatus.Builder builder = new MapStatus.Builder();
-                builder.target(ll).zoom(12.0f);//设置缩放比例
+                builder.target(defaultll).zoom(14.0f);//设置缩放比例
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
         }
@@ -553,6 +551,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
 
     private SlopeBean cpk = null;
     public void showPopFormTop(View view) {
+        Log.i(TAG, "showPopFormTop: -------"+toolbar.getVisibility()+"");
         if(toolbar.getVisibility()!=View.VISIBLE){
             toggleRightSliding();
             message_new.setVisibility(View.INVISIBLE);
@@ -663,6 +662,17 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         View view = getIcon(pk,zoom);
         // 构建BitmapDescriptor
         bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+//        BitmapDrawable bd = (BitmapDrawable) getResources().getDrawable(R.mipmap.slopered);
+//        BitmapDescriptor bitmap1 =BitmapDescriptorFactory.fromBitmap(bd.getBitmap());
+//        BitmapDrawable bd2 = (BitmapDrawable) getResources().getDrawable(R.mipmap.slopeyellow);
+//        BitmapDescriptor bitmap3 =BitmapDescriptorFactory.fromBitmap(bd2.getBitmap());
+//        BitmapDrawable bd3= (BitmapDrawable) getResources().getDrawable(R.mipmap.slopegreen);
+//        BitmapDescriptor bitmap4 =BitmapDescriptorFactory.fromBitmap(bd3.getBitmap());
+//        ArrayList<BitmapDescriptor> list = new ArrayList<>();
+//        list.add(bitmap1);
+//        list.add(bitmap4);
+//        list.add(bitmap3);
+
         Bundle bundle3 = new Bundle();
         bundle3.putSerializable("pk",pk);
         OverlayOptions oo =new MarkerOptions().position(desLatLng)
@@ -1084,6 +1094,14 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 mScrollLayout.scrollToExit();
                 return true;
             }
+            if(menu.isMenuShowing()){
+                menu.showContent();
+                return true;
+            }
+            if(shadowView.getVisibility()==View.VISIBLE){
+                closeMenu();
+                return true;
+            }
 //            else{
 //                if((System.currentTimeMillis() - exitTime) > 2000){
 //                    Toast.makeText(LocationdrawActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
@@ -1117,47 +1135,68 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 .points(pts)
                 .stroke(new Stroke(5, 0xAAFF0000))
                 .fillColor(0x2239b500);
-
 //在地图上添加多边形Option，用于显示
         mBaiduMap.addOverlay(polygonOption);
     }
 
     //初始化消息
     private void initDrawerLayout() {
-        //注意：初始化的是drawerlayout整个大布局，不是初始化抽屉的那个id
-        drawerLayout = (DrawerLayout) super.findViewById(R.id.drawer_layout);
-//        drawerLayout.setScrimColor(Color.TRANSPARENT);
-        //v4控件 actionbar上的抽屉开关，可以实现一些开关的动态效果
-        toggle = new ActionBarDrawerToggle(this, drawerLayout,
-                toolbarmain, R.mipmap.message_icon
-                , R.mipmap.message_icon) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                isDrawerOpened = false;
-                super.onDrawerClosed(drawerView);//抽屉关闭后
-//                shadowView.setBackgroundColor(Color.argb(0, 0, 0, 0));
-//                shadowView.setVisibility(View.INVISIBLE);
-            }
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                isDrawerOpened = true;
-                super.onDrawerOpened(drawerView);//抽屉打开后
-//                shadowView.setVisibility(View.VISIBLE);
-//                int alpha = (int) Math.round(255 * 0.4);
-//                shadowView.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
-            }
-        };
-        drawerLayout.addDrawerListener(toggle);
+          menu = new SlidingMenu(this);
+          menu.setMode(SlidingMenu.RIGHT);
+          // 设置触摸屏幕的模式
+        //  menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+          //menu.setShadowWidthRes(R.dimen.shadow_width);
+          // 设置滑动菜单视图的宽度
+          menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+          // 设置渐入渐出效果的值
+          menu.setFadeDegree(0.35f);
+          /**
+            * SLIDING_WINDOW will include the Title/ActionBar in the content
+            * section of the SlidingMenu, while SLIDING_CONTENT does not.
+            */
+          menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+          //为侧滑菜单设置布局
+          menu.setMenu(R.layout.activity_ui);
+
+        //注意：初始化的是drawerlayout整个大布局，不是初始化抽屉的那个id
+//        drawerLayout = (DrawerLayout) super.findViewById(R.id.drawer_layout);
+//        //v4控件 actionbar上的抽屉开关，可以实现一些开关的动态效果
+//        toggle = new ActionBarDrawerToggle(this, drawerLayout,
+//                toolbarmain, R.mipmap.message_icon
+//                , R.mipmap.message_icon) {
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//                isDrawerOpened = false;
+//                super.onDrawerClosed(drawerView);//抽屉关闭后
+////                shadowView.setBackgroundColor(Color.argb(0, 0, 0, 0));
+////                shadowView.setVisibility(View.INVISIBLE);
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                isDrawerOpened = true;
+//                super.onDrawerOpened(drawerView);//抽屉打开后
+////                shadowView.setVisibility(View.VISIBLE);
+////                int alpha = (int) Math.round(255 * 0.4);
+////                shadowView.setBackgroundColor(Color.argb(alpha, 0, 0, 0));
+//            }
+//        };
+//        drawerLayout.addDrawerListener(toggle);
     }
 
     public void toggleRightSliding(){//控制右侧边栏的显示和隐藏
-        if(drawerLayout.isDrawerOpen(GravityCompat.END)){
-            drawerLayout.closeDrawer(GravityCompat.END);//关闭抽屉
+        if(menu.isMenuShowing()){
+            menu.showContent();
         }else{
-            drawerLayout.openDrawer(GravityCompat.END);//打开抽屉
-
+            menu.showMenu();
         }
+//        if(drawerLayout.isDrawerOpen(GravityCompat.END)){
+//            drawerLayout.closeDrawer(GravityCompat.END);//关闭抽屉
+//        }else{
+//            drawerLayout.openDrawer(GravityCompat.END);//打开抽屉
+//
+//        }
     }
 
     private void initMsgView() {
@@ -1414,9 +1453,8 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     LocationdrawActivity.this.startActivity(intentc);
                     break;
                 case R.id.cam_video://检测视频
-                    String url = "rtmp://47.107.32.201:1935/live/livestream";//cpk.getStreamAddress();
-                    ARouter.getInstance().build("/player/plays").withString("url",url).withString("newName",cpk.getNewName()).navigation();
-                    break;
+                    getVideos(cpk.getNewName());
+                   break;
                 case R.id.cam_data ://检测数据
                     Intent intentdata = new Intent(LocationdrawActivity.this, ListViewMultiChartActivity.class);
                     intentdata.putExtra("newName",cpk.getNewName());
@@ -1445,12 +1483,11 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 case R.id.do_danger ://预警
                   Intent  i = new Intent(LocationdrawActivity.this, DataWarningActivity.class);
                   i.putExtra("newName",cpk.getNewName());
+                  i.putExtra("zLatLng",new LatLng(cpk.getN(),cpk.getE()));
+                  i.putExtra("type",2);
                   startActivity(i);
                     break;
             }
-
-
-
             return true;
         }
     };
@@ -1499,6 +1536,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
 
     @Override
     protected void findViews() {
+
         Intent intent = getIntent();
         mg = (LoginMsg) intent.getSerializableExtra("data");
         pm = PreferenceManager.getInstance(LocationdrawActivity.this);
@@ -1624,7 +1662,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     public void onProcessSucess(List<ProcessBean> data) {
         Log.i(TAG, "onProcessSucess: data===="+data.size());
         this.dataProcessBean = data;
-
     }
 
     @Override
@@ -1770,4 +1807,17 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         showChoiceNaviWayDialog(LocationdrawActivity.this,new LatLng(mCurrentLat,mCurrentLon),new LatLng(cpk.getN(),cpk.getE()));
     }
 
+    public void getVideos(final String newName){
+        okhttpWorkUtil.postAsynHttpVideos(Constant.BASE_URL + "queryMonitorByNewNameApp?newName=" + newName
+                , new RequestVideoCallBack() {
+                    @Override
+                    public void onSuccess(ArrayList<VideoBean> response) {
+                        ARouter.getInstance().build("/player/plays").withParcelableArrayList("videos", response).withString("newName",newName).navigation();
+                    }
+                    @Override
+                    public void onFail(String msg) {
+                        Log.i("zxy", "onFail: ---------msg="+msg);
+                    }
+                });
+    }
 }

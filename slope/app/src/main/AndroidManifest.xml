@@ -71,7 +71,10 @@
 
         <activity
             android:name=".LocationdrawActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+
+        </activity>
+
         <activity android:name=".ReportActivity" />
         <activity android:name=".CameraActivity" />
         <!-- 定位服务 -->

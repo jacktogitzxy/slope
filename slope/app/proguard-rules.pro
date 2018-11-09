@@ -32,3 +32,4 @@
 -dontwarn com.google.**
 -keep class com.google.gson.** {*;}
 -keep class com.google.protobuf.** {*;}
+-keep public class android.support.v4.content.FileProvider {*;}

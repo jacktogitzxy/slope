@@ -29,8 +29,7 @@ import com.zig.slope.view.MyImageBt;
 import com.zig.slope.view.PicFragment;
 import com.zig.slope.view.VideoFragment;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import org.xutils.common.Callback;
 import org.xutils.common.util.KeyValue;
 import org.xutils.http.RequestParams;
@@ -43,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import slope.zxy.com.login_module.LoginMActivity;
+import cn.jpush.android.api.JPushInterface;
 
 
 public class ReportActivity extends BaseActivity {
@@ -183,9 +182,10 @@ public class ReportActivity extends BaseActivity {
             }
         }
         Log.i(TAG, "startReportdo: remark1="+remark1);
-        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),remark1,plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
+        String rid = getRid();
+        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),remark1,rid,plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
     }
-
+    private static final int REQUEST_CODE_ALBUM = 0x0001;
     View.OnClickListener onclicks = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -246,7 +246,7 @@ public class ReportActivity extends BaseActivity {
          showProgressDialog();
         RequestParams params = new RequestParams(Constant.BASE_URL+"filesUpload");//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
-        for (int i = 6; i < param.length; i++) {
+        for (int i = 7; i < param.length; i++) {
             try {
                 list.add(new KeyValue("files",new File(param[i])));
             } catch (Exception e) {
@@ -259,6 +259,8 @@ public class ReportActivity extends BaseActivity {
         list.add(new KeyValue("x", param[3]));
         list.add(new KeyValue("y", param[4]));
         list.add(new KeyValue("remark1", param[5]));
+        list.add(new KeyValue("regeditID", param[6]));
+        Log.i(TAG, "regeditID: regeditID==="+param[6]);
         Log.i(TAG, "upLaodImg: list==="+list.size());
         //设置编码格式为UTF-8，保证参数不乱码
         MultipartBody body = new MultipartBody(list, "UTF-8");
@@ -341,4 +343,13 @@ public class ReportActivity extends BaseActivity {
         }
     }
 
+    public String getRid(){
+        String rid = JPushInterface.getRegistrationID(getApplicationContext());
+        if (!rid.isEmpty()) {
+            return rid;
+        } else {
+            Toast.makeText(this, "Get registration fail, JPush init failed!", Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
 }

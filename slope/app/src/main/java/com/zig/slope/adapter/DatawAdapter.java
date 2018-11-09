@@ -32,6 +32,7 @@ import com.zig.slope.charts.listviewitems.BarChartItem;
 import com.zig.slope.charts.listviewitems.ChartItem;
 import com.zig.slope.charts.listviewitems.LineChartItem;
 import com.zig.slope.common.base.bean.MySensor;
+import com.zig.slope.util.ToolUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,14 +87,17 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         String tyeps = "表面位移传感器";
         if(currentType==1){
             tyeps = "表面位移传感器";
+            normalViewHolder.textViewS1.setText(context.getResources().getString(R.string.biaomian));
         }
         if(currentType==2){
             tyeps = "深部位移传感器";
+            normalViewHolder.textViewS1.setText(context.getResources().getString(R.string.shenbu));
         }
         if(currentType==3){
             tyeps = "孔隙水压传感器";
+            normalViewHolder.textViewS1.setText(context.getResources().getString(R.string.shuiya));
         }
-        String s = String.format(context.getResources().getString(R.string.titlew), mySensorData.getSlopeNewName(), mySensorData.getGroups(),
+        String s = String.format(context.getResources().getString(R.string.titlew), mySensorData.getMonitoringName(),
                 mySensorData.getSensorID(),tyeps);
         normalViewHolder.titlew.setText(s);
         Log.i("zxy", "onBindViewHolder: position=="+position);
@@ -116,12 +120,14 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         SurfaceView surfacew;
         ListView listVieww;
         SurfaceHolder mHolder;
+        TextView textViewS1;
         public NormalViewHolder(View itemView, final OnRecyclerViewItemOnClickListener listener) {
             super(itemView);
             this.listener = listener;
             titlew = itemView.findViewById(R.id.titlew);
             surfacew = itemView.findViewById(R.id.surfacew);
             listVieww = itemView.findViewById(R.id.listVieww);
+            textViewS1 = itemView.findViewById(R.id.s1);
             surfacew.setZOrderOnTop(true);
             mHolder = surfacew.getHolder();
             mHolder.setFormat(PixelFormat.TRANSLUCENT);
@@ -158,17 +164,17 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         String p="0",a="0",b="0",m="0";
         if(mySensor.getType_s()==1){
             m=datas.get(datas.size()-1).getXdata();
-            String[]labs = new String[]{"x","y表面变形(mm)         周期（"+datas.get(0).getFrequency()+"）"};
+            String[]labs = new String[]{"x","y表面变形(mm)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
             LineChartItem lineChartItem = new LineChartItem(getLineData(datas,labs),context,2,sensorId);
             list.add(lineChartItem);
         }else if(mySensor.getType_s()==2){
             a=datas.get(datas.size()-1).getXdata();
             b=datas.get(datas.size()-1).getYdata();
-            String[]labs = new String[]{"x","y深部位移(°)         周期（"+datas.get(0).getFrequency()+"）"};
+            String[]labs = new String[]{"x","y深部位移(°)         周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
             list.add(new LineChartItem(getLineData(datas,labs),context,1,sensorId));
         }else{
             p=datas.get(0).getXdata();
-            String[]labs = new String[]{"孔隙水压(kpa)         周期（"+datas.get(0).getFrequency()+"）"};
+            String[]labs = new String[]{"孔隙水压(kpa)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
             list.add(new BarChartItem(getDataBar(datas,labs),context,sensorId));
         }
         ChartDataAdapter cda = new ChartDataAdapter(context, list);
@@ -249,6 +255,7 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             canvas.rotate(-10);
             canvas.drawText("位移:" + moveSize + "mm", 300, 400, mPaint);
             canvas.drawText("表面变形", 300, 40, mPaint);
+            canvas.drawText("临界位移:" + n + "mm", 300, 460, mPaint);
         }
         //基准点。
         float gridX = 350;

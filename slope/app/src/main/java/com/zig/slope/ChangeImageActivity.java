@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.utils.CustomProgressDialog;
 import com.zig.slope.view.MyImageBt;
 import org.xutils.common.Callback;
@@ -85,7 +86,7 @@ public class ChangeImageActivity extends AppCompatActivity {
     }
     public void upLaodImg( final String... param) {
         showProgressDialog();
-        RequestParams params = new RequestParams("http://divitone.3322.org:8081/fx/changeSlopAllPicApp");//参数是路径地址
+        RequestParams params = new RequestParams(Constant.BASE_URL+"changeSlopAllPicApp");//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
         for (int i = 1; i < param.length; i++) {
             try {

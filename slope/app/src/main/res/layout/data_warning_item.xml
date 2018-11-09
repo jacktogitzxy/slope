@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/dp_10"
-    android:layout_margin="@dimen/dp_10"
     android:orientation="vertical"
     android:background="@drawable/report_state"
     >
@@ -30,15 +29,125 @@
             android:layout_height="@dimen/dp_270" >
         </ListView>
     <TextView
+        android:background="@drawable/bt_main_scorll"
         android:id="@+id/s1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="数据解读。。。。"
-        android:gravity="center_horizontal"/>
-    <TextView
-        android:id="@+id/s2"
+        android:padding="@dimen/dp_10"
+        android:text="@string/biaomian"
+        android:gravity="left"/>
+    <RelativeLayout
+        android:background="@drawable/bt_main_scorll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="解决策略。。。。。"
-        android:gravity="center_horizontal"/>
+        android:layout_marginTop="@dimen/dp_5">
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/co0"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:textStyle="bold"
+            android:background="@drawable/item_text_view_bg"
+            android:text="@string/consoles"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/co1"
+            android:layout_below="@id/co0"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/item_text_view_bg"
+            android:text="@string/console_1"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/co2"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/item_text_view_bg"
+            android:text="@string/console_2"
+            android:layout_below="@id/co0"
+            android:layout_toRightOf="@id/co1"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/co3"
+           android:layout_below="@id/co1"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/item_text_view_bg"
+            android:text="@string/console_3"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/dangers"
+            android:layout_below="@id/co3"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/item_text_view_bg"
+            android:text="@string/dangers"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/danger_1"
+            android:layout_below="@id/dangers"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/item_text_view_bg_blue"
+            android:text="@string/danger_1"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/danger_2"
+            android:layout_below="@id/danger_1"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/item_text_view_bg_yellow"
+            android:text="@string/danger_2"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/danger_3"
+            android:layout_below="@id/danger_2"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/item_text_view_bg_yellow2"
+            android:text="@string/danger_3"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/danger_4"
+            android:layout_below="@id/danger_3"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/item_text_view_bg_red"
+            android:text="@string/danger_4"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
+    </RelativeLayout>
 </LinearLayout>

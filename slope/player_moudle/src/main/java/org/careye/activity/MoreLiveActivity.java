@@ -18,15 +18,18 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.careye.rtmp.careyeplayer.R;
 
 import org.careye.player.media.EyeVideoView;
+import org.careye.util.VideoBean;
+
+import java.util.List;
+
 @Route(path = "/player/plays")
 public class MoreLiveActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "MoreLiveActivity";
-    private String       mURL       = "";
     private EyeVideoView[] mVideoPlayers;
     private Toolbar toolbar;
     private String newName;
     private int size=1;
-
+    private List<VideoBean> videos;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +37,7 @@ public class MoreLiveActivity extends AppCompatActivity implements View.OnClickL
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_more);
         Intent intent = getIntent();
-        mURL = intent.getStringExtra("url");
+        videos = intent.getParcelableArrayListExtra("videos");
         newName = intent.getStringExtra("newName");
         initView();
         initListener();
@@ -91,8 +94,10 @@ public class MoreLiveActivity extends AppCompatActivity implements View.OnClickL
     private void play() {
         stop();
         for (int i =0;i<size;i++){
-            mVideoPlayers[i].setVideoPath(mURL);
-            mVideoPlayers[i].start();
+            if(null!=videos.get(i)) {
+                mVideoPlayers[i].setVideoPath(videos.get(i).getUrl());
+                mVideoPlayers[i].start();
+            }
         }
     }
 
@@ -106,12 +111,11 @@ public class MoreLiveActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        Log.i(TAG, "onClick: v=="+v.getTag());
         int tag= Integer.parseInt( v.getTag().toString());
         if(mVideoPlayers[tag].isPlaying()) {
             stop();
             Intent intent = new Intent(MoreLiveActivity.this, PlayerActivity.class);
-            intent.putExtra("url", mURL);
+            intent.putExtra("url", videos.get(tag).getUrl());
             startActivity(intent);
         }
     }

@@ -8,13 +8,16 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.baidu.mapapi.model.LatLng;
 import com.zig.slope.LocationdrawActivity;
 import com.zig.slope.charts.DataWarningActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -51,6 +54,15 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                 String extra = bundle.get("cn.jpush.android.EXTRA").toString();
                 JSONObject jsonObject = new JSONObject(extra);
                 int type = jsonObject.getInt("type");
+                String alias = jsonObject.getString("alias").trim();
+                Log.i(TAG, "onReceive: alias=="+alias);
+                List<String> datas = Arrays.asList(alias.split("#"));
+                Log.i(TAG, "onReceive: datas=="+datas.size());
+                String s = datas.get(3);
+                String s1 = s.substring(1,16);
+                String s2 = s.substring(17,s.length()-1);
+                LatLng ll = new LatLng(Double.parseDouble(s2),Double.parseDouble(s1));
+               // double[] ll = new double[]{Double.parseDouble(s2),Double.parseDouble(s1)};
                 Intent i = null;
                 if(type==1) {
                     //消息
@@ -61,9 +73,8 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                     //预警
                     i = new Intent(context, DataWarningActivity.class);
                     i.putExtra("type",type);
-                    i.putExtra("newName","409");
-                    i.putExtra("currentType",2);
-                    i.putExtra("currentPonit",1);
+                    i.putExtra("newName",datas.get(0));
+                    i.putExtra("zLatLng",ll);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
                     context.startActivity(i);
                 }else if(type==3){
@@ -73,9 +84,8 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                     //预报
                     i = new Intent(context, DataWarningActivity.class);
                     i.putExtra("type",type);
-                    i.putExtra("newName","409");
-                    i.putExtra("currentType",2);
-                    i.putExtra("currentPonit",1);
+                    i.putExtra("newName",datas.get(0));
+                    i.putExtra("zLatLng",ll);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
                     context.startActivity(i);
                 }

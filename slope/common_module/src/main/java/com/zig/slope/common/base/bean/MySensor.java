@@ -39,7 +39,7 @@ public class MySensor implements Serializable {
     public  class MySensorData implements Serializable {
         private int id;
         private String sensorID;
-        private String creataTime;
+        private String createTime;
         private String xdata;
         private String ydata;
         private String slopeNewName;
@@ -98,12 +98,12 @@ public class MySensor implements Serializable {
             this.sensorID = sensorID;
         }
 
-        public String getCreataTime() {
-            return creataTime;
+        public String getCreateTime() {
+            return createTime;
         }
 
-        public void setCreataTime(String creataTime) {
-            this.creataTime = creataTime;
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
         }
 
         public String getXdata() {

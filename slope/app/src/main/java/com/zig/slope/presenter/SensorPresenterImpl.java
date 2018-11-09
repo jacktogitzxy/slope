@@ -24,10 +24,30 @@ public class SensorPresenterImpl extends BasePresenter<SensorContract.SensorView
     }
 
     /**
-     * 请求监测点
+     * 请求监测点数据
      */
     public void requestSensorData(Context context,String newName){
         model.getSensorDatas(context,newName,new SensorContract.ISensorModelCallback() {
+            @Override
+            public void onSuccess(BaseResponseBean<List<DataBean>> response) {
+                if (getMvpView() != null) {
+                    getMvpView().onSensorSucess(response);
+                }
+            }
+
+            @Override
+            public void onFail(String msg) {
+                if (getMvpView() != null) {
+                    getMvpView().onSensorFail(msg);
+                }
+            }
+        });
+    }
+    /**
+     * 请求监测点预警数据
+     */
+    public void requestSensorForcastData(Context context,String newName){
+        model.getSensorForcastDatas(context,newName,new SensorContract.ISensorModelCallback() {
             @Override
             public void onSuccess(BaseResponseBean<List<DataBean>> response) {
                 if (getMvpView() != null) {

@@ -51,6 +51,30 @@ public class SensorModel implements SensorContract.SensorModel {
     }
 
     @Override
+    public void getSensorForcastDatas(Context context, String newName, final SensorContract.ISensorModelCallback callback) {
+        RxRetrofitManager.getInstance()
+                .setTag("getSensorDatas")
+                .getApiService(SensorApi.class)
+                .getSensorForcastData(newName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe( new RxObserver<BaseResponseBean<List<DataBean>>>(context, true) {
+                    @Override
+                    public void onSuccess(BaseResponseBean<List<DataBean>> BaseResponseBean) {
+                        if (BaseResponseBean.getCode() >= 0&&BaseResponseBean.getData()!=null){
+                            if (callback != null){
+                                callback.onSuccess(BaseResponseBean);
+                            }
+                        }else {
+                            if (callback != null){
+                                callback.onFail(BaseResponseBean.getInfo());
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void cancleHttpRequest() {
         ApiCancleManager.getInstance().cancel("getSensorDatas");
     }

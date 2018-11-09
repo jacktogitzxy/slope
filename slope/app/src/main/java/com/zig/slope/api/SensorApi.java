@@ -20,4 +20,6 @@ public interface SensorApi {
      */
     @POST("querySlopeSensorDataByNewNameApp")
     Observable<BaseResponseBean<List<DataBean>>> getSensorData(@Query("newName") String id);
+    @POST("querySlopeForcastLogApp")
+    Observable<BaseResponseBean<List<DataBean>>> getSensorForcastData(@Query("newName") String id);
 }

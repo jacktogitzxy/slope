@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
+<RelativeLayout
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -41,10 +42,12 @@
                 <ImageView
                     android:id="@+id/menu_icon"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingRight="@dimen/dp_10"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:paddingLeft="@dimen/dp_15"
+                    android:scaleType="center"
                     android:clickable="true"
                     android:src="@mipmap/axq" />
                 <RelativeLayout
@@ -87,22 +90,25 @@
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:paddingTop="@dimen/dp_10"
-                    android:paddingRight="@dimen/dp_15"
-                    android:onClick="showPopFormTop"
+
                     >
                     <ImageView
                         android:id="@+id/topmenu_icon"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:clickable="true"
-
+                        android:scaleType="center"
+                        android:paddingTop="@dimen/dp_10"
+                        android:paddingRight="@dimen/dp_15"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:onClick="showPopFormTop"
                         android:src="@mipmap/message_icon" />
                     <ImageView
                         android:id="@+id/message_new"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="top|right"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginRight="@dimen/dp_5"
                         android:visibility="invisible"
                         android:src="@mipmap/a8q"/>
                 </FrameLayout>
@@ -597,12 +603,12 @@
         />
 </RelativeLayout>
 
-    <include
-        layout="@layout/activity_ui"
-        android:id="@+id/right_drawer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:background="#FFFFFF"
-        android:gravity="center_horizontal"/>
-</android.support.v4.widget.DrawerLayout>
+    <!--<include-->
+        <!--layout="@layout/activity_ui"-->
+        <!--android:id="@+id/right_drawer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="end"-->
+        <!--android:background="#FFFFFF"-->
+        <!--android:gravity="center_horizontal"/>-->
+</RelativeLayout>
