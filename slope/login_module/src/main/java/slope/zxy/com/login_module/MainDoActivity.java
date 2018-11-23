@@ -31,8 +31,8 @@ import slope.zxy.com.login_module.widget.LoadingDialog;
 
 public class MainDoActivity extends AppCompatActivity {
     private BGABanner bgaBanner;
-    private TextView contentv;
-    private ScrollView contentScro;
+//    private TextView contentv;
+//    private ScrollView contentScro;
     private LoginMsg data;
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 //    private ImageView splash_img;
@@ -57,8 +57,8 @@ public class MainDoActivity extends AppCompatActivity {
             mods.add(view);
         }
         bgaBanner.setData(mods);
-        contentv = findViewById(R.id.news_item_content_text_view);
-        contentScro = findViewById(R.id.contentScro);
+//        contentv = findViewById(R.id.news_item_content_text_view);
+//        contentScro = findViewById(R.id.contentScro);
 //        splash_img = (ImageView) findViewById(R.id.splash_img1);
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
@@ -67,35 +67,35 @@ public class MainDoActivity extends AppCompatActivity {
 //            }
 //        },1000);
     }
-    private TextView lastv;
-    public void msgType(View view){
-        if(lastv==null){
-            lastv = findViewById(R.id.btn_gt);
-        }
-        lastv.setBackgroundColor(0);
-        lastv.setTextColor(getResources().getColor(R.color.c_gray_6));
-        lastv = (TextView) view;
-        contentScro.scrollTo(0,0);
-        if(view.getId()==R.id.btn_gt){
-            contentv.setText(R.string.gt_content);
-        }
-        if(view.getId()==R.id.btn_jt){
-            contentv.setText(R.string.jt_content);
-        }
-        if(view.getId()==R.id.btn_zj){
-            contentv.setText(R.string.zj_content);
-        }
-        if(view.getId()==R.id.btn_hs){
-            contentv.setText(R.string.hs_content);
-        }
-        lastv.setTextColor(getResources().getColor(R.color.white));
-        lastv.setBackgroundColor(getResources().getColor(R.color.color_back));
-    }
+//    private TextView lastv;
+//    public void msgType(View view){
+//        if(lastv==null){
+//            lastv = findViewById(R.id.btn_gt);
+//        }
+//        lastv.setBackgroundColor(0);
+//        lastv.setTextColor(getResources().getColor(R.color.c_gray_6));
+//        lastv = (TextView) view;
+//        contentScro.scrollTo(0,0);
+//        if(view.getId()==R.id.btn_gt){
+//            contentv.setText(R.string.gt_content);
+//        }
+//        if(view.getId()==R.id.btn_jt){
+//            contentv.setText(R.string.jt_content);
+//        }
+//        if(view.getId()==R.id.btn_zj){
+//            contentv.setText(R.string.zj_content);
+//        }
+//        if(view.getId()==R.id.btn_hs){
+//            contentv.setText(R.string.hs_content);
+//        }
+//        lastv.setTextColor(getResources().getColor(R.color.white));
+//        lastv.setBackgroundColor(getResources().getColor(R.color.color_back));
+//    }
 
 
     public void toMapMain(View view){
         if(view.getId()==R.id.typeSlope){
-            ARouter.getInstance().build("/map/index").withSerializable("data",data).navigation();
+            ARouter.getInstance().build("/map/index").withSerializable("data",data).withInt("type",1).navigation();
             showLoading();
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -103,6 +103,50 @@ public class MainDoActivity extends AppCompatActivity {
                     hideLoading();
                 }
             },1000);
+        }
+        if(view.getId()==R.id.typeSf){
+            ARouter.getInstance().build("/map/index").withSerializable("data",data).withInt("type",3).navigation();
+            showLoading();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    hideLoading();
+                }
+            },1000);
+        }
+        if(view.getId()==R.id.typeHouse){
+            ARouter.getInstance().build("/map/index").withSerializable("data",data).withInt("type",2).navigation();
+            showLoading();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    hideLoading();
+                }
+            },1000);
+        }
+        if(view.getId()==R.id.btn_gt){
+            Intent intent = new Intent(MainDoActivity.this,ManagerActivity.class);
+            intent.putExtra("type",getResources().getString(R.string.type_gt));
+            intent.putExtra("data",data);
+            startActivity(intent);
+        }
+        if(view.getId()==R.id.btn_jt){
+            Intent intent = new Intent(MainDoActivity.this,ManagerActivity.class);
+            intent.putExtra("type",getResources().getString(R.string.type_jt));
+            intent.putExtra("data",data);
+            startActivity(intent);
+        }
+        if(view.getId()==R.id.btn_hs){
+            Intent intent = new Intent(MainDoActivity.this,ManagerActivity.class);
+            intent.putExtra("type",getResources().getString(R.string.type_hs));
+            intent.putExtra("data",data);
+            startActivity(intent);
+        }
+        if(view.getId()==R.id.btn_zj){
+            Intent intent = new Intent(MainDoActivity.this,ManagerActivity.class);
+            intent.putExtra("type",getResources().getString(R.string.type_zj));
+            intent.putExtra("data",data);
+            startActivity(intent);
         }
     }
     public void showLoading() {

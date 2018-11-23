@@ -22,5 +22,27 @@ public  class TimeUtils {
         SimpleDateFormat sdf2 = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
         return  sdf2.format(d);
     }
+    public static String transleteTime2(String time){
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy K:m:s a", Locale.ENGLISH);
+        Date d = null;
+        try {
+            d = sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
+        return  sdf2.format(d);
+    }
 
+    public static String transleteTime3(String time){
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy K:m:s a", Locale.ENGLISH);
+        Date d = null;
+        try {
+            d = sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat sdf2 = new SimpleDateFormat("YYYY/MM/dd");
+        return  sdf2.format(d);
+    }
 }

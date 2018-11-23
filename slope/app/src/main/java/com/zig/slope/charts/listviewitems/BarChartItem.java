@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
@@ -22,13 +23,25 @@ import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.util.OkhttpWorkUtil;
 import com.zig.slope.view.TakePhotoPopLeft;
 
+import java.util.List;
+
 public class BarChartItem extends ChartItem {
     private TakePhotoPopLeft poup ;
     private Typeface mTf;
     private String sid;
     private OkhttpWorkUtil okhttpWorkUtil;
     private Activity activity;
-    public BarChartItem(ChartData<?> cd, Activity c,String sid ) {
+    private List<String> xdata;
+
+    public List<String> getXdata() {
+        return xdata;
+    }
+
+    public void setXdata(List<String> xdata) {
+        this.xdata = xdata;
+    }
+
+    public BarChartItem(ChartData<?> cd, Activity c, String sid ) {
         super(cd);
         this.sid = sid;
         mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
@@ -80,8 +93,16 @@ public class BarChartItem extends ChartItem {
         xAxis.setDrawGridLines(false);
         xAxis.setLabelCount(10);
         xAxis.setDrawAxisLine(true);
+        xAxis.setGranularity(1f);
         xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(20);
+        xAxis.setAxisMaximum(19);
+        xAxis.setLabelRotationAngle(15);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return xdata.get((int)value);
+            }
+        });
 
         IAxisValueFormatter custom = new MyAxisValueFormatter(3);
         YAxis leftAxis = holder.chart.getAxisLeft();
@@ -95,6 +116,7 @@ public class BarChartItem extends ChartItem {
         rightAxis.setTypeface(mTf);
         rightAxis.setLabelCount(5, false);
         rightAxis.setSpaceTop(20f);
+
         rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
         rightAxis.setValueFormatter(custom);
         mChartData.setValueTypeface(mTf);

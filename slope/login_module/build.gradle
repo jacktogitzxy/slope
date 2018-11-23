@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     annotationProcessor rootProject.ext.dependencies.arouter_compiler
     //运行时权限
-    implementation 'me.weyye.hipermission:library:1.0.7'
+//    implementation 'me.weyye.hipermission:library:1.0.7'
     compile 'cn.bingoogolapple:bga-banner:2.1.8@aar'
     implementation project(':common_module')
 //    compile files('libs/sun.misc.BASE64Decoder.jar')

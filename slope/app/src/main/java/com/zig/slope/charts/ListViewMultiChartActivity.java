@@ -1,26 +1,16 @@
 package com.zig.slope.charts;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PathEffect;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.Shader;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -28,41 +18,28 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.BaseDataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.zig.slope.HisReportActivity;
-import com.zig.slope.HisReportDetilActivity;
 import com.zig.slope.R;
 import com.zig.slope.adapter.ChartDataAdapter;
-import com.zig.slope.bean.UserLoacl;
-import com.zig.slope.callback.RequestCallBack;
 import com.zig.slope.charts.listviewitems.BarChartItem;
 import com.zig.slope.charts.listviewitems.ChartItem;
 import com.zig.slope.charts.listviewitems.LineChartItem;
-import com.zig.slope.charts.listviewitems.WyLineChartItem;
 import com.zig.slope.common.base.BaseMvpActivity;
 import com.zig.slope.common.base.bean.BaseResponseBean;
 import com.zig.slope.common.base.bean.DataBean;
 import com.zig.slope.common.base.bean.MySensor;
+import com.zig.slope.common.utils.TimeUtils;
 import com.zig.slope.contract.SensorContract;
 import com.zig.slope.presenter.SensorPresenterImpl;
 import com.zig.slope.util.ToolUtils;
@@ -349,21 +326,24 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
             final List<MySensor.MySensorData> datas = mySensor.getData();
             if(type==1) {//表面位移
                 m=datas.get(datas.size()-1).getXdata();
-                String[]labs = new String[]{"x","y表面变形(mm)         周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
+                String[]labs = new String[]{"x","y表面变形(mm)         周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）     日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
                 LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,2,sensorId);
+                lineChartItem.setXdata(getxDatas(datas));
                 list.add(lineChartItem);
             }
             if(type==2){//内部位移
                 a=datas.get(datas.size()-1).getXdata();
                 b=datas.get(datas.size()-1).getYdata();
-                String[]labs = new String[]{"x","y深部位移(°)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
+                String[]labs = new String[]{"x","y深部位移(°)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）    日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
                 LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,1,sensorId);
+                lineChartItem.setXdata(getxDatas(datas));
                 list.add(lineChartItem);
             }
             if (type==3){//水压
                 p=datas.get(datas.size()-1).getXdata();
-                String[]labs = new String[]{"孔隙水压(kpa)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
+                String[]labs = new String[]{"孔隙水压(kpa)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
                 BarChartItem barChartItem=new BarChartItem(getDataBar(datas,labs),ListViewMultiChartActivity.this,sensorId);
+                barChartItem.setXdata(getxDatas(datas));
                 list.add(barChartItem);
             }
         }
@@ -378,6 +358,13 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         draw(p,m,a,b);
 
 
+    }
+    public ArrayList<String> getxDatas(List<MySensor.MySensorData> datas){
+        ArrayList<String> e3 = new ArrayList<>();
+        for (int i = 0; i < datas.size(); i++) {
+            e3.add(TimeUtils.transleteTime2(datas.get(i).getCreateTime()));
+        }
+        return e3;
     }
     public LineData getLineData( List<MySensor.MySensorData> datas,String[]labs){
         ArrayList<Entry> e1 = new ArrayList<Entry>();

@@ -3,6 +3,7 @@ package com.zig.slope.presenter;
 import android.content.Context;
 import android.util.Log;
 
+import com.zig.slope.bean.SanFan;
 import com.zig.slope.common.base.BasePresenter;
 import com.zig.slope.common.base.bean.BaseResponseBean;
 import com.zig.slope.common.base.bean.ProcessBean;
@@ -44,6 +45,27 @@ public class ProcessPresenterImpl extends BasePresenter<ProcessContract.ProcessV
             }
         });
     }
+    /**
+     * 请求三防
+     */
+    public void requestSFData(Context context){
+        model.getThreeDefenseDatas(context,new ProcessContract.IProcessModelCallbacksf() {
+            @Override
+            public void onSuccess(BaseResponseBean<List<SanFan>> response) {
+                if (getMvpView() != null) {
+                    getMvpView().onThreeDefenseSucess(response.getData());
+                }
+            }
+
+            @Override
+            public void onFail(String msg) {
+                if (getMvpView() != null) {
+                    getMvpView().onThreeDefenseFail(msg);
+                }
+            }
+        });
+    }
+
 
     /**
      * 取消请求

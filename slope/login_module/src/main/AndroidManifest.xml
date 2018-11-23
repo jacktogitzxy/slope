@@ -4,19 +4,20 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <application android:theme="@style/AppBaseTheme">
         <activity android:name=".LoginMActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainDoActivity">
-
-
-        </activity>
-
+        <activity android:name=".MainDoActivity"></activity>
+        <activity android:name=".ManagerActivity"></activity>
+        <activity
+            android:name="me.weyye.hipermission.PermissionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/CustomTheme_Dialog"/>
     </application>
 
 </manifest>

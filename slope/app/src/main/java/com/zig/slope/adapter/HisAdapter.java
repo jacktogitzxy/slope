@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zig.slope.R;
@@ -29,11 +30,13 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private LayoutInflater inflater;
     private List<HisReport> mList;
     private OnRecyclerViewItemOnClickListener listener;
+    private int type;
 
-    public HisAdapter(Context context, List<HisReport> list){
+    public HisAdapter(Context context, List<HisReport> list,int type){
         this.context = context;
         inflater = LayoutInflater.from(this.context);
         mList = list;
+        this.type = type;
     }
 
     public void updateData(List<HisReport> list,boolean isRefresh){
@@ -62,7 +65,13 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         HisReport data = mList.get(position);
         normalViewHolder.textAuthor.setText(data.getRemark());
         normalViewHolder.textTitle.setText(data.getContents());
-        normalViewHolder.btnCategory.setText("  "+data.getNewName()+"  ");
+        if(type==3){
+            normalViewHolder.btnCategory.setText("  "+data.getT_id()+"  ");
+            normalViewHolder.typeHisicon.setImageResource(R.mipmap.sficonleft);
+        }else if(type==1) {
+            normalViewHolder.btnCategory.setText("  " + data.getNewName() + "  ");
+            normalViewHolder.typeHisicon.setImageResource(R.mipmap.solpeiconleft);
+        }
         normalViewHolder.textTime.setText(TimeUtils.transleteTime(data.getCreateTime()));
     }
 
@@ -83,6 +92,7 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         TextView textTitle;
         AppCompatTextView textAuthor;
         AppCompatTextView textTime;
+        ImageView typeHisicon;
 
 
 
@@ -95,6 +105,7 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             textAuthor = itemView.findViewById(R.id.text_view_author);
             textTime = itemView.findViewById(R.id.text_view_time);
             cardView = itemView.findViewById(R.id.card_view_layout);
+            typeHisicon = itemView.findViewById(R.id.typeHisicon);
             cardView.setOnClickListener(this);
         }
 

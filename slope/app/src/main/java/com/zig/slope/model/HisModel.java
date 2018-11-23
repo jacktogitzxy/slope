@@ -30,12 +30,12 @@ public class HisModel implements HisContract.HisModel {
      * 请求banner图片以及文章列表数据
      */
     @Override
-    public void getHisDatas(Context context, String admin,int page, final HisContract.IHisModelCallback callback,String meths) {
+    public void getHisDatas(Context context, String admin,int page,int types, final HisContract.IHisModelCallback callback,String meths) {
 
         RxRetrofitManager.getInstance()
                 .setTag(meths)
                 .getApiService(HisApi.class)
-                .getHisReport(meths,page,admin)
+                .getHisReport(meths,page,admin,types)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( new RxObserver<BaseResponseBean<HisBean>>(context, true) {

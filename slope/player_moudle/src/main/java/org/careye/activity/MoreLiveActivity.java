@@ -7,12 +7,15 @@ package org.careye.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.careye.rtmp.careyeplayer.R;
@@ -26,6 +29,8 @@ import java.util.List;
 public class MoreLiveActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "MoreLiveActivity";
     private EyeVideoView[] mVideoPlayers;
+    private TextView[] texts;
+    private FrameLayout[] vies;
     private Toolbar toolbar;
     private String newName;
     private int size=1;
@@ -39,6 +44,7 @@ public class MoreLiveActivity extends AppCompatActivity implements View.OnClickL
         Intent intent = getIntent();
         videos = intent.getParcelableArrayListExtra("videos");
         newName = intent.getStringExtra("newName");
+        size=videos.size();
         initView();
         initListener();
     }
@@ -58,7 +64,13 @@ public class MoreLiveActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
-        play();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                play();
+            }
+        },1000);
+
     }
 
     private void initView() {
@@ -71,6 +83,24 @@ public class MoreLiveActivity extends AppCompatActivity implements View.OnClickL
         mVideoPlayers[5] = findViewById(R.id.video_player6);
         mVideoPlayers[6] = findViewById(R.id.video_player7);
         mVideoPlayers[7] = findViewById(R.id.video_player8);
+        texts = new TextView[8];
+        texts[0] = findViewById(R.id.video_player_text1);
+        texts[1] = findViewById(R.id.video_player_text2);
+        texts[2] = findViewById(R.id.video_player_text3);
+        texts[3] = findViewById(R.id.video_player_text4);
+        texts[4] = findViewById(R.id.video_player_text5);
+        texts[5] = findViewById(R.id.video_player_text6);
+        texts[6] = findViewById(R.id.video_player_text7);
+        texts[7] = findViewById(R.id.video_player_text8);
+        vies = new FrameLayout[8];
+        vies[0] = findViewById(R.id.frame_1);
+        vies[1] = findViewById(R.id.frame_2);
+        vies[2] = findViewById(R.id.frame_3);
+        vies[3] = findViewById(R.id.frame_4);
+        vies[4] = findViewById(R.id.frame_5);
+        vies[5] = findViewById(R.id.frame_6);
+        vies[6] = findViewById(R.id.frame_7);
+        vies[7] = findViewById(R.id.frame_8);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.return_icon);
         toolbar.setTitleMarginStart(120);
@@ -95,8 +125,10 @@ public class MoreLiveActivity extends AppCompatActivity implements View.OnClickL
         stop();
         for (int i =0;i<size;i++){
             if(null!=videos.get(i)) {
+                texts[i].setText(videos.get(i).getRemark());
                 mVideoPlayers[i].setVideoPath(videos.get(i).getUrl());
                 mVideoPlayers[i].start();
+                vies[i].setVisibility(View.VISIBLE);
             }
         }
     }

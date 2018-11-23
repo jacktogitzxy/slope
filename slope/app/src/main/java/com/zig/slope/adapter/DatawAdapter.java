@@ -32,6 +32,7 @@ import com.zig.slope.charts.listviewitems.BarChartItem;
 import com.zig.slope.charts.listviewitems.ChartItem;
 import com.zig.slope.charts.listviewitems.LineChartItem;
 import com.zig.slope.common.base.bean.MySensor;
+import com.zig.slope.common.utils.TimeUtils;
 import com.zig.slope.util.ToolUtils;
 
 import java.util.ArrayList;
@@ -164,18 +165,23 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         String p="0",a="0",b="0",m="0";
         if(mySensor.getType_s()==1){
             m=datas.get(datas.size()-1).getXdata();
-            String[]labs = new String[]{"x","y表面变形(mm)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
+            String[]labs = new String[]{"x","y表面变形(mm)   周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
             LineChartItem lineChartItem = new LineChartItem(getLineData(datas,labs),context,2,sensorId);
+            lineChartItem.setXdata(getxDatas(datas));
             list.add(lineChartItem);
         }else if(mySensor.getType_s()==2){
             a=datas.get(datas.size()-1).getXdata();
             b=datas.get(datas.size()-1).getYdata();
-            String[]labs = new String[]{"x","y深部位移(°)         周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
-            list.add(new LineChartItem(getLineData(datas,labs),context,1,sensorId));
+            String[]labs = new String[]{"x","y深部位移(°)   周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
+            LineChartItem lineChartItem =new LineChartItem(getLineData(datas,labs),context,1,sensorId);
+            lineChartItem.setXdata(getxDatas(datas));
+            list.add(lineChartItem);
         }else{
             p=datas.get(0).getXdata();
-            String[]labs = new String[]{"孔隙水压(kpa)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）"};
-            list.add(new BarChartItem(getDataBar(datas,labs),context,sensorId));
+            String[]labs = new String[]{"孔隙水压(kpa)    周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
+            BarChartItem barChartItem = new BarChartItem(getDataBar(datas,labs),context,sensorId);
+            barChartItem.setXdata(getxDatas(datas));
+            list.add(barChartItem);
         }
         ChartDataAdapter cda = new ChartDataAdapter(context, list);
         final String finalP = p;
@@ -191,7 +197,13 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         listView.setAdapter(cda);
     }
-
+    public ArrayList<String> getxDatas(List<MySensor.MySensorData> datas){
+        ArrayList<String> e3 = new ArrayList<>();
+        for (int i = 0; i < datas.size(); i++) {
+            e3.add(TimeUtils.transleteTime2(datas.get(i).getCreateTime()));
+        }
+        return e3;
+    }
     private void drawx(String temp,String moveSize,String a,String b,String n,int currentType,SurfaceHolder mHolder) {
         Canvas canvas = mHolder.lockCanvas();
         Log.i("zxy", "drawx: canvas=="+canvas+"====mHolder="+mHolder);

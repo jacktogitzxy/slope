@@ -46,11 +46,9 @@ import cn.jpush.android.api.JPushInterface;
 
 
 public class ReportActivity extends BaseActivity {
-    private AppCompatButton video_upload;//,photo_upload;
+    private AppCompatButton video_upload;
     // 文件路径
-//    private String path = "";
-//    private String vpath = "";
-    private TextView report_name1, report_name, report_worker,report_date;// report_worker_tel,
+    private TextView report_name1, report_worker,report_date,typesid;
     private EditText report_note;
     // 播放按钮
     private MyImageBt [] plays;
@@ -59,13 +57,16 @@ public class ReportActivity extends BaseActivity {
     private String TAG="REPORT";
     private CustomProgressDialog progressDialog;
     private double n,e;
-     private CheckBox[] boxs;
+    private CheckBox[] boxs;
+    private int type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         setStatusBar();
         Intent intent = getIntent();
+        type= intent.getIntExtra("type",1);
         if (intent != null && intent.getStringExtra("pname") != null) {
             Pname = intent.getStringExtra("pname");
             n= intent.getDoubleExtra("x",0);
@@ -131,6 +132,8 @@ public class ReportActivity extends BaseActivity {
     }
 
     private void initView() {
+        typesid = findViewById(R.id.typesid);
+
         video_upload = (AppCompatButton) findViewById(R.id.video_upload);
         plays = new MyImageBt[4];
         plays[0] = (MyImageBt) findViewById(R.id.play);
@@ -148,6 +151,20 @@ public class ReportActivity extends BaseActivity {
         boxs[1] = findViewById(R.id.danager_cb2);
         boxs[2] = findViewById(R.id.danager_cb3);
         boxs[3] = findViewById(R.id.danager_cb4);
+        if(type==1){
+            typesid.setText(getResources().getString(R.string.typesolopeid));
+            boxs[0].setText(getResources().getString(R.string.danger1));
+            boxs[1].setText(getResources().getString(R.string.danger2));
+            boxs[2].setText(getResources().getString(R.string.danger3));
+            boxs[3].setText(getResources().getString(R.string.danger4));
+        }
+        if(type==2){
+            typesid.setText(getResources().getString(R.string.typesfid));
+            boxs[0].setText(getResources().getString(R.string.danger5));
+            boxs[1].setText(getResources().getString(R.string.danger6));
+            boxs[2].setText(getResources().getString(R.string.danger7));
+            boxs[3].setText(getResources().getString(R.string.danger8));
+        }
         if (Pname != null) {//补充数据
             report_name1.setText(Pname);
         }
@@ -155,7 +172,7 @@ public class ReportActivity extends BaseActivity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
 //获取当前时间
         Date date = new Date(System.currentTimeMillis());
-        report_date.setText(getResources().getString(R.string.reportDate) + simpleDateFormat.format(date));
+        report_date.setText( simpleDateFormat.format(date));
     }
 //上传数据
     public void startReportdo(View v) {
@@ -164,13 +181,9 @@ public class ReportActivity extends BaseActivity {
         String operatorID = pm.getPackage("operatorId");
 
         if(slopeId==null||slopeId.equals("")){
-            Toast.makeText(ReportActivity.this,"请填写边坡编号",Toast.LENGTH_SHORT).show();
+            Toast.makeText(ReportActivity.this,"请填写编号",Toast.LENGTH_SHORT).show();
             return;
         }
-//        if(text==null||text.equals("")){
-//            Toast.makeText(ReportActivity.this,"请填写描述信息",Toast.LENGTH_SHORT).show();
-//            return;
-//        }
         String remark1 ="";
         for (int i = 0;i<boxs.length;i++){
             String value = boxs[i].getText().toString();
@@ -214,7 +227,7 @@ public class ReportActivity extends BaseActivity {
             TextView nameView2 = (TextView) view.findViewById(R.id.photo_name2);
             iconView.setImageBitmap(BitmapFactory.decodeFile(path));
             nameView.setText("巡查员姓名:"+userName);
-            nameView1.setText(report_date.getText());
+            nameView1.setText(getResources().getString(R.string.reportDate) +report_date.getText());
             nameView2.setText("巡查地点:"+report_name1.getText());
             BitmapDescriptor bitmap = BitmapDescriptorFactory.fromView(view);
             for(int i = 0;i<plays.length;i++){
@@ -243,8 +256,12 @@ public class ReportActivity extends BaseActivity {
 //http://divitone.3322.org:8081/fx/filesUpload?slopeCode=admin&patrollerID=277&isContainPic=1&isContainVideo=1&videoAddress=d:/123
 
     public void upLaodImg( final String... param) {
-         showProgressDialog();
-        RequestParams params = new RequestParams(Constant.BASE_URL+"filesUpload");//参数是路径地址
+        showProgressDialog();
+        String uri = Constant.BASE_URL+"filesUpload";
+        if(type==2){
+            uri = Constant.BASE_URL+"saveThreeInsepectionApp";
+        }
+        RequestParams params = new RequestParams(uri);//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
         for (int i = 7; i < param.length; i++) {
             try {
@@ -254,7 +271,12 @@ public class ReportActivity extends BaseActivity {
         }
         Log.i(TAG, "upLaodImg:  param[0]=="+ param[0]);
         list.add(new KeyValue("patrollerID", param[0]));
-        list.add(new KeyValue("newName", param[1]));
+        if(type==1) {
+            list.add(new KeyValue("newName", param[1]));
+        }
+        if(type==2){
+            list.add(new KeyValue("id", param[1]));
+        }
         list.add(new KeyValue("contents", param[2]));
         list.add(new KeyValue("x", param[3]));
         list.add(new KeyValue("y", param[4]));
@@ -266,19 +288,22 @@ public class ReportActivity extends BaseActivity {
         MultipartBody body = new MultipartBody(list, "UTF-8");
         params.setRequestBody(body);
         params.setMultipart(true);
-
         x.http().post(params, new Callback.CommonCallback<String>() {
-
             @Override
             public void onSuccess(String result) {
                 Log.i(TAG, "onSuccess: result=="+result);
+                stopProgressDialog();
+                Toast.makeText(ReportActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+                ReportActivity.this.finish();
             }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 stopProgressDialog();
                 Toast.makeText(ReportActivity.this,"上传失败，服务器繁忙",Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "onError: ");
+                Log.i(TAG, "onError: "+ex.getMessage());
+                Log.i(TAG, "onError: "+ex.getLocalizedMessage());
+                Log.i(TAG, "onError: "+ex.toString());
             }
 
             @Override
@@ -288,12 +313,7 @@ public class ReportActivity extends BaseActivity {
 
             @Override
             public void onFinished() {
-
-                stopProgressDialog();
-                Toast.makeText(ReportActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
-              //  ReportActivity.this.finish();
                 Log.i(TAG, "onFinished: ");
-                ReportActivity.this.finish();
             }
         });
     }

@@ -23,8 +23,8 @@
             <!--/>-->
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_20"
             android:src="@mipmap/logotop"
             android:scaleType="fitCenter"
             android:layout_gravity="center_horizontal"
@@ -67,101 +67,185 @@
             <!--android:textColor="@color/color_back"-->
             <!--android:layout_gravity="center_horizontal"-->
             <!--/>-->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_marginTop="@dimen/dp_15">
+<!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:layout_marginTop="@dimen/dp_15">-->
 
-        <ScrollView
-            android:id="@+id/contentScro"
-            android:layout_width="@dimen/dp_300"
-            android:background="@drawable/bt_main_scorll"
-            android:layout_height="@dimen/dp_170"
-            android:layout_marginTop="@dimen/dp_10"
-           android:layout_marginLeft="@dimen/dp_20"
-            android:layout_gravity="left"
-           >
-            <TextView
-                android:id="@+id/news_item_content_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="2dp"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
-                android:text="@string/gt_content"
-                android:textColor="@color/tv_gray_deep" />
+        <!--<ScrollView-->
+            <!--android:id="@+id/contentScro"-->
+            <!--android:layout_width="@dimen/dp_300"-->
+            <!--android:background="@drawable/bt_main_scorll"-->
+            <!--android:layout_height="@dimen/dp_170"-->
+            <!--android:layout_marginTop="@dimen/dp_10"-->
+           <!--android:layout_marginLeft="@dimen/dp_20"-->
+            <!--android:layout_gravity="left"-->
+           <!--&gt;-->
+            <!--<TextView-->
+                <!--android:id="@+id/news_item_content_text_view"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:lineSpacingExtra="2dp"-->
+                <!--android:paddingLeft="@dimen/dp_20"-->
+                <!--android:paddingRight="@dimen/dp_20"-->
+                <!--android:text="@string/gt_content"-->
+                <!--android:textColor="@color/tv_gray_deep" />-->
 
-        </ScrollView>
+        <!--</ScrollView>-->
 
 
-    <LinearLayout
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_170"
-        android:background="@drawable/bt_main_state"
-        android:gravity="center"
-        android:orientation="vertical">
+    <!--<LinearLayout-->
+        <!--android:layout_width="@dimen/dp_40"-->
+        <!--android:layout_height="@dimen/dp_170"-->
+        <!--android:background="@drawable/bt_main_state"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical">-->
 
+        <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/btn_gt"-->
+            <!--android:layout_marginTop="@dimen/dp_20"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="32dp"-->
+            <!--android:clickable="true"-->
+            <!--android:background="@color/color_back"-->
+            <!--android:text="@string/type_gt"-->
+            <!--android:onClick="msgType"-->
+            <!--android:focusable="true"-->
+            <!--android:textColor="@color/c_gray_6"-->
+            <!--android:textStyle="bold"-->
+            <!--android:gravity="center"-->
+           <!--/>-->
+
+        <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/btn_jt"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="32dp"-->
+            <!--android:clickable="true"-->
+            <!--android:onClick="msgType"-->
+            <!--android:text="@string/type_jt"-->
+            <!--android:textColor="@color/c_gray_6"-->
+            <!--android:textStyle="bold"-->
+            <!--android:focusable="true"-->
+            <!--android:gravity="center"-->
+           <!--/>-->
+
+
+        <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/btn_zj"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="32dp"-->
+            <!--android:clickable="true"-->
+            <!--android:text="@string/type_zj"-->
+            <!--android:focusable="true"-->
+            <!--android:gravity="center"-->
+            <!--android:textColor="@color/c_gray_6"-->
+            <!--android:textStyle="bold"-->
+            <!--android:onClick="msgType"-->
+          <!--/>-->
+
+        <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/btn_hs"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="32dp"-->
+            <!--android:clickable="true"-->
+            <!--android:text="@string/type_hs"-->
+            <!--android:textColor="@color/c_gray_6"-->
+            <!--android:textStyle="bold"-->
+            <!--android:layout_marginBottom="@dimen/dp_20"-->
+            <!--android:focusable="true"-->
+            <!--android:onClick="msgType"-->
+            <!--android:gravity="center"-->
+            <!--/>-->
+
+    <!--</LinearLayout>-->
+
+<!--</LinearLayout>-->
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/btn_gt"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:clickable="true"
-            android:background="@color/color_back"
-            android:text="@string/type_gt"
-            android:onClick="msgType"
-            android:focusable="true"
-            android:textColor="@color/c_gray_6"
-            android:textStyle="bold"
-            android:gravity="center"
-           />
-
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/btn_jt"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:clickable="true"
-            android:onClick="msgType"
-            android:text="@string/type_jt"
-            android:textColor="@color/c_gray_6"
-            android:textStyle="bold"
+            android:text="@string/typegaverment"
             android:focusable="true"
             android:gravity="center"
-           />
-
-
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/btn_zj"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:clickable="true"
-            android:text="@string/type_zj"
-            android:focusable="true"
-            android:gravity="center"
-            android:textColor="@color/c_gray_6"
-            android:textStyle="bold"
-            android:onClick="msgType"
-          />
-
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/btn_hs"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:clickable="true"
-            android:text="@string/type_hs"
-            android:textColor="@color/c_gray_6"
-            android:textStyle="bold"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:focusable="true"
-            android:onClick="msgType"
-            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/color_back"
+            android:layout_gravity="center_horizontal"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/btn_gt"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg2"
+                android:clickable="true"
+                android:text="@string/type_gt"
+                android:textSize="18sp"
+                android:onClick="toMapMain"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
 
-    </LinearLayout>
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/btn_jt"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg2"
+                android:clickable="true"
+                android:onClick="toMapMain"
+                android:text="@string/type_jt"
+                android:textSize="18sp"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
+        </LinearLayout>
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/btn_zj"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg2"
+                android:clickable="true"
+                android:text="@string/type_zj"
+                android:onClick="toMapMain"
+                android:focusable="true"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
 
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/btn_hs"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/item_text_view_bg2"
+                android:clickable="true"
+                android:text="@string/type_hs"
+                android:textSize="18sp"
+                android:onClick="toMapMain"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
+
+        </LinearLayout>
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_marginTop="@dimen/dp_5"
@@ -185,28 +269,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/item_text_view_bg"
+                android:background="@drawable/item_text_view_bg2"
                 android:clickable="true"
                 android:text="@string/type_slope"
+                android:textSize="17sp"
                 android:onClick="toMapMain"
                 android:focusable="true"
                 android:gravity="center"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"/>
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/typeSf"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/item_text_view_bg"
+                android:background="@drawable/item_text_view_bg2"
                 android:clickable="true"
                 android:onClick="toMapMain"
                 android:text="@string/type_weater"
+                android:textSize="17sp"
                 android:focusable="true"
                 android:gravity="center"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"/>
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
 
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -214,42 +300,51 @@
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/item_text_view_bg"
+                android:background="@drawable/item_text_view_bg2"
                 android:clickable="true"
                 android:text="@string/type_house"
+                android:textSize="17sp"
                 android:onClick="toMapMain"
                 android:focusable="true"
                 android:gravity="center"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
-
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:orientation="horizontal">
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/typeDx"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/item_text_view_bg"
+                android:background="@drawable/item_text_view_bg2"
                 android:clickable="true"
                 android:text="@string/type_dx"
+                android:textSize="17sp"
                 android:onClick="toMapMain"
                 android:focusable="true"
                 android:gravity="center"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/typegd"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/item_text_view_bg"
+                android:background="@drawable/item_text_view_bg2"
                 android:clickable="true"
                 android:text="@string/type_gd"
+                android:textSize="17sp"
                 android:focusable="true"
                 android:onClick="toMapMain"
                 android:gravity="center"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
 
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -257,14 +352,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
-                android:background="@drawable/item_text_view_bg"
+                android:background="@drawable/item_text_view_bg2"
                 android:clickable="true"
                 android:text="@string/type_hd"
+                android:textSize="17sp"
                 android:onClick="toMapMain"
                 android:focusable="true"
                 android:gravity="center"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp" />
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
 
         </LinearLayout>
 
@@ -275,7 +371,7 @@
         android:focusable="true"
         android:gravity="center"
         android:textSize="13sp"
-        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_25"
         android:textColor="@color/color_back"
         android:layout_gravity="center_horizontal|bottom"
         />

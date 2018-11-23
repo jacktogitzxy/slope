@@ -35,10 +35,10 @@ public class MyMarkerView extends MarkerView {
         if (e instanceof CandleEntry) {
 
             CandleEntry ce = (CandleEntry) e;
-            tvContent.setText("x: " + (int)e.getX()+ ", y: " + e.getY());
+            tvContent.setText( "y: " + e.getY());
             //tvContent.setText("" + Utils.formatNumber(ce.getHigh(), 0, true));
         } else {
-            tvContent.setText("x: " + (int)e.getX()+ ", y: " + e.getY());
+            tvContent.setText(" y: " + e.getY());
            // tvContent.setText("" + Utils.formatNumber(e.getY(), 0, true));
         }
 

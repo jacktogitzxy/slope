@@ -48,4 +48,5 @@
     <color name="color_b1b1b1">#b1b1b1</color>
     <color name="layout_background">#fafafa</color>
     <color name="greend">#ff669900</color>
+    <color name="main_color">#FF7ED7D8</color>
 </resources>

@@ -1,26 +1,19 @@
 package com.zig.slope;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Pair;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.youth.banner.Banner;
 import com.zig.slope.adapter.HisAdapter;
 import com.zig.slope.adapter.OnRecyclerViewItemOnClickListener;
 import com.zig.slope.common.base.BaseMvpActivity;
@@ -33,10 +26,6 @@ import com.zig.slope.util.NetworkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import slope.zxy.com.login_module.contract.LoginContract;
-import slope.zxy.com.login_module.presenter.LoginPresenterImpl;
-
 public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView,HisPresenterImpl>
         implements HisContract.HisReportView {
     public String TAG = HisReportActivity.class.getName();
@@ -54,13 +43,13 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
     private   String admin;
     private HisAdapter adapter;
     private Toolbar toolbar;
-    private boolean isFirstLoad=true;
-    private String NOTDO ="queryInspectionResultsApp";
-    private String ADMINDO = "queryInspectionResultsListAdminApp";
-    private  String LEADERDO = "queryInspectionResultsListLeaderApp";
+    private String NOTDO = "queryInspectionResultsApp";//未审核
+    private String ADMINDO = "queryInspectionResultsListAdminApp";//管理审核
+    private  String LEADERDO = "queryInspectionResultsListLeaderApp";//领导审核
     private boolean isCurrentType = true;
-    private  String CURRENTTYPE = NOTDO;
+    private  String CURRENTTYPE=NOTDO;
     private String operatorLevel,operatorName;
+    private int type=1;//1 边坡 2危房  3三防 4地陷 5工地  6河道 7全部
     @Override
     protected int getLayoutId() {
         return R.layout.activity_his_report;
@@ -73,6 +62,8 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
 
     @Override
     protected void findViews() {
+        Intent intent = getIntent();
+        type = intent.getIntExtra("type",1);//查询类型
         pm = PreferenceManager.getInstance(HisReportActivity.this);
         emptyView = findViewById(R.id.empty_view);
         layoutManager = new LinearLayoutManager(HisReportActivity.this);
@@ -108,6 +99,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
         toolbar.setTitleMarginStart(250);
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         toolbar.setTitle(R.string.type_his);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.main_color));
         toolbar.setSubtitle(R.string.notdo);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -149,7 +141,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
     }
 
     public void getTypeData(){
-        getPresenter().requestHisData(HisReportActivity.this,admin,currentPage,CURRENTTYPE);
+            getPresenter().requestHisData(HisReportActivity.this, admin, currentPage, CURRENTTYPE,type);
     }
     @Override
     protected void getData() {
@@ -157,7 +149,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
         admin = pm.getPackage("operatorId");
         currentPage = INDEX;
         operatorName = pm.getPackage("operatorName");
-        getPresenter().requestHisData(HisReportActivity.this,admin,INDEX,NOTDO);
+        getPresenter().requestHisData(HisReportActivity.this,admin,INDEX,NOTDO,type);
     }
 
     @Override
@@ -184,7 +176,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
                 return;
             }
             showEmptyView(false);
-            adapter = new HisAdapter(HisReportActivity.this, data);
+            adapter = new HisAdapter(HisReportActivity.this, data,type);
             adapter.setItemClickListener(new OnRecyclerViewItemOnClickListener() {
                 @Override
                 public void onClick(View view, int position) {
@@ -193,6 +185,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
                     intent.putExtra("operatorLevel",operatorLevel);
                     intent.putExtra("flag",datap.get(position).getFlag());
                     intent.putExtra("operatorName",operatorName);
+                    intent.putExtra("type",type);
                     startActivity(intent);
                 }
             });
@@ -210,7 +203,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
             }
             showEmptyView(false);
             if(adapter==null){
-                adapter = new HisAdapter(HisReportActivity.this, data);
+                adapter = new HisAdapter(HisReportActivity.this, data,type);
             }else {
                 adapter.updateData(data, true);
             }
@@ -234,7 +227,6 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
     private void loadMore(){
         boolean isNetworkAvailable = NetworkUtil.isNetworkAvailable(HisReportActivity.this);
         if (isNetworkAvailable){
-
             currentPage+=1;
             getTypeData();
         }else {

@@ -129,9 +129,9 @@
                     android:text="@string/type_slope"
                     android:layout_marginLeft="@dimen/dp_3"
                     android:layout_marginRight="@dimen/dp_10"
-                    android:background="@drawable/item_text_bg"
+                    android:background="@drawable/item_text_view_bg2"
                     android:onClick="selectType"
-                    android:textColor="@color/orange_main"
+                    android:textColor="@color/main_color"
                     android:textSize="15sp" />
                 <TextView
                     android:id="@+id/typeThree"

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.SeekBar;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
@@ -37,6 +38,16 @@ public class LineChartItem extends ChartItem {
     private OkhttpWorkUtil okhttpWorkUtil;
     private TakePhotoPopLeft poup ;
     private Activity activity;
+    private List<String> xdata;
+
+    public List<String> getXdata() {
+        return xdata;
+    }
+
+    public void setXdata(List<String> xdata) {
+        this.xdata = xdata;
+    }
+
     public LineChartItem(ChartData<?> cd, Activity c, int mode, String sid ) {
         super(cd);
         mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
@@ -86,8 +97,16 @@ public class LineChartItem extends ChartItem {
         xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(true);
         xAxis.setLabelCount(10);
+        xAxis.setGranularity(1f);
         xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(20);
+        xAxis.setAxisMaximum(19);
+        xAxis.setLabelRotationAngle(15);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return xdata.get((int)value);
+            }
+        });
 
         YAxis leftAxis = holder.chart.getAxisLeft();
         leftAxis.setTypeface(mTf);

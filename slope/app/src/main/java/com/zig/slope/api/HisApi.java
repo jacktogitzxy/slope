@@ -23,19 +23,19 @@ public interface HisApi {
      *巡查数据
      */
     @POST("{app}")
-    Observable<BaseResponseBean<HisBean>> getHisReport(@Path("app")String meths, @Query("currentPage") int page, @Query("operatorId") String admin);
+    Observable<BaseResponseBean<HisBean>> getHisReport(@Path("app")String meths, @Query("currentPage") int page, @Query("operatorId") String admin,@Query("type_s") int type_s);
 
     /**
      *管理审核
      */
     @POST("adminShenHeApp ")
-    Observable<BaseResponseBean> adminShenHeApp( @Query("id") String id,@Query("operatorName") String operatorName,@Query("contents") String contents);
+    Observable<BaseResponseBean> adminShenHeApp( @Query("id") String id,@Query("operatorName") String operatorName,@Query("contents") String contents,@Query("type_s") int type_s);
 
     /**
      *领导审核
      */
     @POST("LeaderShenHeApp ")
-    Observable<BaseResponseBean> LeaderShenHeApp( @Query("id") String id,@Query("operatorName") String operatorName,@Query("contents") String contents);
+    Observable<BaseResponseBean> LeaderShenHeApp( @Query("id") String id,@Query("operatorName") String operatorName,@Query("contents") String contents,@Query("type_s") int type_s);
 
 
 }

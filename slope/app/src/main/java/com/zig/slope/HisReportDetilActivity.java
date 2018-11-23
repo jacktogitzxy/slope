@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ public class HisReportDetilActivity extends AppCompatActivity {
     private String operatorLevel,operatorName;
     private int flag;
     private OkhttpWorkUtil okhttpWorkUtil;
+    private int type;//类别
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +70,7 @@ public class HisReportDetilActivity extends AppCompatActivity {
         operatorLevel = intent.getStringExtra("operatorLevel");
         operatorName = intent.getStringExtra("operatorName");
         flag = intent.getIntExtra("flag",0);//1未审核2管理审核3领导审核
+        type = intent.getIntExtra("type",1);
         initView();
         initData(data);
 
@@ -94,7 +97,16 @@ public class HisReportDetilActivity extends AppCompatActivity {
         }
         textTime.setText("上报时间："+ TimeUtils.transleteTime(data.getCreateTime()));
         textAuthor.setText("巡查员："+data.getRemark());
-        textTitle.setText("边坡编号："+data.getNewName());
+        Drawable drawable = null;
+        if(type==1) {
+            textTitle.setText("边坡编号：" + data.getNewName());
+            drawable = getResources().getDrawable(R.mipmap.solpeiconleft);
+        }else  if(type==3){
+            textTitle.setText("三防编号：" + data.getT_id());
+            drawable = getResources().getDrawable(R.mipmap.sficonleft);
+        }
+        drawable.setBounds(0, 0, 50, 70);
+        textTitle.setCompoundDrawables(drawable,null,null,null);
         text_view_content.setText("情况描述："+data.getContents());
         destination_edit.setText(getResources().getString(R.string.yijian)+data.getAdminsContent());
         destination_edit2.setText(getResources().getString(R.string.yijian)+data.getLeadersContent());
@@ -211,6 +223,18 @@ public class HisReportDetilActivity extends AppCompatActivity {
         cbs[1] = findViewById(R.id.text_view_cb1);
         cbs[2] = findViewById(R.id.text_view_cb2);
         cbs[3] = findViewById(R.id.text_view_cb3);
+        if(type==1){
+            cbs[0].setText(getResources().getString(R.string.danger1));
+            cbs[1].setText(getResources().getString(R.string.danger2));
+            cbs[2].setText(getResources().getString(R.string.danger3));
+            cbs[3].setText(getResources().getString(R.string.danger4));
+        }
+        if(type==3){
+            cbs[0].setText(getResources().getString(R.string.danger5));
+            cbs[1].setText(getResources().getString(R.string.danger6));
+            cbs[2].setText(getResources().getString(R.string.danger7));
+            cbs[3].setText(getResources().getString(R.string.danger8));
+        }
     }
     public void showInputDestination(View view) {
         if(enterbt.getVisibility()==View.VISIBLE){
@@ -275,13 +299,20 @@ public class HisReportDetilActivity extends AppCompatActivity {
             if ("3".equals(operatorLevel)){//管理
                 String contents = destination_edit.getText().toString().trim();
                 String id =String.valueOf(data.getId());
-                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"adminShenHeApp",id,operatorName,contents.substring(11));
+                if(type==1){
+                    okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"adminShenHeApp",id,operatorName,contents.substring(11));
+                }else  if(type==2){
+                    okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"adminThreeInspectionApp",id,operatorName,contents.substring(11));
+                }
             }
             if ("2".equals(operatorLevel)){//领导
-
                 String contents = destination_edit2.getText().toString().trim();
                 String id =String.valueOf(data.getId());
-                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"LeaderShenHeApp",id,operatorName,contents.substring(11));
+                if(type==1) {
+                    okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL + "LeaderShenHeApp", id, operatorName, contents.substring(11));
+                }else if(type==2){
+                    okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL + "LeaderShenHeApp", id, operatorName, contents.substring(11));
+                }
             }
         }
     };

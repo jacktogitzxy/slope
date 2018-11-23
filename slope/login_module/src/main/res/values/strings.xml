@@ -16,12 +16,25 @@
     <string name="type_hd">河道</string>
     <string name="typeall">业务分类</string>
     <string name="appName">云城建</string>
-    <string name="appnote">凤凰办事处城市建设办公室</string>
+    <string name="appnote">深圳市光明区凤凰街道城市建设办公室</string>
     <string name="typegaverment">管理职能</string>
-    <string name="type_zj">住建</string>
-    <string name="type_hs">环水</string>
-    <string name="type_jt">交通</string>
-    <string name="type_gt">规土</string>
+    <string name="type_zj">住房建设</string>
+    <string name="type_hs">环境水务</string>
+    <string name="type_jt">交通运输</string>
+    <string name="type_gt">规划土地</string>
+    <string name="permission_storage">存储空间</string>
+    <string name="permission_location">位置信息</string>
+    <string name="permission_camera">拍照权限</string>
+    <string name="permission_dialog_title">开启%s</string>
+    <string name="permission_dialog_msg">为了您能正常使用%s，需要以下权限</string>
+    <string name="permission_title">请允许获取%s</string>
+    <string name="permission_denied">我们需要获取%1$s, 否则您将无法正常使用%2$s</string>
+    <string name="permission_denied_with_naac">"由于%1$s无法获取%2$s, 不能正常运行, 请开启权限后再使用。\n\n设置路径: 应用管理->%3$s->权限"</string>
+    <string name="permission_cancel">取消</string>
+    <string name="permission_ensure">确定</string>
+    <string name="permission_reject">拒绝</string>
+    <string name="permission_btn_next">下一步</string>
+    <string name="permission_go_to_setting">去设置</string>
     <string name="gt_content">主要职责：\n
     &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;（一）负责贯彻执行查处规划违法和土地违法的有关法律、法规、规章和制度，宣传有关政策法规，组织开展行政执法培训。\n
 　　（二）负责规划土地执法监察和查处工作，组织实施规划土地监察政策和相关疏导政策。\n

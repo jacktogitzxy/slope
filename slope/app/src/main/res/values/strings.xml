@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">云城建</string>
     <string name="radioGroup_text">定位icon</string>
-    <string name="takephoto">拍照上传</string>
+    <string name="takephoto">拍照上传 |</string>
     <string name="navigation">去这里</string>
 
     <string name="nomal_map">普通地图</string>
@@ -65,10 +65,16 @@
     <string name="leaderdo">&#160;&#160;领导审核</string>
     <string name="reportDate">上报日期：&#160;&#160;&#160;&#160;</string>
     <string name="restartsocket">网络波动，连接超时！已重连。请重新发送！</string>
+    <string name="typesolopeid">边坡编号：</string>
+    <string name="typesfid">三防编号：</string>
     <string name="danger1">表面出现较大裂缝</string>
     <string name="danger2">坡体出现局部位移</string>
     <string name="danger3">土壤含水显著上升</string>
     <string name="danger4">表面植被严重破坏</string>
+    <string name="danger5">水土流失严重</string>
+    <string name="danger6">低洼地段积水</string>
+    <string name="danger7">排水通道堵塞</string>
+    <string name="danger8">阻碍日常交通</string>
     <string name="manageftime">修改周期</string>
     <string name="titlew">地质监测点: %s \n传感器编号：%S \n传感器类型：%s</string>
     <string name="inner_navi">内置导航</string>
