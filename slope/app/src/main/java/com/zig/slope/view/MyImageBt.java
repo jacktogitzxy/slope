@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 
 @SuppressLint("AppCompatCustomView")
 public class MyImageBt extends ImageButton {
-    private int type ;//0 无；1图片；2视频
+    private int type;//0 无；1图片；2视频
     private String path;
     public int getType() {
         return type;

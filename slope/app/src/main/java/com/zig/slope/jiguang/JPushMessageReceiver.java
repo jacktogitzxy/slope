@@ -11,6 +11,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.baidu.mapapi.model.LatLng;
 import com.zig.slope.LocationdrawActivity;
 import com.zig.slope.charts.DataWarningActivity;
+//import com.zig.slope.charts.DataWarningActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,7 +70,8 @@ public class JPushMessageReceiver extends BroadcastReceiver {
                     i = new Intent(context, LocationdrawActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
                     context.startActivity(i);
-                }else if(type==2){
+                }
+                else if(type==2){
                     //预警
                     i = new Intent(context, DataWarningActivity.class);
                     i.putExtra("type",type);

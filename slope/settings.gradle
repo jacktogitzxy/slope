@@ -1,1 +1,1 @@
-include ':app', ':common_module', ':login_module', ':rtmp_moudle', ':player_moudle', ':weather_moudle'//, ':rtmp'':pusher_moudle',
+include ':app', ':common_module', ':login_module', ':weather_moudle', ':library', ':rtmp_player', ':easy_pusher'//, ':RTMP_EasyPlayer', ':rtmp'':pusher_moudle',//eye-car   ':rtmp_moudle', ':player_moudle',

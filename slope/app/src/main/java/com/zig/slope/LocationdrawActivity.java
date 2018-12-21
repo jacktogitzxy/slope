@@ -19,11 +19,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,7 +88,6 @@ import com.zig.slope.adapter.MyAdapter;
 import com.zig.slope.bean.SanFan;
 import com.zig.slope.bean.User;
 import com.zig.slope.bean.UserLoacl;
-import org.careye.util.VideoBean;
 import com.zig.slope.callback.RequestCallBack;
 import com.zig.slope.callback.RequestVideoCallBack;
 import com.zig.slope.callback.RequestWeatherCallBack;
@@ -128,7 +124,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,6 +135,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.bgabanner.BGABanner;
+import slope.zxy.com.rtmp.VideoBean;
 import slope.zxy.com.weather_moudle.bean.WeatherBean;
 
 
@@ -371,19 +367,16 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         if(currentModel!=-1) {
             if (ms.zoom < 16 && currentModel != 0) {
                 Log.i(TAG, "updateMapState: ms.zoom==" + ms.zoom);
-
                 updateMarker(0);
                 currentModel = 0;
             }
             if (ms.zoom >= 16 && ms.zoom < 18 && currentModel != 1) {
                 Log.i(TAG, "updateMapState: ms.zoom==" + ms.zoom);
-
                 updateMarker(1);
                 currentModel = 1;
             }
             if (ms.zoom >= 19 && currentModel != 2) {
                 Log.i(TAG, "updateMapState: ms.zoom==" + ms.zoom);
-
                 updateMarker(2);
                 currentModel = 2;
             }
@@ -393,42 +386,81 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     }
 
     public void updateMarker(int zoom){
-        if(markers!=null&&markers.size()!=0){
-            for (int i = 0;i<markers.size();i++){
-                Marker marker = markers.get(i);
-                if (marker != null && marker.getExtraInfo() != null) {
-                    SlopeBean pk = (SlopeBean) marker.getExtraInfo().get("pk");
-                    if (pk != null) {
-                        View view = getIcon(pk,zoom,1);
-                        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
-                        marker.setIcon(bitmap);
+        Log.i("zxy", "updateMarker: zoom===="+zoom);
+        if(currentType==1) {
+            if (markers != null && markers.size() != 0) {
+                for (int i = 0; i < markers.size(); i++) {
+                    Marker marker = markers.get(i);
+                    if (marker != null && marker.getExtraInfo() != null) {
+                        SlopeBean pk = (SlopeBean) marker.getExtraInfo().get("pk");
+                        if (pk != null) {
+                            View view = getIcon(pk, zoom, 1);
+                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));//OOM
+                            if (marker.getZIndex()==9) {
+                                marker.setIcon(bitmap);
+                                marker.setZIndex(8);
+                            } else {
+                                if(zoom==0){
+                                    marker.setZIndex(9);
+                                }
+                                BitmapDescriptor b = marker.getIcon();
+                                marker.setIcon(bitmap);
+                                b.recycle();
+                                Log.i("zxy", "updateMarker: markers====recycle");
+                            }
+                        }
                     }
-                }
 
+                }
             }
-        }
-        if(markerssf!=null&&markerssf.size()!=0){
-            for (int i = 0;i<markerssf.size();i++){
-                Marker marker = markerssf.get(i);
-                if (marker != null && marker.getExtraInfo() != null) {
-                    SanFan pk = (SanFan) marker.getExtraInfo().get("sf");
-                    if (pk != null) {
-                        View view = getIcon(pk,zoom,2);
-                        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
-                        marker.setIcon(bitmap);
+        }else if(currentType==3) {
+            if (markerssf != null && markerssf.size() != 0) {
+                for (int i = 0; i < markerssf.size(); i++) {
+                    Marker marker = markerssf.get(i);
+                    if (marker != null && marker.getExtraInfo() != null) {
+                        SanFan pk = (SanFan) marker.getExtraInfo().get("sf");
+                        if (pk != null) {
+                            View view = getIcon(pk, zoom, 2);
+                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+                            if (marker.getZIndex()==9) {
+                                marker.setIcon(bitmap);
+                                marker.setZIndex(8);
+                            } else {
+                                if(zoom==0){
+                                    marker.setZIndex(9);
+                                }
+                                BitmapDescriptor b = marker.getIcon();
+                                marker.setIcon(bitmap);
+                                b.recycle();
+                                Log.i("zxy", "updateMarker: markers====recycle");
+                            }
+                        }
                     }
                 }
             }
         }
-        if(markerswf!=null&&markerswf.size()!=0){
-            for (int i = 0;i<markerswf.size();i++){
-                Marker marker = markerswf.get(i);
-                if (marker != null && marker.getExtraInfo() != null) {
-                    String name = marker.getExtraInfo().getString("name");
-                    if (name != null) {
-                        View view = getIcon(name,zoom,3);
-                        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
-                        marker.setIcon(bitmap);
+        if(currentType==2) {
+            if (markerswf != null && markerswf.size() != 0) {
+                for (int i = 0; i < markerswf.size(); i++) {
+                    Marker marker = markerswf.get(i);
+                    if (marker != null && marker.getExtraInfo() != null) {
+                        String name = marker.getExtraInfo().getString("name");
+                        if (name != null) {
+                            View view = getIcon(name, zoom, 3);
+                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+                            if (marker.getZIndex()==9) {
+                                marker.setIcon(bitmap);
+                                marker.setZIndex(8);
+                            } else {
+                                if(zoom==0){
+                                    marker.setZIndex(9);
+                                }
+                                BitmapDescriptor b = marker.getIcon();
+                                marker.setIcon(bitmap);
+                                b.recycle();
+                                Log.i("zxy", "updateMarker: markers====recycle");
+                            }
+                        }
                     }
                 }
             }
@@ -717,7 +749,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 .icon(bitmap)
                 .extraInfo(bundle3);
         Marker marker =(Marker) mBaiduMap.addOverlay(oo);
+        marker.setZIndex(9);
         markers.add(marker);
+
         oos.add(oo);
     }
     private Bitmap getViewBitmap(View addViewContent) {
@@ -987,30 +1021,36 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         int id = view.getId();
         switch (id){
             case R.id.typeSolpe://边坡
-                currentType =1;
-                currentTv = (TextView) view;
-                changeColor(currentTv);
-                hiddenAllMarker();
-                showSlopes();
+                if(currentType!=1) {
+                    currentType = 1;
+                    currentTv = (TextView) view;
+                    changeColor(currentTv);
+                    hiddenAllMarker();
+                    showSlopes();
+                }
                 break;
             case R.id.typeThree://三防
-                currentType=3;
-                currentTv = (TextView) view;
-                changeColor(currentTv);
-                hiddenAllMarker();
-                if(sanFans==null){
-                    getPresenter().requestSFData(LocationdrawActivity.this);
-                }else {
-                    showSanFan();
+                if(currentType!=3) {
+                    currentType = 3;
+                    currentTv = (TextView) view;
+                    changeColor(currentTv);
+                    hiddenAllMarker();
+                    if (sanFans == null) {
+                        getPresenter().requestSFData(LocationdrawActivity.this);
+                    } else {
+                        showSanFan();
+                    }
                 }
                 break;
             case R.id.typeHouse://危房
-                currentType =2;
-                currentTv = (TextView) view;
-                changeColor(currentTv);
-                hiddenAllMarker();
-                initCity(WF,0x33ff0000,0xFFFF0000);
-                showWFPoint();
+                if(currentType!=2) {
+                    currentType = 2;
+                    currentTv = (TextView) view;
+                    changeColor(currentTv);
+                    hiddenAllMarker();
+                    initCity(WF, 0x33ff0000, 0xFFFF0000);
+                    showWFPoint();
+                }
                 break;
             case R.id.typeDx://地陷
                 currentType=4;
@@ -1213,11 +1253,14 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             LatLng ll;
             for (int i = 0;i<pos.size();i++){
                 if(i%2==0){
-                    Double v1 = Double.parseDouble(pos.get(i));
-                    Double v2 = Double.parseDouble(pos.get(i+1));
+                    Double v1 = Double.parseDouble(pos.get(i))+0.005;
+                    Double v2 = Double.parseDouble(pos.get(i+1))-0.0025;
                     ll = new LatLng(v2,v1);
                     converter.coord(ll);
                     pts.add(converter.convert());
+//                    AMapUtil.gcj02_To_Bd09(v2,v1);
+//                    pts.add(new LatLng(AMapUtil.gcj02_To_Bd09(v2,v1)[0],AMapUtil.gcj02_To_Bd09(v2,v1)[1]));
+
                 }
             }
             //构建用户绘制多边形的Option对象
@@ -1370,6 +1413,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     }else{
                         data= WebSocketService.sendMsg(content,operatorId,opid);
                     }
+                    if(content.equals("测试socket")){
+                        testSocket();
+                    }
                     lastmsg = content;
                     lastsendMsgTime = System.currentTimeMillis();
                     handler.postDelayed(checkSocket,3000);
@@ -1469,6 +1515,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         @Override
         public void onReceive(Context context, Intent intent) {
             String url = intent.getStringExtra("liveurl");
+            Log.i("zxy", "startCamera: get com.zig.live");
             int data = WebSocketService.sendMsg(url,operatorId,"0");
             lastsendMsgTime = System.currentTimeMillis();
             handler.postDelayed(checkSocket,3000);
@@ -1521,6 +1568,24 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     //隐藏所有
     public void hiddenAllMarker(){
         mBaiduMap.clear();
+        if(markers!=null&&markers.size()>0&&markers.get(0).getZIndex()==8){
+            for (int i =0;i<markers.size();i++){
+                BitmapDescriptor b = markers.get(i).getIcon();
+                b.recycle();
+            }
+        }
+        if(markerssf!=null&&markerssf.size()>0&&markerssf.get(0).getZIndex()==8){
+            for (int i =0;i<markerssf.size();i++){
+                BitmapDescriptor b = markerssf.get(i).getIcon();
+                b.recycle();
+            }
+        }
+        if(markerswf!=null&&markerswf.size()>0&&markerswf.get(0).getZIndex()==8){
+            for (int i =0;i<markerswf.size();i++){
+                BitmapDescriptor b = markerswf.get(i).getIcon();
+                b.recycle();
+            }
+        }
         initCity(BJ,0x2239b500,0xAAFF0000);
     }
     //显示所有slope
@@ -1565,7 +1630,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 .icon(bitmap)
                 .extraInfo(bundle3);
         Marker marker =(Marker) mBaiduMap.addOverlay(oo);
+        marker.setZIndex(9);
         markerssf.add(marker);
+
         oossf.add(oo);
     }
 
@@ -1632,6 +1699,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 .icon(bitmap)
                 .extraInfo(bundle3);
         Marker marker =(Marker) mBaiduMap.addOverlay(oo);
+        marker.setZIndex(9);
         markerswf.add(marker);
         ooswf.add(oo);
     }
@@ -1662,16 +1730,32 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     break;
                 case R.id.change_imgs://修改图片
                     Intent intentc = new Intent(LocationdrawActivity.this, ChangeImageActivity.class);
-                    intentc.putExtra("newName",cpk.getNewName());
+                    if(currentType==1) {
+                        intentc.putExtra("pname", cpk.getNewName());
+                    }
+                    if(currentType==3){
+                        intentc.putExtra("pname", csf.getId());
+                    }
                     intentc.putExtra("type",currentType);
                     LocationdrawActivity.this.startActivity(intentc);
                     break;
                 case R.id.cam_video://检测视频
-                    getVideos(cpk.getNewName());
+                  //  ARouter.getInstance().build("/player/plays").navigation();
+                    if(currentType==1) {
+                        getVideos(cpk.getNewName());
+                    }
+                    if(currentType==3){
+                        getVideos(csf.getId());
+                    }
                    break;
                 case R.id.cam_data ://检测数据
                     Intent intentdata = new Intent(LocationdrawActivity.this, ListViewMultiChartActivity.class);
-                    intentdata.putExtra("newName",cpk.getNewName());
+                    if(currentType==1) {
+                        intentdata.putExtra("newName",cpk.getNewName());
+                    }
+                    if(currentType==3){
+                        intentdata.putExtra("newName",csf.getId());
+                    }
                     intentdata.putExtra("type",currentType);
                     LocationdrawActivity.this.startActivity(intentdata);
                     break;
@@ -1697,8 +1781,13 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     break;
                 case R.id.do_danger ://预警
                   Intent  i = new Intent(LocationdrawActivity.this, DataWarningActivity.class);
-                  i.putExtra("newName",cpk.getNewName());
-                  i.putExtra("zLatLng",new LatLng(cpk.getN(),cpk.getE()));
+                  if(currentType==1) {
+                      i.putExtra("newName", cpk.getNewName());
+                      i.putExtra("zLatLng", new LatLng(cpk.getN(), cpk.getE()));
+                  }else if(currentType==3){
+                      i.putExtra("newName", csf.getId());
+                      i.putExtra("zLatLng", new LatLng(csf.getN(), csf.getE()));
+                  }
                   i.putExtra("currentType",currentType);
                   i.putExtra("type",2);
                   startActivity(i);
@@ -1865,7 +1954,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         IntentFilter localIntentFilter = new IntentFilter();
         localIntentFilter.addAction("com.zig.live");
         registerReceiver(liverecever,localIntentFilter);
-        pool.scheduleAtFixedRate(task, 10, 10, TimeUnit.SECONDS);
+        pool.scheduleAtFixedRate(task, 10, 10*60, TimeUnit.SECONDS);
     }
     @Override
     protected void getData() {
@@ -1931,7 +2020,12 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         //Toast.makeText(LocationdrawActivity.this,getResources().getString(R.string.restartsocket),Toast.LENGTH_SHORT).show();
         WebSocketService.closeWebsocket(false);
         stopService(websocketServiceIntent);
-        startService(websocketServiceIntent);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startService(websocketServiceIntent);
+            }
+        }, 200);
         initData();
         if(times<3) {
             handler.postDelayed(new Runnable() {
@@ -1941,7 +2035,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 }
             }, 500);
         }
-
     }
     Runnable checkSocket = new Runnable() {
         @Override
@@ -2045,8 +2138,13 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }
     }
     public void showNai(View view){
-        showChoiceNaviWayDialog(LocationdrawActivity.this,new LatLng(mCurrentLat,mCurrentLon),new LatLng(cpk.getN(),cpk.getE()));
-    }
+        if(currentType==1) {
+            showChoiceNaviWayDialog(LocationdrawActivity.this, new LatLng(mCurrentLat, mCurrentLon), new LatLng(cpk.getN(), cpk.getE()));
+        }
+        if(currentType==3){
+            showChoiceNaviWayDialog(LocationdrawActivity.this, new LatLng(mCurrentLat, mCurrentLon), new LatLng(csf.getN(), csf.getE()));
+        }
+        }
 
     public void getVideos(final String newName){
         if(currentType==1) {
@@ -2054,9 +2152,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     , new RequestVideoCallBack() {
                         @Override
                         public void onSuccess(ArrayList<VideoBean> response) {
+                            Log.i("zxy", "onSuccess: response=="+response.size());
                             ARouter.getInstance().build("/player/plays").withParcelableArrayList("videos", response).withString("newName", newName).navigation();
                         }
-
                         @Override
                         public void onFail(String msg) {
                             Log.i("zxy", "onFail: ---------msg=" + msg);
@@ -2066,14 +2164,13 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     }
     public  List getwfpoints(){
         List<LatLng>wfs = new ArrayList<LatLng>();
-        wfs.add(new LatLng(22.73035885,113.94462913));
-        wfs.add(new LatLng(22.73695611,113.92942435));
-        wfs.add(new LatLng(22.73407473,113.93333112));
-        wfs.add(new LatLng(22.75801557,113.91068817));
-        wfs.add(new LatLng(22.73700765,113.91253397));
-        wfs.add(new LatLng(22.75629450,113.89676707));
-        wfs.add(new LatLng(22.74859069,113.90628017));
-
+        wfs.add(new LatLng(22.73035885-0.0025,113.94462913+0.005));
+        wfs.add(new LatLng(22.73695611-0.0025,113.92942435+0.005));
+        wfs.add(new LatLng(22.73407473-0.0025,113.93333112+0.005));
+        wfs.add(new LatLng(22.75801557-0.0025,113.91068817+0.005));
+        wfs.add(new LatLng(22.73700765-0.0025,113.91253397+0.005));
+        wfs.add(new LatLng(22.75629450-0.0025,113.89676707+0.005));
+        wfs.add(new LatLng(22.74859069-0.0025,113.90628017+0.005));
         return wfs;
     }
     public List<String> getwfnames(){
@@ -2104,6 +2201,30 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             "113.90628017,22.74859069,113.90628017,22.74860306,113.90628017,22.74861419,113.90628151,22.74862531,113.90628151,22.74863644,113.90628285,22.74864757,113.90628420,22.74865870,113.90628420,22.74866982,113.90628554,22.74868095,113.90628822,22.74869208,113.90628956,22.74870321,113.90629090,22.74871433,113.90629358,22.74872546,113.90629627,22.74873659,113.90629895,22.74874772,113.90630163,22.74875884,113.90630432,22.74876997,113.90630700,22.74878110,113.90631102,22.74879223,113.90631371,22.74880335,113.90631773,22.74881324,113.90632175,22.74882437,113.90632578,22.74883550,113.90632980,22.74884662,113.90633383,22.74885652,113.90633919,22.74886764,113.90634322,22.74887753,113.90634859,22.74888866,113.90635395,22.74889855,113.90635932,22.74890844,113.90636469,22.74891957,113.90637005,22.74892946,113.90637676,22.74893935,113.90638213,22.74894924,113.90638883,22.74895913,113.90639554,22.74896902,113.90640225,22.74897891,113.90640896,22.74898880,113.90641567,22.74899869,113.90642372,22.74900734,113.90643043,22.74901723,113.90643848,22.74902588,113.90644518,22.74903577,113.90645323,22.74904443,113.90646128,22.74905308,113.90647068,22.74906173,113.90647873,22.74907039,113.90648678,22.74907904,113.90649617,22.74908769,113.90650556,22.74909635,113.90651361,22.74910376,113.90652300,22.74911242,113.90653239,22.74911983,113.90654178,22.74912849,113.90655252,22.74913590,113.90656191,22.74914332,113.90657264,22.74914950,113.90658204,22.74915692,113.90659277,22.74916433,113.90660350,22.74917051,113.90661424,22.74917793,113.90662497,22.74918411,113.90663570,22.74919029,113.90664644,22.74919647,113.90665851,22.74920141,113.90666925,22.74920759,113.90668132,22.74921253,113.90669205,22.74921871,113.90670413,22.74922366,113.90671621,22.74922860,113.90672828,22.74923231,113.90674036,22.74923725,113.90675243,22.74924096,113.90676451,22.74924590,113.90677658,22.74924961,113.90678866,22.74925331,113.90680073,22.74925578,113.90681415,22.74925949,113.90682623,22.74926196,113.90683964,22.74926443,113.90685172,22.74926690,113.90686514,22.74926937,113.90687721,22.74927184,113.90689063,22.74927307,113.90690270,22.74927554,113.90691612,22.74927678,113.90692954,22.74927677,113.90694161,22.74927801,113.90695503,22.74927924,113.90696845,22.74927924,113.90698187,22.74927924,113.90699394,22.74927923,113.90700736,22.74927923,113.90702078,22.74927799,113.90703285,22.74927675,113.90704627,22.74927675,113.90705969,22.74927551,113.90707176,22.74927303,113.90708518,22.74927179,113.90709725,22.74926932,113.90711067,22.74926684,113.90712275,22.74926437,113.90713617,22.74926189,113.90714824,22.74925941,113.90716166,22.74925570,113.90717373,22.74925323,113.90718581,22.74924951,113.90719789,22.74924580,113.90720996,22.74924085,113.90722204,22.74923714,113.90723411,22.74923219,113.90724619,22.74922848,113.90725826,22.74922353,113.90727034,22.74921858,113.90728107,22.74921240,113.90729315,22.74920745,113.90730388,22.74920127,113.90731596,22.74919632,113.90732669,22.74919013,113.90733743,22.74918395,113.90734816,22.74917776,113.90735889,22.74917034,113.90736963,22.74916416,113.90738036,22.74915674,113.90738976,22.74914931,113.90740049,22.74914313,113.90740988,22.74913571,113.90742062,22.74912829,113.90743001,22.74911963,113.90743940,22.74911221,113.90744879,22.74910355,113.90745684,22.74909613,113.90746624,22.74908747,113.90747563,22.74907882,113.90748368,22.74907016,113.90749173,22.74906150,113.90750112,22.74905285,113.90750917,22.74904419,113.90751722,22.74903553,113.90752393,22.74902564,113.90753198,22.74901698,113.90753869,22.74900709,113.90754674,22.74899843,113.90755345,22.74898854,113.90756016,22.74897865,113.90756687,22.74896875,113.90757358,22.74895886,113.90758029,22.74894897,113.90758566,22.74893907,113.90759237,22.74892918,113.90759773,22.74891929,113.90760310,22.74890816,113.90760847,22.74889827,113.90761383,22.74888837,113.90761920,22.74887724,113.90762323,22.74886735,113.90762860,22.74885622,113.90763262,22.74884633,113.90763665,22.74883520,113.90764067,22.74882407,113.90764470,22.74881294,113.90764872,22.74880305,113.90765141,22.74879192,113.90765543,22.74878079,113.90765812,22.74876967,113.90766080,22.74875854,113.90766349,22.74874741,113.90766617,22.74873628,113.90766885,22.74872515,113.90767154,22.74871402,113.90767288,22.74870289,113.90767422,22.74869177,113.90767691,22.74868064,113.90767825,22.74866951,113.90767825,22.74865838,113.90767959,22.74864725,113.90768094,22.74863613,113.90768094,22.74862500,113.90768228,22.74861387,113.90768228,22.74860274,113.90768228,22.74859038,113.90768228,22.74857925,113.90768228,22.74856812,113.90768094,22.74855699,113.90768094,22.74854587,113.90767960,22.74853474,113.90767826,22.74852361,113.90767826,22.74851248,113.90767692,22.74850136,113.90767424,22.74849023,113.90767290,22.74847910,113.90767155,22.74846797,113.90766887,22.74845685,113.90766619,22.74844572,113.90766351,22.74843459,113.90766082,22.74842346,113.90765814,22.74841234,113.90765546,22.74840121,113.90765143,22.74839008,113.90764875,22.74837896,113.90764473,22.74836907,113.90764070,22.74835794,113.90763668,22.74834681,113.90763265,22.74833568,113.90762863,22.74832579,113.90762326,22.74831467,113.90761924,22.74830478,113.90761387,22.74829365,113.90760851,22.74828376,113.90760314,22.74827387,113.90759777,22.74826274,113.90759241,22.74825285,113.90758570,22.74824296,113.90758033,22.74823307,113.90757363,22.74822318,113.90756692,22.74821329,113.90756021,22.74820341,113.90755350,22.74819352,113.90754680,22.74818363,113.90753875,22.74817497,113.90753204,22.74816508,113.90752399,22.74815643,113.90751728,22.74814654,113.90750923,22.74813789,113.90750118,22.74812923,113.90749179,22.74812058,113.90748374,22.74811193,113.90747569,22.74810328,113.90746630,22.74809462,113.90745691,22.74808597,113.90744886,22.74807855,113.90743947,22.74806990,113.90743008,22.74806248,113.90742068,22.74805383,113.90740995,22.74804642,113.90740056,22.74803900,113.90738983,22.74803282,113.90738043,22.74802540,113.90736970,22.74801799,113.90735897,22.74801181,113.90734824,22.74800439,113.90733750,22.74799821,113.90732677,22.74799203,113.90731604,22.74798585,113.90730396,22.74798091,113.90729323,22.74797473,113.90728115,22.74796979,113.90727042,22.74796361,113.90725834,22.74795867,113.90724627,22.74795372,113.90723419,22.74795002,113.90722212,22.74794507,113.90721004,22.74794137,113.90719797,22.74793642,113.90718589,22.74793272,113.90717382,22.74792901,113.90716174,22.74792654,113.90714833,22.74792283,113.90713625,22.74792036,113.90712283,22.74791789,113.90711076,22.74791542,113.90709734,22.74791295,113.90708527,22.74791048,113.90707185,22.74790925,113.90705977,22.74790678,113.90704636,22.74790555,113.90703294,22.74790555,113.90702086,22.74790432,113.90700745,22.74790308,113.90699403,22.74790309,113.90698195,22.74790309,113.90696854,22.74790309,113.90695512,22.74790310,113.90694170,22.74790434,113.90692963,22.74790557,113.90691621,22.74790558,113.90690279,22.74790682,113.90689072,22.74790929,113.90687730,22.74791053,113.90686522,22.74791301,113.90685180,22.74791548,113.90683973,22.74791796,113.90682631,22.74792043,113.90681424,22.74792291,113.90680082,22.74792662,113.90678874,22.74792910,113.90677667,22.74793281,113.90676459,22.74793652,113.90675251,22.74794147,113.90674044,22.74794518,113.90672836,22.74795013,113.90671629,22.74795384,113.90670421,22.74795879,113.90669213,22.74796374,113.90668140,22.74796992,113.90666932,22.74797487,113.90665859,22.74798106,113.90664651,22.74798600,113.90663578,22.74799219,113.90662505,22.74799837,113.90661431,22.74800456,113.90660358,22.74801198,113.90659284,22.74801816,113.90658211,22.74802558,113.90657271,22.74803300,113.90656198,22.74803919,113.90655259,22.74804661,113.90654185,22.74805403,113.90653246,22.74806269,113.90652307,22.74807011,113.90651367,22.74807876,113.90650562,22.74808618,113.90649623,22.74809484,113.90648684,22.74810350,113.90647879,22.74811216,113.90647074,22.74812081,113.90646134,22.74812947,113.90645329,22.74813813,113.90644524,22.74814678,113.90643853,22.74815668,113.90643048,22.74816533,113.90642377,22.74817522,113.90641572,22.74818388,113.90640901,22.74819377,113.90640230,22.74820367,113.90639559,22.74821356,113.90638888,22.74822345,113.90638217,22.74823335,113.90637680,22.74824324,113.90637009,22.74825313,113.90636473,22.74826302,113.90635936,22.74827415,113.90635399,22.74828404,113.90634862,22.74829394,113.90634326,22.74830507,113.90633923,22.74831496,113.90633386,22.74832609,113.90632984,22.74833598,113.90632581,22.74834711,113.90632178,22.74835824,113.90631776,22.74836937,113.90631373,22.74837926,113.90631105,22.74839039,113.90630702,22.74840151,113.90630434,22.74841264,113.90630165,22.74842377,113.90629897,22.74843490,113.90629629,22.74844603,113.90629360,22.74845716,113.90629092,22.74846829,113.90628957,22.74847941,113.90628823,22.74849054,113.90628555,22.74850167,113.90628421,22.74851280,113.90628420,22.74852393,113.90628286,22.74853505,113.90628152,22.74854618,113.90628152,22.74855731,113.90628018,22.74856844,113.90628018,22.74857957,113.90628017,22.74859069"
     };
     private String BJ[]=new String[]{
-           "113.91286413,22.76387936,113.91286278,22.76332713,113.91144258,22.76318607,113.91147009,22.76255608,113.91038948,22.76227469,113.90980873,22.76256376,113.90965027,22.76298199,113.90926570,22.76226578,113.90889456,22.76200304,113.90837066,22.76155295,113.90784778,22.76145735,113.90485827,22.76065728,113.90526869,22.76000492,113.90325513,22.75952490,113.90344515,22.75872768,113.90176223,22.75815899,113.90073154,22.75792760,113.90038382,22.75899971,113.90013488,22.75885049,113.90021610,22.75856601,113.89993908,22.75848677,113.89978640,22.75862914,113.89966951,22.75886740,113.89957798,22.75882431,113.89950373,22.75897584,113.89922569,22.75888702,113.89930703,22.75873191,113.89908036,22.75853945,113.89949423,22.75776788,113.89924939,22.75767339,113.89874009,22.75812584,113.89857360,22.75777278,113.89790806,22.75733997,113.89801877,22.75717431,113.89776675,22.75705035,113.89780698,22.75697897,113.89742955,22.75673519,113.89688856,22.75623217,113.89593615,22.75542773,113.89426986,22.75420887,113.89312547,22.75298059,113.89307498,22.75301061,113.89296648,22.75289007,113.89251503,22.75293882,113.89178984,22.75206799,113.89210808,22.75179393,113.89179561,22.75135475,113.89185684,22.75123549,113.89116058,22.75085624,113.89061786,22.75025656,113.89069498,22.74950882,113.89158856,22.74905099,113.89245256,22.74883178,113.89304344,22.74863281,113.89365491,22.74830485,113.89335808,22.74783288,113.89308000,22.74756275,113.89317518,22.74687170,113.89281496,22.74659036,113.89217933,22.74732231,113.89150528,22.74704347,113.89049297,22.74655128,113.88984620,22.74546502,113.88921068,22.74460690,113.88890651,22.74398051,113.88964446,22.74360801,113.88943500,22.74298027,113.88926516,22.74267510,113.88821660,22.74244332,113.88759669,22.74119547,113.88714822,22.74066123,113.88707948,22.73999058,113.88638609,22.73919011,113.88561140,22.73919176,113.88555705,22.73869128,113.88787458,22.73873150,113.88980296,22.73876560,113.89436709,22.73942997,113.89480453,22.73905267,113.89562022,22.73890881,113.89594884,22.73851116,113.89663977,22.73812835,113.89711375,22.73792340,113.89744546,22.73768204,113.89792263,22.73783925,113.89838583,22.73867639,113.89859239,22.73905417,113.89916503,22.73898467,113.89950285,22.73891688,113.89969866,22.73903872,113.89980372,22.73937287,113.90093191,22.73938492,113.90110992,22.73937623,113.90130299,22.73937547,113.90156821,22.73925291,113.90190434,22.73915929,113.90235292,22.73898411,113.90265275,22.73890487,113.90303152,22.73873779,113.90501863,22.73831344,113.90493093,22.73808465,113.90457036,22.73777895,113.90456029,22.73732821,113.90476266,22.73713045,113.90584754,22.73629550,113.90655166,22.73694530,113.90711524,22.73731794,113.90689359,22.73777146,113.90732586,22.73840091,113.90827756,22.73808468,113.91039980,22.73706912,113.90976889,22.73583432,113.91063919,22.73547312,113.91148975,22.73534427,113.91178291,22.73558476,113.91249103,22.73481512,113.91325432,22.73382871,113.91351173,22.73307454,113.91372165,22.73168555,113.91444273,22.73110357,113.91479321,22.73041198,113.91489449,22.73017976,113.91582673,22.73025805,113.91631548,22.73098166,113.91744177,22.73155494,113.91780647,22.73183260,113.91838984,22.73174275,113.91902845,22.73125060,113.91941265,22.73143369,113.91993316,22.73090578,113.92047760,22.73096357,113.92240888,22.72775128,113.92320654,22.72771498,113.92575763,22.72806575,113.92708166,22.72810946,113.92748082,22.72329297,113.92859899,22.72243014,113.92944606,22.72092224,113.93015923,22.71953598,113.93181502,22.71812091,113.93244097,22.71743344,113.93326618,22.71593592,113.93341530,22.71542980,113.93380421,22.71434684,113.93405740,22.71068052,113.93512816,22.71051947,113.93854783,22.71323675,113.94162677,22.71304038,113.94389658,22.71561811,113.94595435,22.71679733,113.94827922,22.72107300,113.95187490,22.72008323,113.95329950,22.72044267,113.95366691,22.71929226,113.95484270,22.71727183,113.95617779,22.71702582,113.95781688,22.71777881,113.95873475,22.71672792,113.96045736,22.71584059,113.96166885,22.71533567,113.96649657,22.71426444,113.96836611,22.71403212,113.97149512,22.71526040,113.97447211,22.71698851,113.97647231,22.71907118,113.97393104,22.72401032,113.97047366,22.72801137,113.96952117,22.72836400,113.96926642,22.72907306,113.96912395,22.73000195,113.96907069,22.73065272,113.96885815,22.73150923,113.96854008,22.73358768,113.96839121,22.73464672,113.96593863,22.73427019,113.96391565,22.73393185,113.96160320,22.73410046,113.96021841,22.73437027,113.95852106,22.73512123,113.95635227,22.73634165,113.95415181,22.73745660,113.95129332,22.73900141,113.94914349,22.74000556,113.94760511,22.74062925,113.94554695,22.74112495,113.94338018,22.74143459,113.94184669,22.74180801,113.93964821,22.74242777,113.93816926,22.74305780,113.93660929,22.74378965,113.93504486,22.74489598,113.93321615,22.74653404,113.93110905,22.74881782,113.92949711,22.75063766,113.92767871,22.75287689,113.92644592,22.75407347,113.92495071,22.75460796,113.92297161,22.75468889,113.92183023,22.75515858,113.92061789,22.75652436,113.91984508,22.75762560,113.91831927,22.75951265,113.91745392,22.76045917,113.91569349,22.76221059,113.91428037,22.76422167,113.91286413,22.76387936"
+            "113.91286413,22.76387936,113.91286278,22.76332713,113.91144258,22.76318607,113.91147009,22.76255608,113.91038948,22.76227469000001,113.90980873,22.76256376,113.90965027,22.76298199,113.9092657,22.76226578,113.90889456,22.76200304,113.90837066,22.76155295,113.90784778,22.76145735,113.90485827,22.76065728,113.90526869,22.76000492,113.90325513,22.7595249,113.90344515,22.75872768,113.90176223,22.75815899,113.90073154,22.7579276,113.90038382,22.75899971,113.90013488,22.75885049,113.9002161,22.75856601,113.89993908,22.75848677,113.8997864,22.75862914,113.89966951,22.7588674,113.89957798,22.75882431,113.89950373,22.75897584,113.89922569,22.75888702,113.89930703,22.75873191000001,113.89908036,22.75853945,113.89949423,22.75776788,113.89924939,22.75767339,113.89874009,22.75812584,113.8985736,22.75777278,113.89790806,22.75733997,113.89801877,22.75717431,113.89776675,22.75705035,113.89780698,22.75697897,113.89742955,22.75673519,113.89688856,22.75623217,113.89593615,22.75542773,113.89426986,22.75420887,113.89312547,22.75298059,113.89307498,22.75301061,113.89296648,22.75289007,113.89251503,22.75293882,113.89178984,22.75206799,113.89210808,22.75179393,113.89179561,22.75135475,113.89185684,22.75123549,113.89116058,22.75085624,113.89061786,22.75025656,113.89069498,22.74950882,113.89158856,22.74905099,113.89245256,22.74883178,113.89304344,22.74863281,113.89365491,22.74830485,113.89335808,22.74783288,113.89308,22.74756275,113.89317518,22.7468717,113.89281496,22.74659036,113.89217933,22.74732231,113.89150528,22.74704347,113.89049297,22.74655128,113.8898462,22.74546502000001,113.88921068,22.7446069,113.88890651,22.74398051,113.88964446,22.74360801,113.889435,22.74298027,113.88926516,22.7426751,113.8882166,22.74244332,113.88759669,22.74119547,113.88714822,22.74066123,113.88707948,22.73999058,113.88638609,22.73919011,113.8856114,22.73919176,113.88555705,22.73869128000001,113.88787458,22.7387315,113.88980296,22.7387656,113.89436709,22.73942997,113.89480453,22.73905267,113.89562022,22.73890881,113.89594884,22.73851116,113.89663977,22.73812835,113.89711375,22.7379234,113.89744546,22.73768204,113.89792263,22.73783925,113.89838583,22.73867639,113.89859239,22.73905417,113.89916503,22.73898467,113.89950285,22.73891688,113.89969866,22.73903872,113.89980372,22.73937287,113.90093191,22.73938492,113.90110992,22.73937623,113.90130299,22.73937547,113.90156821,22.73925291,113.90190434,22.73915929,113.90235292,22.73898411,113.90265275,22.73890487,113.90303152,22.73873779,113.90501863,22.73831344,113.90493093,22.73808465,113.90457036,22.73777895,113.90456029,22.73732821,113.90476266,22.73713045,113.90584754,22.7362955,113.90655166,22.7369453,113.90711524,22.73731794,113.90689359,22.73777146,113.90732586,22.73840091,113.90827756,22.73808468,113.9103998,22.73706912,113.90976889,22.73583432,113.91063919,22.73547312,113.91148975,22.73534427,113.91178291,22.73558476,113.91249103,22.73481512,113.91325432,22.73382871,113.91351173,22.73307454,113.91372165,22.73168555,113.91444273,22.73110357,113.91479321,22.73041198,113.91489449,22.73017976,113.91582673,22.73025805,113.91631548,22.73098166,113.91744177,22.73155494,113.91780647,22.7318326,113.91838984,22.73174275,113.91902845,22.7312506,113.91941265,22.73143369,113.91993316,22.73090578,113.9204776,22.73096357,113.92240888,22.72775128,113.92320654,22.72771498,113.92575763,22.72806575,113.92708166,22.72810946,113.92748082,22.72329297,113.92859899,22.72243014,113.92944606,22.72092224,113.93015923,22.71953598,113.93181502,22.71812091,113.93244097,22.71743344,113.93326618,22.71593592,113.9334153,22.7154298,113.93380421,22.71434684,113.9340574,22.71068052,113.93512816,22.71051947,113.93854783,22.71323675,113.94162677,22.71304038,113.94389658,22.71561811000001,113.94595435,22.71679733,113.94827922,22.721073,113.9518749,22.72008323,113.9532995,22.72044267,113.95366691,22.71929226,113.9548427,22.71727183,113.95617779,22.71702582,113.95781688,22.71777881,113.95873475,22.71672792,113.96045736,22.71584059,113.96166885,22.71533567,113.96649657,22.71426444,113.96836611,22.71403212,113.97149512,22.7152604,113.97447211,22.71698851,113.97647231,22.71907118,113.97393104,22.72401032000001,113.97047366,22.72801137,113.96952117,22.728364,113.96926642,22.72907306,113.96912395,22.73000195,113.96907069,22.73065272,113.96885815,22.73150923,113.96854008,22.73358768,113.96839121,22.73464672,113.96593863,22.73427019,113.96391565,22.73393185,113.9616032,22.73410046,113.96021841,22.73437027,113.95852106,22.73512123,113.95635227,22.73634165,113.95415181,22.7374566,113.95129332,22.73900141,113.94914349,22.74000556,113.94760511,22.74062925,113.94554695,22.74112495,113.94338018,22.74143459,113.94184669,22.74180801,113.93964821,22.74242777,113.93816926,22.7430578,113.93660929,22.74378965,113.93504486,22.74489598,113.93321615,22.74653404,113.93110905,22.74881782,113.92949711,22.75063766,113.92767871,22.75287689,113.92644592,22.75407347,113.92495071,22.75460796000001,113.92297161,22.75468889,113.92183023,22.75515858,113.92061789,22.75652436,113.91984508,22.7576256,113.91831927,22.75951265,113.91745392,22.76045917,113.91569349,22.76221059,113.91428037,22.76422167,113.91286413,22.76387936"
+           //"113.91286413,22.76387936,113.91286278,22.76332713,113.91144258,22.76318607,113.91147009,22.76255608,113.91038948,22.76227469,113.90980873,22.76256376,113.90965027,22.76298199,113.90926570,22.76226578,113.90889456,22.76200304,113.90837066,22.76155295,113.90784778,22.76145735,113.90485827,22.76065728,113.90526869,22.76000492,113.90325513,22.75952490,113.90344515,22.75872768,113.90176223,22.75815899,113.90073154,22.75792760,113.90038382,22.75899971,113.90013488,22.75885049,113.90021610,22.75856601,113.89993908,22.75848677,113.89978640,22.75862914,113.89966951,22.75886740,113.89957798,22.75882431,113.89950373,22.75897584,113.89922569,22.75888702,113.89930703,22.75873191,113.89908036,22.75853945,113.89949423,22.75776788,113.89924939,22.75767339,113.89874009,22.75812584,113.89857360,22.75777278,113.89790806,22.75733997,113.89801877,22.75717431,113.89776675,22.75705035,113.89780698,22.75697897,113.89742955,22.75673519,113.89688856,22.75623217,113.89593615,22.75542773,113.89426986,22.75420887,113.89312547,22.75298059,113.89307498,22.75301061,113.89296648,22.75289007,113.89251503,22.75293882,113.89178984,22.75206799,113.89210808,22.75179393,113.89179561,22.75135475,113.89185684,22.75123549,113.89116058,22.75085624,113.89061786,22.75025656,113.89069498,22.74950882,113.89158856,22.74905099,113.89245256,22.74883178,113.89304344,22.74863281,113.89365491,22.74830485,113.89335808,22.74783288,113.89308000,22.74756275,113.89317518,22.74687170,113.89281496,22.74659036,113.89217933,22.74732231,113.89150528,22.74704347,113.89049297,22.74655128,113.88984620,22.74546502,113.88921068,22.74460690,113.88890651,22.74398051,113.88964446,22.74360801,113.88943500,22.74298027,113.88926516,22.74267510,113.88821660,22.74244332,113.88759669,22.74119547,113.88714822,22.74066123,113.88707948,22.73999058,113.88638609,22.73919011,113.88561140,22.73919176,113.88555705,22.73869128,113.88787458,22.73873150,113.88980296,22.73876560,113.89436709,22.73942997,113.89480453,22.73905267,113.89562022,22.73890881,113.89594884,22.73851116,113.89663977,22.73812835,113.89711375,22.73792340,113.89744546,22.73768204,113.89792263,22.73783925,113.89838583,22.73867639,113.89859239,22.73905417,113.89916503,22.73898467,113.89950285,22.73891688,113.89969866,22.73903872,113.89980372,22.73937287,113.90093191,22.73938492,113.90110992,22.73937623,113.90130299,22.73937547,113.90156821,22.73925291,113.90190434,22.73915929,113.90235292,22.73898411,113.90265275,22.73890487,113.90303152,22.73873779,113.90501863,22.73831344,113.90493093,22.73808465,113.90457036,22.73777895,113.90456029,22.73732821,113.90476266,22.73713045,113.90584754,22.73629550,113.90655166,22.73694530,113.90711524,22.73731794,113.90689359,22.73777146,113.90732586,22.73840091,113.90827756,22.73808468,113.91039980,22.73706912,113.90976889,22.73583432,113.91063919,22.73547312,113.91148975,22.73534427,113.91178291,22.73558476,113.91249103,22.73481512,113.91325432,22.73382871,113.91351173,22.73307454,113.91372165,22.73168555,113.91444273,22.73110357,113.91479321,22.73041198,113.91489449,22.73017976,113.91582673,22.73025805,113.91631548,22.73098166,113.91744177,22.73155494,113.91780647,22.73183260,113.91838984,22.73174275,113.91902845,22.73125060,113.91941265,22.73143369,113.91993316,22.73090578,113.92047760,22.73096357,113.92240888,22.72775128,113.92320654,22.72771498,113.92575763,22.72806575,113.92708166,22.72810946,113.92748082,22.72329297,113.92859899,22.72243014,113.92944606,22.72092224,113.93015923,22.71953598,113.93181502,22.71812091,113.93244097,22.71743344,113.93326618,22.71593592,113.93341530,22.71542980,113.93380421,22.71434684,113.93405740,22.71068052,113.93512816,22.71051947,113.93854783,22.71323675,113.94162677,22.71304038,113.94389658,22.71561811,113.94595435,22.71679733,113.94827922,22.72107300,113.95187490,22.72008323,113.95329950,22.72044267,113.95366691,22.71929226,113.95484270,22.71727183,113.95617779,22.71702582,113.95781688,22.71777881,113.95873475,22.71672792,113.96045736,22.71584059,113.96166885,22.71533567,113.96649657,22.71426444,113.96836611,22.71403212,113.97149512,22.71526040,113.97447211,22.71698851,113.97647231,22.71907118,113.97393104,22.72401032,113.97047366,22.72801137,113.96952117,22.72836400,113.96926642,22.72907306,113.96912395,22.73000195,113.96907069,22.73065272,113.96885815,22.73150923,113.96854008,22.73358768,113.96839121,22.73464672,113.96593863,22.73427019,113.96391565,22.73393185,113.96160320,22.73410046,113.96021841,22.73437027,113.95852106,22.73512123,113.95635227,22.73634165,113.95415181,22.73745660,113.95129332,22.73900141,113.94914349,22.74000556,113.94760511,22.74062925,113.94554695,22.74112495,113.94338018,22.74143459,113.94184669,22.74180801,113.93964821,22.74242777,113.93816926,22.74305780,113.93660929,22.74378965,113.93504486,22.74489598,113.93321615,22.74653404,113.93110905,22.74881782,113.92949711,22.75063766,113.92767871,22.75287689,113.92644592,22.75407347,113.92495071,22.75460796,113.92297161,22.75468889,113.92183023,22.75515858,113.92061789,22.75652436,113.91984508,22.75762560,113.91831927,22.75951265,113.91745392,22.76045917,113.91569349,22.76221059,113.91428037,22.76422167,113.91286413,22.76387936"
 };
+
+    int x= 0 ;
+    public void testSocket(){
+       x = x+1;
+       if(x>50){
+           return;
+       }
+        handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    WebSocketService.closeWebsocket(false);
+                    stopService(websocketServiceIntent);
+                    startService(websocketServiceIntent);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            testSocket();
+                        }
+                    }, 2000);
+                    initData();
+                }
+            },3000);
+        }
 }

@@ -1,0 +1,66 @@
+if (isModule.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+
+
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //ARouter
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+
+            if (isModule.toBoolean()) {
+                manifest.srcFile 'src/main/module/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                //集成开发模式下则需要排除debug文件夹中的所有Java文件
+                java {
+                    exclude 'debug/**'
+                }
+            }
+        }
+    }
+
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+    mavenCentral()
+    google()
+}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compile rootProject.ext.dependencies.appcompat_v7
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation(name: 'texturegesture-release', ext: 'aar')
+    implementation 'com.github.chrisbanes:PhotoView:1.3.0'
+    implementation project(':library')
+    compile rootProject.ext.dependencies.glide
+    compile rootProject.ext.dependencies.arouter_api
+    annotationProcessor rootProject.ext.dependencies.arouter_compiler
+
+}

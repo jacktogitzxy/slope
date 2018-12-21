@@ -4,9 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/common_module/common_module.iml" filepath="$PROJECT_DIR$/common_module/common_module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easy_pusher/easy_pusher.iml" filepath="$PROJECT_DIR$/easy_pusher/easy_pusher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/login_module/login_module.iml" filepath="$PROJECT_DIR$/login_module/login_module.iml" />
-      <module fileurl="file://$PROJECT_DIR$/player_moudle/player_moudle.iml" filepath="$PROJECT_DIR$/player_moudle/player_moudle.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rtmp_moudle/rtmp_moudle.iml" filepath="$PROJECT_DIR$/rtmp_moudle/rtmp_moudle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rtmp_player/rtmp_player.iml" filepath="$PROJECT_DIR$/rtmp_player/rtmp_player.iml" />
       <module fileurl="file://$PROJECT_DIR$/slope.iml" filepath="$PROJECT_DIR$/slope.iml" />
       <module fileurl="file://$PROJECT_DIR$/weather_moudle/weather_moudle.iml" filepath="$PROJECT_DIR$/weather_moudle/weather_moudle.iml" />
     </modules>

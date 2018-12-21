@@ -59,7 +59,6 @@ public class ReportActivity extends BaseActivity {
     private double n,e;
     private CheckBox[] boxs;
     private int type;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +66,7 @@ public class ReportActivity extends BaseActivity {
         setStatusBar();
         Intent intent = getIntent();
         type= intent.getIntExtra("type",1);
+        Log.i("zxy", "onCreate: type===="+type);
         if (intent != null && intent.getStringExtra("pname") != null) {
             Pname = intent.getStringExtra("pname");
             n= intent.getDoubleExtra("x",0);
@@ -79,11 +79,8 @@ public class ReportActivity extends BaseActivity {
         initView();
         initListener();
     }
-
     private void initListener() {
-
         video_upload.setOnClickListener(onclicks);
-//        photo_upload.setOnClickListener(onclicks);
         for (int i=0;i<plays.length;i++){
             plays[i].setOnClickListener(new View.OnClickListener() {
                 @SuppressLint("NewApi")
@@ -102,7 +99,7 @@ public class ReportActivity extends BaseActivity {
                             transaction.commit();
                         }
                     }
-                    if(type==1){
+                    else if(type==1){
                         String path = btn.getPath();
                         if (path != null && !path.equalsIgnoreCase("")) {
                             PicFragment pcf = PicFragment.newInstance(path);
@@ -111,6 +108,8 @@ public class ReportActivity extends BaseActivity {
                             transaction.replace(R.id.main_menu, pcf);
                             transaction.commit();
                         }
+                    }else{
+                        startCamView();
                     }
                 }
             });
@@ -122,7 +121,7 @@ public class ReportActivity extends BaseActivity {
                     btn.setPath(null);
                     btn.setScaleType(ImageView.ScaleType.CENTER);
                     btn.setPadding(30,30,30,30);
-                    btn.setImageResource(R.mipmap.photodo);
+                    btn.setImageResource(R.mipmap.repcam);
 
                     return true;
                 }
@@ -133,7 +132,6 @@ public class ReportActivity extends BaseActivity {
 
     private void initView() {
         typesid = findViewById(R.id.typesid);
-
         video_upload = (AppCompatButton) findViewById(R.id.video_upload);
         plays = new MyImageBt[4];
         plays[0] = (MyImageBt) findViewById(R.id.play);
@@ -159,11 +157,39 @@ public class ReportActivity extends BaseActivity {
             boxs[3].setText(getResources().getString(R.string.danger4));
         }
         if(type==2){
+            typesid.setText(getResources().getString(R.string.typewfid));
+            boxs[0].setText(getResources().getString(R.string.danger21));
+            boxs[1].setText(getResources().getString(R.string.danger22));
+            boxs[2].setText(getResources().getString(R.string.danger23));
+            boxs[3].setText(getResources().getString(R.string.danger24));
+        }
+        if(type==3){
             typesid.setText(getResources().getString(R.string.typesfid));
             boxs[0].setText(getResources().getString(R.string.danger5));
             boxs[1].setText(getResources().getString(R.string.danger6));
             boxs[2].setText(getResources().getString(R.string.danger7));
             boxs[3].setText(getResources().getString(R.string.danger8));
+        }
+        if(type==4){
+            typesid.setText(getResources().getString(R.string.typedxid));
+            boxs[0].setText(getResources().getString(R.string.danger9));
+            boxs[1].setText(getResources().getString(R.string.danger10));
+            boxs[2].setText(getResources().getString(R.string.danger11));
+            boxs[3].setText(getResources().getString(R.string.danger12));
+        }
+        if(type==5){
+            typesid.setText(getResources().getString(R.string.typegdid));
+            boxs[0].setText(getResources().getString(R.string.danger13));
+            boxs[1].setText(getResources().getString(R.string.danger14));
+            boxs[2].setText(getResources().getString(R.string.danger15));
+            boxs[3].setText(getResources().getString(R.string.danger16));
+        }
+        if(type==6){
+            typesid.setText(getResources().getString(R.string.typehdid));
+            boxs[0].setText(getResources().getString(R.string.danger17));
+            boxs[1].setText(getResources().getString(R.string.danger18));
+            boxs[2].setText(getResources().getString(R.string.danger19));
+            boxs[3].setText(getResources().getString(R.string.danger20));
         }
         if (Pname != null) {//补充数据
             report_name1.setText(Pname);
@@ -196,18 +222,21 @@ public class ReportActivity extends BaseActivity {
         }
         Log.i(TAG, "startReportdo: remark1="+remark1);
         String rid = getRid();
-        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),remark1,rid,plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
+        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),remark1,rid,type+"",plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
     }
     private static final int REQUEST_CODE_ALBUM = 0x0001;
     View.OnClickListener onclicks = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(ReportActivity.this, CameraActivity.class);
-            startActivityForResult(intent, 100);
+            startCamView();
         }
     };
 
 
+    private void startCamView(){
+        Intent intent = new Intent(ReportActivity.this, CameraActivity.class);
+        startActivityForResult(intent, 100);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -258,12 +287,9 @@ public class ReportActivity extends BaseActivity {
     public void upLaodImg( final String... param) {
         showProgressDialog();
         String uri = Constant.BASE_URL+"filesUpload";
-        if(type==2){
-            uri = Constant.BASE_URL+"saveThreeInsepectionApp";
-        }
         RequestParams params = new RequestParams(uri);//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
-        for (int i = 7; i < param.length; i++) {
+        for (int i = 8; i < param.length; i++) {
             try {
                 list.add(new KeyValue("files",new File(param[i])));
             } catch (Exception e) {
@@ -274,7 +300,7 @@ public class ReportActivity extends BaseActivity {
         if(type==1) {
             list.add(new KeyValue("newName", param[1]));
         }
-        if(type==2){
+        if(type==3){
             list.add(new KeyValue("id", param[1]));
         }
         list.add(new KeyValue("contents", param[2]));
@@ -282,6 +308,7 @@ public class ReportActivity extends BaseActivity {
         list.add(new KeyValue("y", param[4]));
         list.add(new KeyValue("remark1", param[5]));
         list.add(new KeyValue("regeditID", param[6]));
+        list.add(new KeyValue("type_s", param[7]));
         Log.i(TAG, "regeditID: regeditID==="+param[6]);
         Log.i(TAG, "upLaodImg: list==="+list.size());
         //设置编码格式为UTF-8，保证参数不乱码

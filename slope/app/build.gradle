@@ -1,8 +1,5 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
 repositories {
     flatDir {
         dir 'libs'
@@ -11,7 +8,7 @@ repositories {
 android {
 //    compileSdkVersion 26
     compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion "27.0.1"
+    buildToolsVersion "27.0.3"
     signingConfigs {
         // your debug keystore
 
@@ -32,13 +29,11 @@ android {
         main {
             jniLibs.srcDir 'libs'
         }
-
         // Move the tests to tests/java, tests/res, etc...
         instrumentTest.setRoot('tests')
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
-
     defaultConfig {
         applicationId "com.zig.slope"
         minSdkVersion rootProject.ext.android.minSdkVersion
@@ -72,7 +67,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
@@ -101,7 +95,12 @@ dependencies {
         implementation project(':login_module')
     }
     implementation files('libs/autobahn-0.5.0.jar')
-    implementation project(':rtmp_moudle')
-    implementation project(':player_moudle')
+    //easy 推流播放
+    implementation project(':rtmp_player')
+    implementation project(':easy_pusher')
     implementation project(':weather_moudle')
+    //eye-car推流播放
+   // implementation project(':rtmp_moudle')
+    //implementation project(':player_moudle')
+    compile project(path: ':library')
 }

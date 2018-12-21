@@ -299,20 +299,13 @@ public class HisReportDetilActivity extends AppCompatActivity {
             if ("3".equals(operatorLevel)){//管理
                 String contents = destination_edit.getText().toString().trim();
                 String id =String.valueOf(data.getId());
-                if(type==1){
-                    okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"adminShenHeApp",id,operatorName,contents.substring(11));
-                }else  if(type==2){
-                    okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"adminThreeInspectionApp",id,operatorName,contents.substring(11));
-                }
+                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"adminShenHeApp",id,operatorName,contents.substring(11),type+"");
+
             }
             if ("2".equals(operatorLevel)){//领导
                 String contents = destination_edit2.getText().toString().trim();
                 String id =String.valueOf(data.getId());
-                if(type==1) {
-                    okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL + "LeaderShenHeApp", id, operatorName, contents.substring(11));
-                }else if(type==2){
-                    okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL + "LeaderShenHeApp", id, operatorName, contents.substring(11));
-                }
+                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL + "LeaderShenHeApp", id, operatorName, contents.substring(11),type+"");
             }
         }
     };

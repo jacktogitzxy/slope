@@ -168,7 +168,7 @@ public class WebSocketService extends Service {
         Log.d(TAG, "sendMsg = " + s);
         if (!TextUtils.isEmpty(s))
             if (webSocketConnection != null) {
-                Log.d(TAG, "webSocketConnection !=null ");
+                Log.d(TAG, "webSocketConnection !=null "+toUser+"#"+fromUser+"#"+s);//nullpointer
                 webSocketConnection.sendTextMessage(toUser+"#"+fromUser+"#"+s);
                 return 0;
             }else{
@@ -180,6 +180,9 @@ public class WebSocketService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (webSocketConnection != null) {
+            webSocketConnection.disconnect();
+        }
         if (connectionReceiver != null) {
             unregisterReceiver(connectionReceiver);
         }

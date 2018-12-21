@@ -1,17 +1,21 @@
 package com.zig.slope.adapter;
 
 import android.content.Context;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.zig.slope.R;
-import org.careye.util.VideoBean;
 
-import org.careye.player.media.EyeVideoView;
+
+import org.easydarwin.video.EasyPlayerClient;
 
 import java.util.List;
+
+import slope.zxy.com.rtmp.Constante;
+import slope.zxy.com.rtmp.VideoBean;
 
 /**
  * Created by 17120 on 2018/10/17.
@@ -50,16 +54,13 @@ public class GrideAdapter extends BaseAdapter {
         } else {
             viewholder = (ViewHolder) convertView.getTag();
         }
-        String content = urls.get(position).getUrl();
-        viewholder.videoView.setVideoPath(content);
-        viewholder.videoView.start();
         viewholder.textView.setText( urls.get(position).getRemark());
         viewholder.textView.setTag(position);
         return convertView;
     }
 
-    class ViewHolder {
-        EyeVideoView videoView;
+    public class ViewHolder {
+        TextureView videoView;
         TextView textView;
         public ViewHolder(View view) {
             textView = (TextView) view.findViewById(R.id.videonum);

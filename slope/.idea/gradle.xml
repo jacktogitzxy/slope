@@ -10,9 +10,10 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/common_module" />
+            <option value="$PROJECT_DIR$/easy_pusher" />
+            <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/login_module" />
-            <option value="$PROJECT_DIR$/player_moudle" />
-            <option value="$PROJECT_DIR$/rtmp_moudle" />
+            <option value="$PROJECT_DIR$/rtmp_player" />
             <option value="$PROJECT_DIR$/weather_moudle" />
           </set>
         </option>

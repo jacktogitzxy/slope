@@ -2,9 +2,11 @@ package com.zig.slope.App;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.multidex.MultiDex;
 
@@ -19,6 +21,7 @@ import com.zig.slope.R;
 import com.zig.slope.common.base.BaseApplication;
 import com.zig.slope.common.utils.Utils;
 
+//import org.easydarwin.easyplayer.data.EasyDBHelper;
 import org.xutils.x;
 
 import cn.jpush.android.api.JPushInterface;
@@ -30,6 +33,8 @@ import cn.jpush.android.api.JPushInterface;
  */
 
 public class MyApplication extends BaseApplication {
+    public static String sPicturePath;
+    public static String sMoviePath;
 
     @SuppressLint("NewApi")
     @Override
@@ -69,7 +74,12 @@ public class MyApplication extends BaseApplication {
         }
         ARouter.init(this); // 尽可能早，推荐在Application中初始化
         x.Ext.init(this);
+
+        sPicturePath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/EasyPlayer";
+        sMoviePath = getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/EasyPlayer";
+
     }
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);

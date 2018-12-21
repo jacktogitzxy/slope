@@ -26,18 +26,21 @@ import java.util.List;
 public class ChangeImageActivity extends AppCompatActivity {
     private static final String TAG = ChangeImageActivity.class.getName();
     private Toolbar toolbar;
-     private  String newName;
     private MyImageBt[] plays;
     private ImageView video_upload;
     private CustomProgressDialog progressDialog;
+    private String id;
+    private int type;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        newName = intent.getStringExtra("newName");
+        id = intent.getStringExtra("pname");
+        type = intent.getIntExtra("type",1);
+        Log.i(TAG, "onCreate: type=="+type);
         setContentView(R.layout.activity_change_image);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("上传编号:"+newName+"图片信息");
+        toolbar.setTitle("上传编号:"+id+"图片信息");
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(R.mipmap.return_icon);
         toolbar.setTitleMarginStart(150);
@@ -82,20 +85,27 @@ public class ChangeImageActivity extends AppCompatActivity {
         }
     }
     public void startUpload(View v) {
-        upLaodImg(newName,plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
+        upLaodImg(id,type+"",plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
     }
     public void upLaodImg( final String... param) {
         showProgressDialog();
-        RequestParams params = new RequestParams(Constant.BASE_URL+"changeSlopAllPicApp");//参数是路径地址
+        RequestParams params = new RequestParams(Constant.BASE_URL+"changeAllPicApp");//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
-        for (int i = 1; i < param.length; i++) {
+        for (int i = 2; i < param.length; i++) {
             try {
                 Log.i(TAG, "upLaodImg: param[i]=="+param[i]);
                 list.add(new KeyValue("files",new File(param[i])));
             } catch (Exception e) {
             }
         }
-        list.add(new KeyValue("newName", param[0]));
+        if(type==1) {
+            list.add(new KeyValue("newName", param[0]));
+        }
+        if(type==3){
+            list.add(new KeyValue("id", param[0]));
+        }
+        list.add(new KeyValue("type_s", param[1]));
+        Log.i(TAG, "upLaodImg: type=="+param[1]);
         Log.i(TAG, "upLaodImg: list=="+list.size());
         //设置编码格式为UTF-8，保证参数不乱码
         MultipartBody body = new MultipartBody(list, "UTF-8");

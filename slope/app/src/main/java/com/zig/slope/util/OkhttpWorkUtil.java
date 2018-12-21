@@ -8,7 +8,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zig.slope.bean.UserLoacl;
-import org.careye.util.VideoBean;
 import com.zig.slope.callback.RequestCallBack;
 import com.zig.slope.callback.RequestVideoCallBack;
 import com.zig.slope.callback.RequestWeatherCallBack;
@@ -28,6 +27,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import slope.zxy.com.rtmp.VideoBean;
 import slope.zxy.com.weather_moudle.bean.WeatherBean;
 import slope.zxy.com.weather_moudle.utils.Utility;
 
@@ -131,12 +131,13 @@ public class OkhttpWorkUtil {
         }
     }
 
-    public void postAsynHttpHis(String url,String id,String operatorName,String contents) {
+    public void postAsynHttpHis(String url,String id,String operatorName,String contents,String type) {
         OkHttpClient mOkHttpClient = new OkHttpClient();
         RequestBody formBody = new FormBody.Builder()
                 .add("id", id)
                 .add("operatorName", operatorName)
                 .add("contents", contents)
+                .add("type_s", type)
                 .build();
         Request request = new Request.Builder()
                 .url(url)

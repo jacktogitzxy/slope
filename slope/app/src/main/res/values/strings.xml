@@ -67,14 +67,41 @@
     <string name="restartsocket">网络波动，连接超时！已重连。请重新发送！</string>
     <string name="typesolopeid">边坡编号：</string>
     <string name="typesfid">三防编号：</string>
+    <string name="typewfid">危房编号：</string>
+    <string name="typedxid">地陷编号：</string>
+    <string name="typegdid">工地编号：</string>
+    <string name="typehdid">河道编号：</string>
+    //边坡
     <string name="danger1">表面出现较大裂缝</string>
     <string name="danger2">坡体出现局部位移</string>
     <string name="danger3">土壤含水显著上升</string>
     <string name="danger4">表面植被严重破坏</string>
-    <string name="danger5">水土流失严重</string>
-    <string name="danger6">低洼地段积水</string>
-    <string name="danger7">排水通道堵塞</string>
-    <string name="danger8">阻碍日常交通</string>
+    //三防
+    <string name="danger5">低洼地块</string>
+    <string name="danger6">排水不畅</string>
+    <string name="danger7">积水</string>
+    <string name="danger8">没有排水渠</string>
+    //地陷
+    <string name="danger9">地面裂缝</string>
+    <string name="danger10">地表下沉</string>
+    <string name="danger11">排水管破损，土体掏空</string>
+    <string name="danger12">地下空洞</string>
+    //工地
+    <string name="danger13">裸露土地未覆盖、未湿法施工</string>
+    <string name="danger14">围挡未全封闭</string>
+    <string name="danger15">无自动冲洗装置</string>
+    <string name="danger16">扬尘TSP监测设备未运作</string>
+    //河道
+    <string name="danger17">排水口存在污水，臭水排出</string>
+    <string name="danger18">河岸周围有少量生活垃圾</string>
+    <string name="danger19">河面有漂浮物</string>
+    <string name="danger20">河面浑浊</string>
+    //危房
+    <string name="danger21">发放通知书</string>
+    <string name="danger22">张贴标识牌、拉警戒线</string>
+    <string name="danger23">设置围挡</string>
+    <string name="danger24">封存</string>
+
     <string name="manageftime">修改周期</string>
     <string name="titlew">地质监测点: %s \n传感器编号：%S \n传感器类型：%s</string>
     <string name="inner_navi">内置导航</string>

@@ -1,10 +1,11 @@
 package com.zig.slope.callback;
 
 
-import org.careye.util.VideoBean;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import slope.zxy.com.rtmp.VideoBean;
 
 /**
  * Created by 17120 on 2018/8/31.

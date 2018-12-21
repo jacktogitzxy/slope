@@ -45,7 +45,9 @@ import com.zig.slope.presenter.SensorPresenterImpl;
 import com.zig.slope.util.ToolUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.SensorView,SensorPresenterImpl>
         implements SensorContract.SensorView  {
@@ -168,13 +170,28 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         canvas.drawArc(oval1, 180, 180, false, linePaint);//小弧形
         canvas.drawText("β",gridX+20 , y1-100, mPaint);
         mPaint.setTextSize(40);
-        canvas.drawText( "水压:"+temp+"KPa", 10, 400, mPaint);
-        canvas.drawText( "位移:"+moveSize+"mm", 300, 400, mPaint);
-        canvas.drawText("α="+a+"°",gridX , 400, mPaint);
-        canvas.drawText("β="+b+"°",gridX , 350, mPaint);
+
+
+
         canvas.drawText("孔隙水压",20 , 40, mPaint);
         canvas.drawText("表面变形",300 , 40, mPaint);
         canvas.drawText("深部位移",600 , 40, mPaint);
+        if(Float.parseFloat(temp.trim())==-1.0){
+            canvas.drawText( "暂无传感器", 10, 400, mPaint);
+        }else{
+            canvas.drawText( "水压:"+temp+"KPa", 10, 400, mPaint);
+        }
+        if(Float.parseFloat(moveSize.trim())==-1.0){
+            canvas.drawText( "暂无传感器", 300, 400, mPaint);
+        }else{
+            canvas.drawText( "位移:"+moveSize+"mm", 300, 400, mPaint);
+        }
+        if(Float.parseFloat(a.trim())==-1.0&&Float.parseFloat(b.trim())==-1.0){
+            canvas.drawText("暂无传感器",gridX , 400, mPaint);
+        }else {
+            canvas.drawText("α="+a+"°",gridX , 400, mPaint);
+            canvas.drawText("β="+b+"°",gridX , 350, mPaint);
+        }
         mHolder.unlockCanvasAndPost(canvas);// 更新屏幕显示内容
 
     }
@@ -231,9 +248,11 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 String text = item.getTitle().toString();
-                toolbar.setSubtitle("         "+text);
                 isCurrentType = toolbar.getSubtitle().toString().trim().equals(item.getTitle().toString().trim());
+                toolbar.setSubtitle("         "+text);
+                Log.i("zxy", "onMenuItemClick: isCurrentType=="+isCurrentType);
                 if(!isCurrentType){
+                    Log.i("zxy", "onMenuItemClick: isCurrentType=="+isCurrentType);
                     int index = item.getItemId();
                     drawData(index);
                 }
@@ -318,14 +337,14 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         DataBean dataBean =  dataBeans.get(i);
         List<MySensor>mySensors =dataBean.getData();
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
-        String p="0",a="0",b="0",m="0";
+        String p="-1.0",a="-1.0",b="-1.0",m="-1.0";
         for (int x = 0;x<mySensors.size();x++){
             MySensor mySensor = mySensors.get(x);
             int type = mySensor.getType_s();
             final String sensorId = mySensor.getSensorId();
             final List<MySensor.MySensorData> datas = mySensor.getData();
             if(type==1) {//表面位移
-                m=datas.get(datas.size()-1).getXdata();
+                m = datas.get(datas.size()-1).getXdata();
                 String[]labs = new String[]{"x","y表面变形(mm)         周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）     日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
                 LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,2,sensorId);
                 lineChartItem.setXdata(getxDatas(datas));

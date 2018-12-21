@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -40,7 +41,6 @@ import com.baidu.mapapi.utils.CoordinateConverter;
 import com.zig.slope.R;
 import com.zig.slope.adapter.DatawAdapter;
 import com.zig.slope.adapter.GrideAdapter;
-import org.careye.util.VideoBean;
 import com.zig.slope.callback.RequestVideoCallBack;
 import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.base.BaseMvpActivity;
@@ -50,11 +50,16 @@ import com.zig.slope.contract.SensorContract;
 import com.zig.slope.presenter.SensorPresenterImpl;
 import com.zig.slope.util.OkhttpWorkUtil;
 
-import org.careye.player.media.EyeVideoView;
+
+import org.easydarwin.video.EasyPlayerClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import slope.zxy.com.rtmp.Constante;
+import slope.zxy.com.rtmp.VideoBean;
+
 //http://120.79.174.224:8081/fx/queryMonitorByNewNameApp?newName=409 视频路径
 public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorView,SensorPresenterImpl>
         implements SensorContract.SensorView,SensorEventListener {
@@ -243,17 +248,15 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         super.onPause();
     }
     private void stopPlay(){
-        if(urls==null||urls.size()==0){
+        if(urls==null||urls.size()==0||clients==null){
             return;
         }
-        for (int i =0;i<urls.size();i++){
-            EyeVideoView videoView =  videogride.getChildAt(i).findViewById(R.id.video_player_item);
-            videoView.stopPlayback();
-            videoView.release(true);
-            videoView.stopBackgroundPlay();
+        for (int i =0;i<clients.size();i++){
+            clients.get(i).pause();
         }
     }
 
+    private List<EasyPlayerClient> clients=null;
     private void startPlay(){
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -261,9 +264,18 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
                 if(urls==null||urls.size()==0){
                     return;
                 }
-                for (int i =0;i<urls.size();i++){
-                    EyeVideoView videoView =  videogride.getChildAt(i).findViewById(R.id.video_player_item);
-                    videoView.start();
+                if(clients==null) {
+                    clients = new ArrayList<>();
+                    for (int i = 0; i < urls.size(); i++) {
+                        TextureView videoView = videogride.getChildAt(i).findViewById(R.id.video_player_item);
+                        EasyPlayerClient client = new EasyPlayerClient(DataWarningActivity.this, Constante.KEY, videoView, null, null);
+                        client.play(urls.get(i).getUrl());
+                        clients.add(client);
+                    }
+                }else{
+                    for (int i = 0; i < clients.size(); i++) {
+                        clients.get(i).play(urls.get(i).getUrl());
+                    }
                 }
             }
         },500);
@@ -279,6 +291,7 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
                 SensorManager.SENSOR_DELAY_UI);
     }
 
+
     @Override
     protected void onStop() {
         //取消注册传感器监听
@@ -293,6 +306,11 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         mBaiduMap.setMyLocationEnabled(false);
         mMapView.onDestroy();
         mMapView = null;
+        if(clients!=null) {
+            for (int i = 0; i < clients.size(); i++) {
+                clients.get(i).stop();
+            }
+        }
         super.onDestroy();
     }
 
@@ -348,8 +366,9 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
     }
 
 public void onClicktoPlay(View view){
+    Log.i("zxy", "onClicktoPlay: ");
    String x = view.findViewById(R.id.videonum).getTag().toString();
-    ARouter.getInstance().build("/player/play").withString("url",urls.get(Integer.parseInt(x)).getUrl()).navigation();
+    ARouter.getInstance().build("/player/play").withString("play_url",urls.get(Integer.parseInt(x)).getUrl()).navigation();
 }
     public void getVideos(){
         okhttpWorkUtil.postAsynHttpVideos(Constant.BASE_URL + "queryMonitorByNewNameApp?newName=" + newName

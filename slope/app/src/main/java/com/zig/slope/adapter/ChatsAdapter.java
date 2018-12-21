@@ -106,14 +106,14 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void onClick(View view) {
             TextView tv = (TextView) view;
             String contet = tv.getText().toString();
-            if(contet.startsWith("rtmp")){
+            if(contet.trim().startsWith("rtmp")){
                 //play
-                startPlay(contet);
+                startPlay(contet.trim());
             }
         }
     }
 
     private void startPlay(String url){
-        ARouter.getInstance().build("/player/play").withString("url",url).navigation();
+        ARouter.getInstance().build("/player/play").withString("play_url",url).navigation();
     }
 }

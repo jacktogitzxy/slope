@@ -129,6 +129,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_weight="1"
+            android:button="@drawable/choeboxstyle"
             android:layout_height="wrap_content"
             android:text="@string/check_password"
             android:textColor="@color/white"
@@ -140,6 +141,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_weight="1"
+            android:button="@drawable/choeboxstyle"
             android:layout_height="wrap_content"
             android:text="@string/check_login"
             android:textColor="@color/white" android:checked="false"/>
