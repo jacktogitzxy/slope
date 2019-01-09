@@ -169,7 +169,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
             }else{
                datap.addAll(data);
             }
-            adapter.updateData(data,currentPage==INDEX);
+             adapter.updateData(data, currentPage == INDEX);
         }else {
             if (data == null || data.size() == 0) {
                 showEmptyView(true);
@@ -177,18 +177,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
             }
             showEmptyView(false);
             adapter = new HisAdapter(HisReportActivity.this, data,type);
-            adapter.setItemClickListener(new OnRecyclerViewItemOnClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    Intent intent = new Intent(HisReportActivity.this, HisReportDetilActivity.class);
-                    intent.putExtra("data", datap.get(position));
-                    intent.putExtra("operatorLevel",operatorLevel);
-                    intent.putExtra("flag",datap.get(position).getFlag());
-                    intent.putExtra("operatorName",operatorName);
-                    intent.putExtra("type",type);
-                    startActivity(intent);
-                }
-            });
+            setListeners();
             recyclerView.setAdapter(adapter);
             datap = data;
         }
@@ -204,12 +193,29 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
             showEmptyView(false);
             if(adapter==null){
                 adapter = new HisAdapter(HisReportActivity.this, data,type);
+                setListeners();
+                recyclerView.setAdapter(adapter);
             }else {
                 adapter.updateData(data, true);
             }
             isCurrentType = true;
         }
 
+    }
+
+    private void setListeners(){
+        adapter.setItemClickListener(new OnRecyclerViewItemOnClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(HisReportActivity.this, HisReportDetilActivity.class);
+                intent.putExtra("data", datap.get(position));
+                intent.putExtra("operatorLevel",operatorLevel);
+                intent.putExtra("flag",datap.get(position).getFlag());
+                intent.putExtra("operatorName",operatorName);
+                intent.putExtra("type",type);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

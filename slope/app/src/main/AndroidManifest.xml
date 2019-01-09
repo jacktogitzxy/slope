@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zig.slope">
+
     <!-- jiguang -->
     <permission
         android:name="com.zig.slope.permission.JPUSH_MESSAGE"
@@ -68,10 +69,7 @@
 
         <activity
             android:name=".LocationdrawActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize" >
-
-        </activity>
-
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
         <activity android:name=".ReportActivity" />
         <activity android:name=".CameraActivity" />
         <!-- 定位服务 -->
@@ -88,7 +86,7 @@
         <service android:name=".web.WebSocketService" />
 
         <activity android:name=".ChangeImageActivity" />
-        <activity android:name=".charts.ListViewMultiChartActivity"></activity>
+        <activity android:name=".charts.ListViewMultiChartActivity" />
         <!-- **************************************************************************************** -->
         <!-- Required SDK 核心功能 -->
         <!-- 可配置 android:process 参数将 PushService 放在其他进程中 -->
@@ -177,7 +175,7 @@
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
         <!-- Required SDK核心功能 -->
         <receiver
             android:name="cn.jpush.android.service.AlarmReceiver"
@@ -219,9 +217,8 @@
             android:name="JPUSH_CHANNEL"
             android:value="developer-default" />
 
-        <activity android:name=".charts.DataWarningActivity">
-
-        </activity>
+        <activity android:name=".charts.DataWarningActivity"></activity>
+        <activity android:name=".web.TestActivity"></activity>
     </application>
 
 </manifest>

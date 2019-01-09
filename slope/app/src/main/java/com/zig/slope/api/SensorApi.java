@@ -9,14 +9,14 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
- * Author：CHENHAO
+ * Author：zxy
  * date：2018/5/4
  * desc：
  */
 
 public interface SensorApi {
     /**
-     *治理进度列表
+     *传感器api
      */
     @POST("querySlopeSensorDataByNewNameApp")
     Observable<BaseResponseBean<List<DataBean>>> getSensorData(@Query("newName") String id);

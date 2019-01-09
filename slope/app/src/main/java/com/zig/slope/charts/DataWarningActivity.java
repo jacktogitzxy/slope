@@ -65,7 +65,7 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         implements SensorContract.SensorView,SensorEventListener {
     private List<DataBean> dataBeans;
     private  String newName;
-    private int type = 0;
+    private int type = 0,currentType;
     private RecyclerView recycler_view;
     private LinearLayout emptyView;
     private LinearLayoutManager layoutManager;
@@ -109,14 +109,15 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         videogride = findViewById(R.id.videogride);
         Intent intent = getIntent();
         type = intent.getIntExtra("type",2);
+        currentType = intent.getIntExtra("currentType",1);
         newName = intent.getStringExtra("newName");
         desLatLng = intent.getParcelableExtra("zLatLng");
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarDataw);
         toolbar.setNavigationIcon(R.mipmap.return_icon);
-        toolbar.setTitleMarginStart(230);
+        toolbar.setTitleMarginStart(180);
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         if(type==2){
-            toolbar.setTitle(newName+getResources().getString(R.string.sensorWarning));
+            toolbar.setTitle(getTitles(currentType)+newName+getResources().getString(R.string.sensorWarning));
         }
         if(type==4){
             toolbar.setTitle(newName+getResources().getString(R.string.sensorWarning2));
@@ -128,7 +129,6 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
                 DataWarningActivity.this.finish();
             }
         });
-
         nestedScrollView = findViewById(R.id.nested_scroll_view);
         refreshLayout = findViewById(R.id.refresh_layout);
         refreshLayout.setColorSchemeColors(ContextCompat.getColor(DataWarningActivity.this, R.color.colorPrimary));
@@ -164,7 +164,26 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         getVideos();
 
     }
+    private String getTitles(int type){
+        String s = null;
+        if(type==1){
+            s= "边坡编号";
+        }
+        if(type==3){
+            s= "三防编号";
+        }
+        if(type==4){
+            s= "地陷编号";
+        }
+        if(type==5){
+            s= "工地编号";
+        }
+        if(type==6){
+            s= "河道编号";
+        }
+        return  s;
 
+    }
     @Override
     protected void setViews() {
     }
@@ -176,6 +195,7 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
     @Override
     public void onSensorSucess(BaseResponseBean<List<DataBean>> data) {
         dataBeans = data.getData();
+        Log.i("zxy", "onSensorSucess: dataBeans=="+dataBeans.size());
         if(data.getCode()==2){
             showEmptyView(true);
             Toast.makeText(DataWarningActivity.this,getResources()
@@ -184,10 +204,10 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         }
         showEmptyView(false);
         if(datawAdapter==null) {
-            datawAdapter  = new DatawAdapter(DataWarningActivity.this,dataBeans.get(0).getData(),new Handler());
+            datawAdapter  = new DatawAdapter(DataWarningActivity.this,dataBeans.get(1).getData(),new Handler());
             recycler_view.setAdapter(datawAdapter);
         }else{
-            datawAdapter.updateData(dataBeans.get(0).getData(),true);
+            datawAdapter.updateData(dataBeans.get(1).getData(),true);
         }
         recycler_view.setAdapter(datawAdapter);
     }
@@ -348,8 +368,8 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
 
         for (int i = 0;i<pos.size();i++){
             if(i%2==0){
-                Double v1 = Double.parseDouble(pos.get(i));
-                Double v2 = Double.parseDouble(pos.get(i+1));
+                Double v1 = Double.parseDouble(pos.get(i))+0.005;
+                Double v2 = Double.parseDouble(pos.get(i+1))-0.0025;
                 ll = new LatLng(v2,v1);
                 converter.coord(ll);
                 pts.add(converter.convert());

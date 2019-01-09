@@ -104,7 +104,11 @@ public class LineChartItem extends ChartItem {
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return xdata.get((int)value);
+                if(xdata.size()>(int)value) {
+                    return xdata.get((int) value);
+                }else{
+                    return xdata.get((int) value-1);
+                }
             }
         });
 

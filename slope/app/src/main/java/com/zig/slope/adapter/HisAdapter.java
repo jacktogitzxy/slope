@@ -43,9 +43,12 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(isRefresh){
             mList.clear();
         }
-        mList.addAll(list);
+        if(list!=null) {
+            mList.addAll(list);
+            notifyItemRemoved(list.size());
+        }
         notifyDataSetChanged();
-        notifyItemRemoved(list.size());
+
     }
 
     public void setItemClickListener(OnRecyclerViewItemOnClickListener listener){
@@ -72,6 +75,19 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             normalViewHolder.btnCategory.setText("  " + data.getNewName() + "  ");
             normalViewHolder.typeHisicon.setImageResource(R.mipmap.solpeiconleft);
         }
+        else if(type==4) {
+            normalViewHolder.btnCategory.setText("  " + data.getSid() + "  ");
+            normalViewHolder.typeHisicon.setImageResource(R.mipmap.dxleft);
+        }
+        else if(type==5) {
+            normalViewHolder.btnCategory.setText("  " + data.getCid() + "  ");
+            normalViewHolder.typeHisicon.setImageResource(R.mipmap.gdleft);
+        }
+        else if(type==6) {
+            normalViewHolder.btnCategory.setText("  " + data.getSid() + "  ");
+            normalViewHolder.typeHisicon.setImageResource(R.mipmap.hdleft);
+        }
+        Log.i("zxy", "onBindViewHolder: data.getCreateTime()=="+data.getCreateTime());
         normalViewHolder.textTime.setText(TimeUtils.transleteTime(data.getCreateTime()));
     }
 

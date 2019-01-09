@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.util.Util;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
@@ -453,6 +454,16 @@ public class WeatherActivity extends SlidingActivity {
                  requestWeather(city);
             }
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Util.isOnMainThread()) {
+            Glide.with(mContext).pauseRequests();
+        }
+
     }
 
     private void setLocalData(){

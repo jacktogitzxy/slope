@@ -105,6 +105,18 @@ public class HisReportDetilActivity extends AppCompatActivity {
             textTitle.setText("三防编号：" + data.getT_id());
             drawable = getResources().getDrawable(R.mipmap.sficonleft);
         }
+        else  if(type==4){
+            textTitle.setText("地陷编号：" + data.getSid());
+            drawable = getResources().getDrawable(R.mipmap.dxleft);
+        }
+        else  if(type==5){
+            textTitle.setText("工地编号：" + data.getCid());
+            drawable = getResources().getDrawable(R.mipmap.gdleft);
+        }
+        else  if(type==6){
+            textTitle.setText("河道编号：" + data.getSid());
+            drawable = getResources().getDrawable(R.mipmap.hdleft);
+        }
         drawable.setBounds(0, 0, 50, 70);
         textTitle.setCompoundDrawables(drawable,null,null,null);
         text_view_content.setText("情况描述："+data.getContents());
@@ -133,7 +145,7 @@ public class HisReportDetilActivity extends AppCompatActivity {
                     Glide.with(HisReportDetilActivity.this)
                             .load(Constant.BASE_URL + model)
                             .placeholder(R.mipmap.webwxgetmsgimg5)
-                            .error(R.mipmap.webwxgetmsgimg5)
+                            .error(R.mipmap.icon_error)
                             .centerCrop()
                             .dontAnimate()
                             .into(itemView);
@@ -234,6 +246,24 @@ public class HisReportDetilActivity extends AppCompatActivity {
             cbs[1].setText(getResources().getString(R.string.danger6));
             cbs[2].setText(getResources().getString(R.string.danger7));
             cbs[3].setText(getResources().getString(R.string.danger8));
+        }
+        if(type==4){
+            cbs[0].setText(getResources().getString(R.string.danger9));
+            cbs[1].setText(getResources().getString(R.string.danger10));
+            cbs[2].setText(getResources().getString(R.string.danger11));
+            cbs[3].setText(getResources().getString(R.string.danger12));
+        }
+        if(type==5){
+            cbs[0].setText(getResources().getString(R.string.danger13));
+            cbs[1].setText(getResources().getString(R.string.danger14));
+            cbs[2].setText(getResources().getString(R.string.danger15));
+            cbs[3].setText(getResources().getString(R.string.danger16));
+        }
+        if(type==6){
+            cbs[0].setText(getResources().getString(R.string.danger17));
+            cbs[1].setText(getResources().getString(R.string.danger18));
+            cbs[2].setText(getResources().getString(R.string.danger19));
+            cbs[3].setText(getResources().getString(R.string.danger20));
         }
     }
     public void showInputDestination(View view) {

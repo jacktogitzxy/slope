@@ -22,9 +22,12 @@ import android.widget.Toast;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.cjt2325.cameralibrary.util.FileUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.utils.CustomProgressDialog;
 import com.zig.slope.common.utils.PreferenceManager;
+import com.zig.slope.util.NetworkUtil;
 import com.zig.slope.view.MyImageBt;
 import com.zig.slope.view.PicFragment;
 import com.zig.slope.view.VideoFragment;
@@ -48,7 +51,7 @@ import cn.jpush.android.api.JPushInterface;
 public class ReportActivity extends BaseActivity {
     private AppCompatButton video_upload;
     // 文件路径
-    private TextView report_name1, report_worker,report_date,typesid;
+    private TextView report_name1, report_worker,report_date,typesid,title_report;
     private EditText report_note;
     // 播放按钮
     private MyImageBt [] plays;
@@ -59,19 +62,23 @@ public class ReportActivity extends BaseActivity {
     private double n,e;
     private CheckBox[] boxs;
     private int type;
+    private PreferenceManager preferenceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         setStatusBar();
+        preferenceManager = PreferenceManager.getInstance(this);
         Intent intent = getIntent();
         type= intent.getIntExtra("type",1);
         Log.i("zxy", "onCreate: type===="+type);
-        if (intent != null && intent.getStringExtra("pname") != null) {
-            Pname = intent.getStringExtra("pname");
+        if (intent != null ) {
             n= intent.getDoubleExtra("x",0);
             e= intent.getDoubleExtra("y",0);
             Log.i(TAG, "onCreate: n="+n);
+            if(intent.getStringExtra("pname") != null){
+                Pname = intent.getStringExtra("pname");
+            }
         }
         pm = PreferenceManager.getInstance(ReportActivity.this);
         userName = pm.getPackage("operatorName");
@@ -143,6 +150,7 @@ public class ReportActivity extends BaseActivity {
 //        report_worker_tel = (TextView) findViewById(R.id.report_worker_tel);
         report_date = (TextView) findViewById(R.id.report_date);
         report_note = (EditText) findViewById(R.id.report_note);
+        title_report = findViewById(R.id.title_report);
         report_worker.setText(pm.getPackage("operatorName"));
         boxs = new CheckBox[4];
         boxs[0] = findViewById(R.id.danager_cb1);
@@ -150,6 +158,7 @@ public class ReportActivity extends BaseActivity {
         boxs[2] = findViewById(R.id.danager_cb3);
         boxs[3] = findViewById(R.id.danager_cb4);
         if(type==1){
+            title_report.setText("边坡"+getResources().getString(R.string.report));
             typesid.setText(getResources().getString(R.string.typesolopeid));
             boxs[0].setText(getResources().getString(R.string.danger1));
             boxs[1].setText(getResources().getString(R.string.danger2));
@@ -157,6 +166,7 @@ public class ReportActivity extends BaseActivity {
             boxs[3].setText(getResources().getString(R.string.danger4));
         }
         if(type==2){
+            title_report.setText("危房"+getResources().getString(R.string.report));
             typesid.setText(getResources().getString(R.string.typewfid));
             boxs[0].setText(getResources().getString(R.string.danger21));
             boxs[1].setText(getResources().getString(R.string.danger22));
@@ -164,6 +174,7 @@ public class ReportActivity extends BaseActivity {
             boxs[3].setText(getResources().getString(R.string.danger24));
         }
         if(type==3){
+            title_report.setText("三防"+getResources().getString(R.string.report));
             typesid.setText(getResources().getString(R.string.typesfid));
             boxs[0].setText(getResources().getString(R.string.danger5));
             boxs[1].setText(getResources().getString(R.string.danger6));
@@ -171,6 +182,7 @@ public class ReportActivity extends BaseActivity {
             boxs[3].setText(getResources().getString(R.string.danger8));
         }
         if(type==4){
+            title_report.setText("地陷"+getResources().getString(R.string.report));
             typesid.setText(getResources().getString(R.string.typedxid));
             boxs[0].setText(getResources().getString(R.string.danger9));
             boxs[1].setText(getResources().getString(R.string.danger10));
@@ -178,6 +190,7 @@ public class ReportActivity extends BaseActivity {
             boxs[3].setText(getResources().getString(R.string.danger12));
         }
         if(type==5){
+            title_report.setText("工地"+getResources().getString(R.string.report));
             typesid.setText(getResources().getString(R.string.typegdid));
             boxs[0].setText(getResources().getString(R.string.danger13));
             boxs[1].setText(getResources().getString(R.string.danger14));
@@ -185,6 +198,7 @@ public class ReportActivity extends BaseActivity {
             boxs[3].setText(getResources().getString(R.string.danger16));
         }
         if(type==6){
+            title_report.setText("河道"+getResources().getString(R.string.report));
             typesid.setText(getResources().getString(R.string.typehdid));
             boxs[0].setText(getResources().getString(R.string.danger17));
             boxs[1].setText(getResources().getString(R.string.danger18));
@@ -222,7 +236,12 @@ public class ReportActivity extends BaseActivity {
         }
         Log.i(TAG, "startReportdo: remark1="+remark1);
         String rid = getRid();
-        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),remark1,rid,type+"",plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
+        String openLocation = preferenceManager.getPackage("openLocation");
+        if(openLocation==null){
+            openLocation="1";
+        }
+        Log.i(TAG, "startReportdo: e=="+e+"*********8"+String.valueOf(e));
+        upLaodImg(operatorID,slopeId,text,String.valueOf(n),String.valueOf(e),remark1,rid,type+"",openLocation,plays[0].getPath(),plays[1].getPath(),plays[2].getPath(),plays[3].getPath());
     }
     private static final int REQUEST_CODE_ALBUM = 0x0001;
     View.OnClickListener onclicks = new View.OnClickListener() {
@@ -231,7 +250,6 @@ public class ReportActivity extends BaseActivity {
             startCamView();
         }
     };
-
 
     private void startCamView(){
         Intent intent = new Intent(ReportActivity.this, CameraActivity.class);
@@ -289,7 +307,7 @@ public class ReportActivity extends BaseActivity {
         String uri = Constant.BASE_URL+"filesUpload";
         RequestParams params = new RequestParams(uri);//参数是路径地址
         List<KeyValue> list = new ArrayList<>();
-        for (int i = 8; i < param.length; i++) {
+        for (int i = 9; i < param.length; i++) {
             try {
                 list.add(new KeyValue("files",new File(param[i])));
             } catch (Exception e) {
@@ -300,7 +318,7 @@ public class ReportActivity extends BaseActivity {
         if(type==1) {
             list.add(new KeyValue("newName", param[1]));
         }
-        if(type==3){
+        else {
             list.add(new KeyValue("id", param[1]));
         }
         list.add(new KeyValue("contents", param[2]));
@@ -309,8 +327,8 @@ public class ReportActivity extends BaseActivity {
         list.add(new KeyValue("remark1", param[5]));
         list.add(new KeyValue("regeditID", param[6]));
         list.add(new KeyValue("type_s", param[7]));
-        Log.i(TAG, "regeditID: regeditID==="+param[6]);
-        Log.i(TAG, "upLaodImg: list==="+list.size());
+        list.add(new KeyValue("openlocation ", param[8]));
+        Log.i(TAG, "upLaodImg: x=="+param[3]+"y=="+param[4]);
         //设置编码格式为UTF-8，保证参数不乱码
         MultipartBody body = new MultipartBody(list, "UTF-8");
         params.setRequestBody(body);
@@ -326,11 +344,22 @@ public class ReportActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
+                if(!NetworkUtil.isNetworkAvailable(ReportActivity.this)){
+                    Log.i(TAG, "upLaodImg: isNetworkAvailable==false");
+                    List<String> updata = new ArrayList<>();
+                    for (int i = 0;i<param.length;i++){
+                        updata.add(param[i]);
+                    }
+                    Gson gson = new Gson();
+                    String hson = gson.toJson(updata, new TypeToken<List<String>>(){}.getType());
+                    preferenceManager.putString("lastUpload",hson);
+                }
                 stopProgressDialog();
-                Toast.makeText(ReportActivity.this,"上传失败，服务器繁忙",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReportActivity.this,"上传失败，网络波动,数据已保存稍后自动上传",Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "onError: "+ex.getMessage());
                 Log.i(TAG, "onError: "+ex.getLocalizedMessage());
                 Log.i(TAG, "onError: "+ex.toString());
+                ReportActivity.this.finish();
             }
 
             @Override

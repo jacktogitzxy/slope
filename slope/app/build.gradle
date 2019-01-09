@@ -100,7 +100,7 @@ dependencies {
     implementation project(':easy_pusher')
     implementation project(':weather_moudle')
     //eye-car推流播放
-   // implementation project(':rtmp_moudle')
+    // implementation project(':rtmp_moudle')
     //implementation project(':player_moudle')
     compile project(path: ':library')
 }

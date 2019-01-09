@@ -62,7 +62,6 @@ public class Utility {
 
             JSONObject now_apiDetail = nowData.getJSONObject("aqiDetail");
             //  parseApiDetailJsonData(now_apiDetail);
-
             nowWeatherBean.mWeather_Code = nowData.getString("weather_code");
             nowWeatherBean.mWind_Direction = nowData.getString("wind_direction");
             nowWeatherBean.mTemperature_Time = nowData.getString("temperature_time");
@@ -72,21 +71,21 @@ public class Utility {
             nowWeatherBean.mWeather_Pic = nowData.getString("weather_pic");
             nowWeatherBean.mWeather = nowData.getString("weather");
             nowWeatherBean.mTemperature = nowData.getString("temperature");
-
-
             //空气质量解析
-            aqiDetailBean.mCo = now_apiDetail.getDouble("co") + "";
-            aqiDetailBean.mSo2 = now_apiDetail.getInt("so2") + "";
+            try {
+                aqiDetailBean.mCo = now_apiDetail.getDouble("co") + "";
+                aqiDetailBean.mSo2 = now_apiDetail.getInt("so2") + "";
+                aqiDetailBean.mO3 = now_apiDetail.getInt("o3") + "";
+                aqiDetailBean.mNo2 = now_apiDetail.getInt("no2") + "";
+                aqiDetailBean.mAqi = now_apiDetail.getInt("aqi") + "";
+                aqiDetailBean.mPm10 = now_apiDetail.getInt("pm10") + "";
+                aqiDetailBean.mPm2_5 = now_apiDetail.getInt("pm2_5") + "";
+                aqiDetailBean.mPrimary_Pollutant = now_apiDetail.getString("primary_pollutant");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             aqiDetailBean.mArea = now_apiDetail.getString("area");
-            aqiDetailBean.mO3 = now_apiDetail.getInt("o3") + "";
-            aqiDetailBean.mNo2 = now_apiDetail.getInt("no2") + "";
             aqiDetailBean.mQuality = now_apiDetail.getString("quality");
-            aqiDetailBean.mAqi = now_apiDetail.getInt("aqi") + "";
-            aqiDetailBean.mPm10 = now_apiDetail.getInt("pm10") + "";
-            aqiDetailBean.mPm2_5 = now_apiDetail.getInt("pm2_5") + "";
-            aqiDetailBean.mPrimary_Pollutant = now_apiDetail.getString("primary_pollutant");
-
-
 
             //未来几天天气解析
             JSONObject f1 = showapi_res_body.getJSONObject("f1");

@@ -16,6 +16,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -88,21 +91,26 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         String tyeps = "表面位移传感器";
         if(currentType==1){
             tyeps = "表面位移传感器";
+            normalViewHolder.ivIndexblue.setVisibility(View.GONE);
+            normalViewHolder.iv_dashboard.setImageResource(R.mipmap.dial);
             normalViewHolder.textViewS1.setText(context.getResources().getString(R.string.biaomian));
         }
         if(currentType==2){
             tyeps = "深部位移传感器";
+            normalViewHolder.ivIndexblue.setVisibility(View.VISIBLE);
+            normalViewHolder.iv_dashboard.setImageResource(R.mipmap.dials);
             normalViewHolder.textViewS1.setText(context.getResources().getString(R.string.shenbu));
         }
         if(currentType==3){
             tyeps = "孔隙水压传感器";
+            normalViewHolder.ivIndexblue.setVisibility(View.GONE);
+            normalViewHolder.iv_dashboard.setImageResource(R.mipmap.dialp);
             normalViewHolder.textViewS1.setText(context.getResources().getString(R.string.shuiya));
         }
         String s = String.format(context.getResources().getString(R.string.titlew), mySensorData.getMonitoringName(),
                 mySensorData.getSensorID(),tyeps);
         normalViewHolder.titlew.setText(s);
-        Log.i("zxy", "onBindViewHolder: position=="+position);
-        drawData(data,normalViewHolder.listVieww,normalViewHolder.mHolder);
+        drawData(data,normalViewHolder);
     }
 
     @Override
@@ -118,33 +126,39 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         OnRecyclerViewItemOnClickListener listener;
         TextView titlew;
-        SurfaceView surfacew;
+        //        SurfaceView surfacew;
         ListView listVieww;
-        SurfaceHolder mHolder;
+        //        SurfaceHolder mHolder;
         TextView textViewS1;
+        private ImageView ivIndex,ivIndexblue,iv_dashboard;
+        private TextView tvRatio;
         public NormalViewHolder(View itemView, final OnRecyclerViewItemOnClickListener listener) {
             super(itemView);
             this.listener = listener;
+            ivIndex = (ImageView) itemView.findViewById(R.id.iv_index);
+            tvRatio = (TextView) itemView.findViewById(R.id.tv_ratio);
             titlew = itemView.findViewById(R.id.titlew);
-            surfacew = itemView.findViewById(R.id.surfacew);
+            iv_dashboard = itemView.findViewById(R.id.iv_dashboard);
+            ivIndexblue = itemView.findViewById(R.id.iv_index2);
+//            surfacew = itemView.findViewById(R.id.surfacew);
             listVieww = itemView.findViewById(R.id.listVieww);
             textViewS1 = itemView.findViewById(R.id.s1);
-            surfacew.setZOrderOnTop(true);
-            mHolder = surfacew.getHolder();
-            mHolder.setFormat(PixelFormat.TRANSLUCENT);
-            mHolder.addCallback(new SurfaceHolder.Callback() {
-                @Override
-                public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                }
-
-                @Override
-                public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-                }
-
-                @Override
-                public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                }
-            });
+//            surfacew.setZOrderOnTop(true);
+//            mHolder = surfacew.getHolder();
+//            mHolder.setFormat(PixelFormat.TRANSLUCENT);
+//            mHolder.addCallback(new SurfaceHolder.Callback() {
+//                @Override
+//                public void surfaceCreated(SurfaceHolder surfaceHolder) {
+//                }
+//
+//                @Override
+//                public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+//                }
+//
+//                @Override
+//                public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+//                }
+//            });
         }
 
         @Override
@@ -156,15 +170,68 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         }
     }
+    private void ivRotate(double percent, double percent2, NormalViewHolder normalViewHolder, int type) {
+        normalViewHolder.tvRatio.setText(String.valueOf(percent));
+        if(type==1) {//表面位移
+            double percentOffset = percent > 100 ? 100 : percent;
+            RotateAnimation rotateAnimation = new RotateAnimation(270f, 270f + 180 * ((int) percentOffset / 100f),
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1.0f);
+            rotateAnimation.setDuration(1500);
+            rotateAnimation.setFillAfter(true);
+            normalViewHolder.ivIndex.startAnimation(rotateAnimation);
+        }else if(type==2){//深部位移
+            normalViewHolder.tvRatio.setText("x:"+String.valueOf(percent)+"\n"+"y:"+String.valueOf(percent2));
+            double percentOffset = percent > 30 ? 30: percent;
+            float value;
+            if(percentOffset<=0) {
+                if(percentOffset<-30){
+                    percentOffset=-30;
+                }
+                 value = 180 * (int) percentOffset / 60f * -1;
+            }else{
+                 value = 180 * (int) percentOffset / 60f+90f;
+            }
+            RotateAnimation rotateAnimation = new RotateAnimation(270f, 270f + value,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1.0f);
+            rotateAnimation.setDuration(1500);
+            rotateAnimation.setFillAfter(true);
+            normalViewHolder.ivIndex.startAnimation(rotateAnimation);
+            double percentOffset2 = percent2 > 30 ? 30 : percent2;
+            if(percentOffset2<=0) {
+                value = 180 * (int) percentOffset2 / 60f * -1;
+            }else{
+                if(percentOffset2>30){
+                    percentOffset2=30;
+                }
+                value = 180 * (int) percentOffset2 / 60f+90f;
+            }
+            RotateAnimation rotateAnimation2 = new RotateAnimation(270f, 270f + value,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1.0f);
+            rotateAnimation2.setDuration(1500);
+            rotateAnimation2.setFillAfter(true);
+            normalViewHolder.ivIndexblue.startAnimation(rotateAnimation2);
+        }else if(type==3){
+            double percentOffset = percent > 200 ? 200 : percent;
+            if(percentOffset<90){
+                percentOffset=90;
+            }
+            float value = 180 * ((int) percentOffset-90)/110f;
+            RotateAnimation rotateAnimation = new RotateAnimation(270f, 270f + value,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 1.0f);
+            rotateAnimation.setDuration(1500);
+            rotateAnimation.setFillAfter(true);
+            normalViewHolder.ivIndex.startAnimation(rotateAnimation);
+        }
+    }
 
-
-    public void drawData(final MySensor mySensor, ListView listView, final SurfaceHolder mHolder){
+    public void drawData(final MySensor mySensor, final NormalViewHolder normalViewHolder){
         List<MySensor.MySensorData>datas =mySensor.getData();
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
         String sensorId = mySensor.getSensorId();
-        String p="0",a="0",b="0",m="0";
+        String a="0",b="0";
+        final int  type = mySensor.getType_s();
         if(mySensor.getType_s()==1){
-            m=datas.get(datas.size()-1).getXdata();
+            a=datas.get(datas.size()-1).getXdata();
             String[]labs = new String[]{"x","y表面变形(mm)   周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
             LineChartItem lineChartItem = new LineChartItem(getLineData(datas,labs),context,2,sensorId);
             lineChartItem.setXdata(getxDatas(datas));
@@ -172,30 +239,31 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }else if(mySensor.getType_s()==2){
             a=datas.get(datas.size()-1).getXdata();
             b=datas.get(datas.size()-1).getYdata();
+            Log.i("zxy", "run: finalA=="+a);
             String[]labs = new String[]{"x","y深部位移(°)   周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
             LineChartItem lineChartItem =new LineChartItem(getLineData(datas,labs),context,1,sensorId);
             lineChartItem.setXdata(getxDatas(datas));
             list.add(lineChartItem);
         }else{
-            p=datas.get(0).getXdata();
+            a=datas.get(datas.size()-1).getXdata();
             String[]labs = new String[]{"孔隙水压(kpa)    周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
             BarChartItem barChartItem = new BarChartItem(getDataBar(datas,labs),context,sensorId);
             barChartItem.setXdata(getxDatas(datas));
             list.add(barChartItem);
         }
         ChartDataAdapter cda = new ChartDataAdapter(context, list);
-        final String finalP = p;
-        final String finalM = m;
         final String finalA = a;
         final String finalB = b;
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                drawx(finalP, finalM, finalA, finalB,mySensor.getData().get(0).getxCriticality(),mySensor.getType_s(),mHolder);
+                Log.i("zxy", "run: finalA=="+finalA);
+                ivRotate(Double.parseDouble(finalA),Double.parseDouble(finalB),normalViewHolder, type);
+                //    drawx(finalP, finalM, finalA, finalB,mySensor.getData().get(0).getxCriticality(),mySensor.getType_s(),mHolder);
             }
         },1000);
 
-        listView.setAdapter(cda);
+        normalViewHolder.listVieww.setAdapter(cda);
     }
     public ArrayList<String> getxDatas(List<MySensor.MySensorData> datas){
         ArrayList<String> e3 = new ArrayList<>();

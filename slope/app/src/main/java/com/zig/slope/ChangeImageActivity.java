@@ -101,9 +101,7 @@ public class ChangeImageActivity extends AppCompatActivity {
         if(type==1) {
             list.add(new KeyValue("newName", param[0]));
         }
-        if(type==3){
-            list.add(new KeyValue("id", param[0]));
-        }
+        list.add(new KeyValue("id", param[0]));
         list.add(new KeyValue("type_s", param[1]));
         Log.i(TAG, "upLaodImg: type=="+param[1]);
         Log.i(TAG, "upLaodImg: list=="+list.size());
@@ -111,7 +109,6 @@ public class ChangeImageActivity extends AppCompatActivity {
         MultipartBody body = new MultipartBody(list, "UTF-8");
         params.setRequestBody(body);
         params.setMultipart(true);
-
         x.http().post(params, new Callback.CommonCallback<String>() {
 
             @Override
@@ -123,7 +120,9 @@ public class ChangeImageActivity extends AppCompatActivity {
             public void onError(Throwable ex, boolean isOnCallback) {
                 stopProgressDialog();
                 Toast.makeText(ChangeImageActivity.this,"上传失败，服务器繁忙",Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "onError: ");
+                Log.i(TAG, "onError: "+ex.getMessage());
+                Log.i(TAG, "onError: "+ex.getLocalizedMessage());
+                Log.i(TAG, "onError: "+ex.toString());
             }
 
             @Override

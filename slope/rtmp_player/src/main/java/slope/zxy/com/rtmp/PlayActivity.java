@@ -596,7 +596,6 @@ public class PlayActivity extends AppCompatActivity {
             setNavVisibility(true);
             renderHolder.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.render_wnd_height);
             renderHolder.requestLayout();
-
             mRenderFragment.quiteFullscreen();
 
             return;

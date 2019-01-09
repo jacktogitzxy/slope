@@ -10,9 +10,10 @@ import java.io.Serializable;
 
 public class HisReport implements Serializable {
         private int id;
-        private String patrollerID;
+        private String sid;
         private String newName;
         private String t_id;
+        private String cid;
         private String createTime;
         private String contents;
         private int controlFlag1;
@@ -44,12 +45,12 @@ public class HisReport implements Serializable {
         this.id = id;
     }
 
-    public String getPatrollerID() {
-        return patrollerID;
+    public String getSid() {
+        return sid;
     }
 
-    public void setPatrollerID(String patrollerID) {
-        this.patrollerID = patrollerID;
+    public void setSid(String sid) {
+        this.sid = sid;
     }
 
     public String getNewName() {
@@ -82,6 +83,14 @@ public class HisReport implements Serializable {
 
     public void setControlFlag1(int controlFlag1) {
         this.controlFlag1 = controlFlag1;
+    }
+
+    public String getCid() {
+        return cid;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
     }
 
     public String getUrl1() {
@@ -180,9 +189,9 @@ public class HisReport implements Serializable {
         this.remark1 = remark1;
     }
 
-    public HisReport(int id, String patrollerID,String t_id, String newName, String createTime, String contents, int controlFlag1, String url1, int controlFlag2, String url2, int controlFlag3, int controlFlag4, int flag, String admins, String adminsContent, String leaders, String leadersContent, String remark,String remark1) {
+    public HisReport(int id, String sid,String t_id,String cid, String newName, String createTime, String contents, int controlFlag1, String url1, int controlFlag2, String url2, int controlFlag3, int controlFlag4, int flag, String admins, String adminsContent, String leaders, String leadersContent, String remark,String remark1) {
         this.id = id;
-        this.patrollerID = patrollerID;
+        this.sid = sid;
         this.newName = newName;
         this.createTime = createTime;
         this.contents = contents;
@@ -200,6 +209,7 @@ public class HisReport implements Serializable {
         this.remark = remark;
         this.t_id=t_id;
         this.remark1 = remark1;
+        this.cid=cid;
 
     }
 }

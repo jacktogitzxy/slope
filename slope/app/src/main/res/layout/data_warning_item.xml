@@ -6,28 +6,63 @@
     android:orientation="vertical"
     android:background="@drawable/report_state"
     >
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/dp_30"
+        android:paddingLeft="@dimen/dp_30"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/titlew"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:paddingRight="@dimen/dp_30"
-            android:paddingLeft="@dimen/dp_30"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/titlew"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"/>
-            <SurfaceView android:id="@+id/surfacew"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_160" />
-        </LinearLayout>
-        <ListView
-            android:id="@+id/listVieww"
+            android:gravity="center_horizontal"/>
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_270" >
-        </ListView>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_dashboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/dial" />
+            <ImageView
+                android:id="@+id/iv_index"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/dail_index" />
+            <ImageView
+                android:id="@+id/iv_index2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"
+                android:src="@mipmap/dail_indexblue" />
+            <TextView
+                android:id="@+id/tv_ratio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/iv_dashboard"
+                android:layout_centerHorizontal="true"
+                android:paddingBottom="20dp"
+                android:paddingRight="5dp"
+                android:text="50%"
+                android:textColor="@color/white_bb" />
+        </RelativeLayout>
+        <!--<SurfaceView android:id="@+id/surfacew"-->
+        <!--android:layout_marginTop="@dimen/dp_20"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/dp_160" />-->
+    </LinearLayout>
+    <ListView
+        android:id="@+id/listVieww"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_270" >
+    </ListView>
     <TextView
         android:background="@drawable/bt_main_scorll"
         android:id="@+id/s1"
@@ -78,7 +113,7 @@
             android:paddingRight="8dp"/>
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/co3"
-           android:layout_below="@id/co1"
+            android:layout_below="@id/co1"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_margin="8dp"

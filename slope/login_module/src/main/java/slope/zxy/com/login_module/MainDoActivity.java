@@ -114,6 +114,38 @@ public class MainDoActivity extends AppCompatActivity {
                 }
             },1000);
         }
+        if(view.getId()==R.id.typeDx){
+            ARouter.getInstance().build("/map/index").withSerializable("data",data).withInt("type",4).navigation();
+            showLoading();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    hideLoading();
+                }
+            },1000);
+        }
+        if(view.getId()==R.id.typegd){
+            ARouter.getInstance().build("/map/index").withSerializable("data",data).withInt("type",5).navigation();
+            showLoading();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    hideLoading();
+                }
+            },1000);
+        }
+
+        if(view.getId()==R.id.typehd){
+            ARouter.getInstance().build("/map/index").withSerializable("data",data).withInt("type",6).navigation();
+            showLoading();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    hideLoading();
+                }
+            },1000);
+        }
+
         if(view.getId()==R.id.typeHouse){
             ARouter.getInstance().build("/map/index").withSerializable("data",data).withInt("type",2).navigation();
             showLoading();

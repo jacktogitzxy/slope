@@ -1,0 +1,61 @@
+if (isModule.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion "27.0.1"
+
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+        buildConfigField 'boolean', 'YUV_EXPORT', 'false'
+        //ARouter
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+}
+repositories {
+    flatDir {
+        dirs 'Libs'
+    }
+}
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation rootProject.ext.dependencies.arouter_api
+    annotationProcessor rootProject.ext.dependencies.arouter_compiler
+    implementation rootProject.ext.dependencies.gson
+    implementation project(':library')
+//    implementation(name: 'update-release', ext: 'aar')
+    implementation(name: 'texturegesture-release', ext: 'aar')
+    implementation 'com.squareup:otto:1.3.8'
+    implementation "com.android.support:preference-v7:27.1.1"
+    implementation "com.android.support:design:27.1.1"
+    implementation "com.android.support:gridlayout-v7:27.1.1"
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation "com.android.support:cardview-v7:27.1.1"
+    implementation 'com.github.chrisbanes:PhotoView:1.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.5.0'
+    implementation "com.android.support.constraint:constraint-layout:1.0.2"
+    androidTestImplementation "com.android.support:support-annotations:27.1.1"
+    androidTestImplementation "com.android.support.test:runner:0.5"
+    androidTestImplementation "com.android.support.test:rules:0.5"
+    androidTestImplementation 'junit:junit:4.12'
+
+}

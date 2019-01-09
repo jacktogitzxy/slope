@@ -57,11 +57,13 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
     private ListView    lv;
     private List<DataBean> dataBeans;
     private  String newName;
+    private int types;
     private boolean isCurrentType = true;
     private NestedScrollView nestedScrollView;
     private SwipeRefreshLayout refreshLayout;
     private ChartDataAdapter cda;
     private LinearLayout emptyView;
+    private int currentIndex = 0 ;
     public void ClearDraw(){
         Canvas canvas = null;
         try{
@@ -211,6 +213,7 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
     protected void findViews() {
         Intent intent = getIntent();
         newName = intent.getStringExtra("newName");
+        types =  intent.getIntExtra("type",1);
         lv = findViewById(R.id.listView1);
 //        myDataScro = findViewById(R.id.myDataScro);
         mSurface = (SurfaceView) findViewById(R.id.surface);
@@ -232,9 +235,9 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         });
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarData);
         toolbar.setNavigationIcon(R.mipmap.return_icon);
-        toolbar.setTitleMarginStart(180);
+        toolbar.setTitleMarginStart(150);
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-        toolbar.setTitle("编号"+newName+getResources().getString(R.string.type_data));
+        toolbar.setTitle(getTitles(types)+newName+getResources().getString(R.string.type_data));
         toolbar.setSubtitle("         地质监测点1");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -253,8 +256,8 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
                 Log.i("zxy", "onMenuItemClick: isCurrentType=="+isCurrentType);
                 if(!isCurrentType){
                     Log.i("zxy", "onMenuItemClick: isCurrentType=="+isCurrentType);
-                    int index = item.getItemId();
-                    drawData(index);
+                    currentIndex = item.getItemId();
+                    drawData(currentIndex);
                 }
                 return true;
             }
@@ -280,6 +283,26 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         });
     }
 
+    private String getTitles(int type){
+        String s = null;
+        if(type==1){
+            s= "边坡编号";
+        }
+        if(type==3){
+            s= "三防编号";
+        }
+        if(type==4){
+            s= "地陷编号";
+        }
+        if(type==5){
+            s= "工地编号";
+        }
+        if(type==6){
+            s= "河道编号";
+        }
+        return  s;
+
+    }
     @Override
     protected void setViews() {
 
@@ -299,7 +322,7 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
             return;
         }
         showEmptyView(false);
-        drawData(0);
+        drawData(currentIndex);
         Log.i("zxy", "onSensorSucess: dataBeans=="+dataBeans.size());
     }
 
