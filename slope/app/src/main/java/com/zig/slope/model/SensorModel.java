@@ -3,6 +3,7 @@ package com.zig.slope.model;
 import android.content.Context;
 
 import com.zig.slope.api.SensorApi;
+import com.zig.slope.bean.DataWarnBean;
 import com.zig.slope.common.base.bean.BaseResponseBean;
 import com.zig.slope.common.base.bean.DataBean;
 import com.zig.slope.common.http.RxObserver;
@@ -51,16 +52,16 @@ public class SensorModel implements SensorContract.SensorModel {
     }
 
     @Override
-    public void getSensorForcastDatas(Context context, String newName, final SensorContract.ISensorModelCallback callback) {
+    public void getSensorForcastDatas(Context context, String newName, final SensorContract.ISensorModelCallbacks callback) {
         RxRetrofitManager.getInstance()
                 .setTag("getSensorDatas")
                 .getApiService(SensorApi.class)
                 .getSensorForcastData(newName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( new RxObserver<BaseResponseBean<List<DataBean>>>(context, true) {
+                .subscribe( new RxObserver<BaseResponseBean<List<DataWarnBean>>>(context, true) {
                     @Override
-                    public void onSuccess(BaseResponseBean<List<DataBean>> BaseResponseBean) {
+                    public void onSuccess(BaseResponseBean<List<DataWarnBean>> BaseResponseBean) {
                         if (BaseResponseBean.getCode() >= 0&&BaseResponseBean.getData()!=null){
                             if (callback != null){
                                 callback.onSuccess(BaseResponseBean);

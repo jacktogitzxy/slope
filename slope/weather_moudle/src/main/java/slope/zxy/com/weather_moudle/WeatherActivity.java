@@ -459,10 +459,13 @@ public class WeatherActivity extends SlidingActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (Util.isOnMainThread()) {
-            Glide.with(mContext).pauseRequests();
+            if(mContext!=null) {
+                Glide.with(mContext).pauseRequests();
+            }
         }
+        super.onDestroy();
+
 
     }
 

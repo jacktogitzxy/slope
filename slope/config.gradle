@@ -6,8 +6,8 @@ ext{
             compileSdkVersion: 27,
             minSdkVersion: 17,
             targetSdkVersion: 27,
-            versionCode: 8,
-            versionName: "8.0"
+            versionCode: 12,
+            versionName: "12.0"
     ]
     libsVersion = [
             supportLibraryVersion = "27.1.1",

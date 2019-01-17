@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         if(size>2){
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,750);
             videogride.setLayoutParams(params);
+            videogride.setNumColumns(2);
         }
         adapter= new VideoAdapter(MainActivity.this,videos);
         videogride.setAdapter(adapter);
@@ -123,7 +124,9 @@ public void onClicktoPlay(View view){
                     for (int i = 0; i < videos.size(); i++) {
                         TextureView videoView = videogride.getChildAt(i).findViewById(R.id.video_player_item);
                         EasyPlayerClient client = new EasyPlayerClient(MainActivity.this, Constante.KEY, videoView, null, null);
+                        //String u = "rtmp://live.hkstv.hk.lxdns.com/live/hks2";
                         client.play(videos.get(i).getUrl());
+                        //client.play(u);
                         clients.add(client);
                     }
                 }else{

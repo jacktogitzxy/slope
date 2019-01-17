@@ -75,6 +75,10 @@ public class HisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             normalViewHolder.btnCategory.setText("  " + data.getNewName() + "  ");
             normalViewHolder.typeHisicon.setImageResource(R.mipmap.solpeiconleft);
         }
+        else if(type==2) {
+            normalViewHolder.btnCategory.setText("  " + data.getDid() + "  ");
+            normalViewHolder.typeHisicon.setImageResource(R.mipmap.wficonleft);
+        }
         else if(type==4) {
             normalViewHolder.btnCategory.setText("  " + data.getSid() + "  ");
             normalViewHolder.typeHisicon.setImageResource(R.mipmap.dxleft);

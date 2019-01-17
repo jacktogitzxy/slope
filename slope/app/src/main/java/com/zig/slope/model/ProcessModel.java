@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.zig.slope.api.ConstructionApi;
-import com.zig.slope.api.HisApi;
+import com.zig.slope.api.DangerousApi;
 import com.zig.slope.api.ProcessApi;
 import com.zig.slope.api.SewageApi;
 import com.zig.slope.api.SubsidenceApi;
@@ -13,19 +13,19 @@ import com.zig.slope.bean.DiXian;
 import com.zig.slope.bean.GongDi;
 import com.zig.slope.bean.PaiWu;
 import com.zig.slope.bean.SanFan;
+import com.zig.slope.bean.WeiFangBean;
 import com.zig.slope.common.base.bean.BaseResponseBean;
-import com.zig.slope.common.base.bean.HisBean;
 import com.zig.slope.common.base.bean.ProcessBean;
 import com.zig.slope.common.http.RxObserver;
 import com.zig.slope.common.http.RxRetrofitManager;
 import com.zig.slope.common.http.cancle.ApiCancleManager;
-import com.zig.slope.contract.HisContract;
 import com.zig.slope.contract.ProcessContract;
 
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import slope.zxy.com.weather_moudle.bean.WeatherBean;
 
 /**
  * Author：CHENHAO
@@ -167,12 +167,37 @@ public class ProcessModel implements ProcessContract.ProcessModel {
     }
 
     @Override
+    public void getDangerousDatas(Context context, final int page, int community, final ProcessContract.IProcessModelCallbackwf callback) {
+        RxRetrofitManager.getInstance()
+                .setTag("Dangerous")
+                .getApiService(DangerousApi.class)
+                .DangerousApp(page,community)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe( new RxObserver<BaseResponseBean<WeiFangBean>>(context, true) {
+                    @Override
+                    public void onSuccess(BaseResponseBean<WeiFangBean> BaseResponseBean) {
+                        if (BaseResponseBean.getCode() >= 0&&BaseResponseBean.getData()!=null){
+                            if (callback != null){
+                                callback.onSuccess(BaseResponseBean);
+                            }
+                        }else {
+                            if (callback != null){
+                                callback.onFail(BaseResponseBean.getInfo());
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void cancleHttpRequest() {
         ApiCancleManager.getInstance().cancel("getProcessDatas");
         ApiCancleManager.getInstance().cancel("ThreeDefense");
         ApiCancleManager.getInstance().cancel("Construction");
         ApiCancleManager.getInstance().cancel("Subsidence");
         ApiCancleManager.getInstance().cancel("Sewage");
+        ApiCancleManager.getInstance().cancel("Dangerous");
     }
 
 

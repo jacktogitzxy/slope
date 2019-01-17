@@ -59,9 +59,11 @@
         android:name=".App.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/zig"
+        android:hardwareAccelerated="true"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/zig"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppBaseTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -218,7 +220,9 @@
             android:value="developer-default" />
 
         <activity android:name=".charts.DataWarningActivity"></activity>
-        <activity android:name=".web.TestActivity"></activity>
+        <activity android:name=".web.MarkerClusterDemo">
+
+        </activity>
     </application>
 
 </manifest>

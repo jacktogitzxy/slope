@@ -105,6 +105,10 @@ public class HisReportDetilActivity extends AppCompatActivity {
             textTitle.setText("三防编号：" + data.getT_id());
             drawable = getResources().getDrawable(R.mipmap.sficonleft);
         }
+        else  if(type==2){
+            textTitle.setText("危房编号：" + data.getDid());
+            drawable = getResources().getDrawable(R.mipmap.sficonleft);
+        }
         else  if(type==4){
             textTitle.setText("地陷编号：" + data.getSid());
             drawable = getResources().getDrawable(R.mipmap.dxleft);

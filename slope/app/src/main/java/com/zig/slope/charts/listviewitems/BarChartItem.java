@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -32,7 +33,7 @@ public class BarChartItem extends ChartItem {
     private OkhttpWorkUtil okhttpWorkUtil;
     private Activity activity;
     private List<String> xdata;
-
+    private Boolean isShow = true;
     public List<String> getXdata() {
         return xdata;
     }
@@ -41,9 +42,10 @@ public class BarChartItem extends ChartItem {
         this.xdata = xdata;
     }
 
-    public BarChartItem(ChartData<?> cd, Activity c, String sid ) {
+    public BarChartItem(ChartData<?> cd, Activity c, String sid,boolean isshow ) {
         super(cd);
         this.sid = sid;
+        this.isShow =isshow;
         mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
         this.activity=c;
         if(okhttpWorkUtil==null){
@@ -69,13 +71,19 @@ public class BarChartItem extends ChartItem {
             convertView = LayoutInflater.from(c).inflate(
                     R.layout.list_item_barchart, null);
             holder.chart = convertView.findViewById(R.id.chart);
-            convertView.findViewById(R.id.bf).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.i("zxy", "onClick: sid=="+sid);
-                    poup.showAtLocation(view, Gravity.BOTTOM,0,0);
-                }
-            });
+            Button button =  convertView.findViewById(R.id.bf);
+            if(isShow){
+                button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.i("zxy", "onClick: sid=="+sid);
+                        poup.showAtLocation(view, Gravity.BOTTOM,0,0);
+                    }
+                });
+            }else{
+                button.setVisibility(View.GONE);
+            }
             convertView.setTag(holder);
 
         } else {

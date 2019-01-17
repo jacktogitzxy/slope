@@ -1,6 +1,7 @@
 package com.zig.slope.api;
 
 
+import com.zig.slope.bean.DataWarnBean;
 import com.zig.slope.common.base.bean.BaseResponseBean;
 import com.zig.slope.common.base.bean.DataBean;
 import java.util.List;
@@ -20,6 +21,6 @@ public interface SensorApi {
      */
     @POST("querySlopeSensorDataByNewNameApp")
     Observable<BaseResponseBean<List<DataBean>>> getSensorData(@Query("newName") String id);
-    @POST("querySlopeForcastLogApp")
-    Observable<BaseResponseBean<List<DataBean>>> getSensorForcastData(@Query("newName") String id);
+    @POST("querySlopeForcastLastDataLogApp")
+    Observable<BaseResponseBean<List<DataWarnBean>>> getSensorForcastData(@Query("newName") String id);
 }

@@ -3,17 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/wellcom2"
+    android:background="@drawable/wellcomp"
     android:paddingTop="@dimen/dp_20"
     android:orientation="vertical">
 
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:text="@string/login"-->
-        <!--android:gravity="center"-->
-        <!--android:textSize="30sp"-->
-        <!--/>-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="智慧凤凰"
+        android:layout_marginTop="@dimen/dp_60"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        />
     <!--<View android:layout_width="match_parent" android:layout_height="@dimen/dp_1"-->
         <!--android:background="@color/orange_main"-->
         <!--/>-->
@@ -23,7 +25,7 @@
         android:layout_height="@dimen/item_height_normal"
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginRight="@dimen/margin_large"
-        android:layout_marginTop="@dimen/dp_170">
+        android:layout_marginTop="@dimen/dp_80">
 
         <ImageView
             android:id="@+id/img_account"

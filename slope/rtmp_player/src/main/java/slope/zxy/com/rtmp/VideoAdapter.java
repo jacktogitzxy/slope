@@ -40,7 +40,11 @@ public class VideoAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         ViewHolder viewholder;
         if (null == convertView) {
-            convertView = View.inflate(mContext, R.layout.videogride_item, null);
+            if(getCount()<=2){
+                convertView = View.inflate(mContext, R.layout.videogride_item2, null);
+            }else {
+                convertView = View.inflate(mContext, R.layout.videogride_item, null);
+            }
             viewholder = new ViewHolder(convertView);
             convertView.setTag(viewholder);
         } else {

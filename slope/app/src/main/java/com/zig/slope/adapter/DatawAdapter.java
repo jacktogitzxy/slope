@@ -1,11 +1,9 @@
 package com.zig.slope.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -31,6 +28,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.zig.slope.R;
+import com.zig.slope.bean.DataWarnBean;
+import com.zig.slope.bean.SensorWarn;
 import com.zig.slope.charts.listviewitems.BarChartItem;
 import com.zig.slope.charts.listviewitems.ChartItem;
 import com.zig.slope.charts.listviewitems.LineChartItem;
@@ -50,19 +49,21 @@ import java.util.List;
 public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Activity context;
     private LayoutInflater inflater;
-    private List<MySensor> mList;
+    private List<DataWarnBean> mList;
     private OnRecyclerViewItemOnClickListener listener;
     private Handler handler;
+    private String newName;
 
 
-    public DatawAdapter(Activity context, List<MySensor> list,Handler handler){
+    public DatawAdapter(Activity context, List<DataWarnBean> list,Handler handler,String newName){
         this.context = context;
         inflater = LayoutInflater.from(this.context);
         mList = list;
         this.handler=handler;
+        this.newName=newName;
     }
 
-    public void updateData(List<MySensor> list,boolean isRefresh){
+    public void updateData(List<DataWarnBean> list,boolean isRefresh){
         if(isRefresh){
             mList.clear();
         }
@@ -85,9 +86,8 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         NormalViewHolder normalViewHolder = (NormalViewHolder) holder;
-        MySensor data = mList.get(position);
-        MySensor.MySensorData mySensorData= data.getData().get(0);
-        int currentType=mySensorData.getType_s();
+        DataWarnBean data = mList.get(position);
+        int currentType=data.getType_s();
         String tyeps = "表面位移传感器";
         if(currentType==1){
             tyeps = "表面位移传感器";
@@ -107,8 +107,8 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             normalViewHolder.iv_dashboard.setImageResource(R.mipmap.dialp);
             normalViewHolder.textViewS1.setText(context.getResources().getString(R.string.shuiya));
         }
-        String s = String.format(context.getResources().getString(R.string.titlew), mySensorData.getMonitoringName(),
-                mySensorData.getSensorID(),tyeps);
+        String s = String.format(context.getResources().getString(R.string.titlew), newName,
+                data.getSensorId(),tyeps);
         normalViewHolder.titlew.setText(s);
         drawData(data,normalViewHolder);
     }
@@ -224,30 +224,30 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public void drawData(final MySensor mySensor, final NormalViewHolder normalViewHolder){
-        List<MySensor.MySensorData>datas =mySensor.getData();
+    public void drawData(final DataWarnBean mySensor, final NormalViewHolder normalViewHolder){
+        List<SensorWarn>datas =mySensor.getList();
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
         String sensorId = mySensor.getSensorId();
         String a="0",b="0";
         final int  type = mySensor.getType_s();
         if(mySensor.getType_s()==1){
             a=datas.get(datas.size()-1).getXdata();
-            String[]labs = new String[]{"x","y表面变形(mm)   周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
-            LineChartItem lineChartItem = new LineChartItem(getLineData(datas,labs),context,2,sensorId);
+            String[]labs = new String[]{"x","y表面变形(mm)     日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
+            LineChartItem lineChartItem = new LineChartItem(getLineData(datas,labs),context,2,sensorId,false);
             lineChartItem.setXdata(getxDatas(datas));
             list.add(lineChartItem);
         }else if(mySensor.getType_s()==2){
             a=datas.get(datas.size()-1).getXdata();
             b=datas.get(datas.size()-1).getYdata();
             Log.i("zxy", "run: finalA=="+a);
-            String[]labs = new String[]{"x","y深部位移(°)   周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
-            LineChartItem lineChartItem =new LineChartItem(getLineData(datas,labs),context,1,sensorId);
+            String[]labs = new String[]{"x","y深部位移(°)         周期（"+11+"）    日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
+            LineChartItem lineChartItem =new LineChartItem(getLineData(datas,labs),context,1,sensorId,false);
             lineChartItem.setXdata(getxDatas(datas));
             list.add(lineChartItem);
         }else{
             a=datas.get(datas.size()-1).getXdata();
-            String[]labs = new String[]{"孔隙水压(kpa)    周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
-            BarChartItem barChartItem = new BarChartItem(getDataBar(datas,labs),context,sensorId);
+            String[]labs = new String[]{"孔隙水压(kpa)       日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
+            BarChartItem barChartItem = new BarChartItem(getDataBar(datas,labs),context,sensorId,false);
             barChartItem.setXdata(getxDatas(datas));
             list.add(barChartItem);
         }
@@ -265,7 +265,7 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         normalViewHolder.listVieww.setAdapter(cda);
     }
-    public ArrayList<String> getxDatas(List<MySensor.MySensorData> datas){
+    public ArrayList<String> getxDatas(List<SensorWarn> datas){
         ArrayList<String> e3 = new ArrayList<>();
         for (int i = 0; i < datas.size(); i++) {
             e3.add(TimeUtils.transleteTime2(datas.get(i).getCreateTime()));
@@ -378,7 +378,7 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-    public LineData getLineData(List<MySensor.MySensorData> datas, String[]labs){
+    public LineData getLineData(List<SensorWarn> datas, String[]labs){
         ArrayList<Entry> e1 = new ArrayList<Entry>();
         ArrayList<Entry> e2 = new ArrayList<Entry>();
         for (int i = 0; i < datas.size(); i++) {
@@ -402,10 +402,9 @@ public class DatawAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return cd;
     }
 
-    private BarData getDataBar(List<MySensor.MySensorData> datas, String[]labs) {
+    private BarData getDataBar(List<SensorWarn> datas, String[]labs) {
 
         ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
-
         for (int i = 0; i < datas.size(); i++) {
             entries.add(new BarEntry(i, Float.valueOf(datas.get(i).getXdata())));
         }

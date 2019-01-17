@@ -41,6 +41,7 @@ import com.baidu.mapapi.utils.CoordinateConverter;
 import com.zig.slope.R;
 import com.zig.slope.adapter.DatawAdapter;
 import com.zig.slope.adapter.GrideAdapter;
+import com.zig.slope.bean.DataWarnBean;
 import com.zig.slope.callback.RequestVideoCallBack;
 import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.base.BaseMvpActivity;
@@ -63,7 +64,7 @@ import slope.zxy.com.rtmp.VideoBean;
 //http://120.79.174.224:8081/fx/queryMonitorByNewNameApp?newName=409 视频路径
 public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorView,SensorPresenterImpl>
         implements SensorContract.SensorView,SensorEventListener {
-    private List<DataBean> dataBeans;
+    private List<DataWarnBean> dataBeans;
     private  String newName;
     private int type = 0,currentType;
     private RecyclerView recycler_view;
@@ -194,8 +195,15 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
     }
     @Override
     public void onSensorSucess(BaseResponseBean<List<DataBean>> data) {
+
+    }
+    @Override
+    public void onSensorFail(String msg) {
+
+    }
+    @Override
+    public void onSensorSucessw(BaseResponseBean<List<DataWarnBean>> data) {
         dataBeans = data.getData();
-        Log.i("zxy", "onSensorSucess: dataBeans=="+dataBeans.size());
         if(data.getCode()==2){
             showEmptyView(true);
             Toast.makeText(DataWarningActivity.this,getResources()
@@ -204,17 +212,19 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         }
         showEmptyView(false);
         if(datawAdapter==null) {
-            datawAdapter  = new DatawAdapter(DataWarningActivity.this,dataBeans.get(1).getData(),new Handler());
+            datawAdapter  = new DatawAdapter(DataWarningActivity.this,dataBeans,new Handler(),newName);
             recycler_view.setAdapter(datawAdapter);
         }else{
-            datawAdapter.updateData(dataBeans.get(1).getData(),true);
+            datawAdapter.updateData(dataBeans,true);
         }
         recycler_view.setAdapter(datawAdapter);
     }
+
     @Override
-    public void onSensorFail(String msg) {
+    public void onSensorFailw(String msg) {
         showEmptyView(false);
     }
+
     public void showEmptyView(boolean toShow) {
         refreshLayout.post(new Runnable() {
             @Override

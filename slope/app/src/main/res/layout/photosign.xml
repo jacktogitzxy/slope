@@ -20,30 +20,30 @@
     <TextView android:id="@+id/photo_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="italic"
+        android:textStyle="bold"
         android:textColor="@color/white"
         android:layout_marginRight="15dp"
         android:layout_gravity="center_vertical|right"
-        android:textSize="10sp" />
+        android:textSize="14sp" />
 
     <TextView android:id="@+id/photo_name1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="italic"
+        android:textStyle="bold"
         android:textColor="@color/white"
         android:layout_gravity="center_vertical|right"
         android:layout_marginRight="15dp"
-        android:textSize="10sp"
+        android:textSize="14sp"
        />
 
         <TextView android:id="@+id/photo_name2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="italic"
+            android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="15dp"
-            android:textSize="10sp"
+            android:textSize="14sp"
            />
     </LinearLayout>
 </FrameLayout>

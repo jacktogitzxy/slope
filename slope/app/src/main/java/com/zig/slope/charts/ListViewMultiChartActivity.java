@@ -32,6 +32,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.zig.slope.R;
 import com.zig.slope.adapter.ChartDataAdapter;
+import com.zig.slope.bean.DataWarnBean;
 import com.zig.slope.charts.listviewitems.BarChartItem;
 import com.zig.slope.charts.listviewitems.ChartItem;
 import com.zig.slope.charts.listviewitems.LineChartItem;
@@ -112,8 +113,6 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
             }
             ydegree = ydegree - 2;
         }
-
-
         canvas.rotate(10);
         int ydegree2 = 260;
         while (ydegree2 > 55) {
@@ -332,6 +331,16 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
         Log.i("zxy", "onSensorFail: msg="+msg);
     }
 
+    @Override
+    public void onSensorSucessw(BaseResponseBean<List<DataWarnBean>> data) {
+
+    }
+
+    @Override
+    public void onSensorFailw(String msg) {
+
+    }
+
     public void showEmptyView(boolean toShow) {
         refreshLayout.post(new Runnable() {
             @Override
@@ -369,7 +378,7 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
             if(type==1) {//表面位移
                 m = datas.get(datas.size()-1).getXdata();
                 String[]labs = new String[]{"x","y表面变形(mm)         周期（"+ ToolUtils.exchangeString(datas.get(0).getFrequency())+"）     日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
-                LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,2,sensorId);
+                LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,2,sensorId,true);
                 lineChartItem.setXdata(getxDatas(datas));
                 list.add(lineChartItem);
             }
@@ -377,14 +386,14 @@ public class ListViewMultiChartActivity extends BaseMvpActivity<SensorContract.S
                 a=datas.get(datas.size()-1).getXdata();
                 b=datas.get(datas.size()-1).getYdata();
                 String[]labs = new String[]{"x","y深部位移(°)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）    日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
-                LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,1,sensorId);
+                LineChartItem lineChartItem=  new LineChartItem(getLineData(datas,labs),ListViewMultiChartActivity.this,1,sensorId,true);
                 lineChartItem.setXdata(getxDatas(datas));
                 list.add(lineChartItem);
             }
             if (type==3){//水压
                 p=datas.get(datas.size()-1).getXdata();
                 String[]labs = new String[]{"孔隙水压(kpa)         周期（"+ToolUtils.exchangeString(datas.get(0).getFrequency())+"）   日期("+TimeUtils.transleteTime3(datas.get(0).getCreateTime())+")"};
-                BarChartItem barChartItem=new BarChartItem(getDataBar(datas,labs),ListViewMultiChartActivity.this,sensorId);
+                BarChartItem barChartItem=new BarChartItem(getDataBar(datas,labs),ListViewMultiChartActivity.this,sensorId,true);
                 barChartItem.setXdata(getxDatas(datas));
                 list.add(barChartItem);
             }

@@ -7,6 +7,8 @@ import com.zig.slope.bean.DiXian;
 import com.zig.slope.bean.GongDi;
 import com.zig.slope.bean.PaiWu;
 import com.zig.slope.bean.SanFan;
+import com.zig.slope.bean.WeiFang;
+import com.zig.slope.bean.WeiFangBean;
 import com.zig.slope.common.base.BasePresenter;
 import com.zig.slope.common.base.bean.BaseResponseBean;
 import com.zig.slope.common.base.bean.ProcessBean;
@@ -14,6 +16,8 @@ import com.zig.slope.contract.ProcessContract;
 import com.zig.slope.model.ProcessModel;
 
 import java.util.List;
+
+import slope.zxy.com.weather_moudle.bean.WeatherBean;
 
 /**
  * Author：CHENHAO
@@ -126,6 +130,27 @@ public class ProcessPresenterImpl extends BasePresenter<ProcessContract.ProcessV
             public void onFail(String msg) {
                 if (getMvpView() != null) {
                     getMvpView().onSewageFail(msg);
+                }
+            }
+        });
+    }
+
+    /**
+     * 请求危房
+     */
+    public void requesWFData(Context context,int page,int community){
+        model.getDangerousDatas(context,page,community,new ProcessContract.IProcessModelCallbackwf() {
+            @Override
+            public void onSuccess(BaseResponseBean<WeiFangBean> response) {
+                if (getMvpView() != null) {
+                    getMvpView().onDangerousSucess(response.getData());
+                }
+            }
+
+            @Override
+            public void onFail(String msg) {
+                if (getMvpView() != null) {
+                    getMvpView().onDangerousFail(msg);
                 }
             }
         });

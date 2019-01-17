@@ -21,6 +21,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +30,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,17 +89,22 @@ import com.yinglan.scrolllayout.ScrollLayout;
 import com.zig.slope.adapter.ChatsAdapter;
 import com.zig.slope.adapter.ListviewAdapter;
 import com.zig.slope.adapter.MyAdapter;
+import com.zig.slope.adapter.OnRecyclerViewItemOnClickListener;
 import com.zig.slope.bean.DiXian;
 import com.zig.slope.bean.GongDi;
 import com.zig.slope.bean.PaiWu;
 import com.zig.slope.bean.SanFan;
 import com.zig.slope.bean.User;
 import com.zig.slope.bean.UserLoacl;
+import com.zig.slope.bean.WeiFang;
+import com.zig.slope.bean.WeiFangBean;
 import com.zig.slope.callback.RequestCallBack;
 import com.zig.slope.callback.RequestVideoCallBack;
 import com.zig.slope.callback.RequestWeatherCallBack;
 import com.zig.slope.charts.DataWarningActivity;
 import com.zig.slope.charts.ListViewMultiChartActivity;
+import com.zig.slope.clusterutil.MyItem;
+import com.zig.slope.clusterutil.clustering.ClusterManager;
 import com.zig.slope.common.Constants.Constant;
 import com.zig.slope.common.base.BaseMvpActivity;
 import com.zig.slope.common.base.bean.LoginBean;
@@ -117,8 +125,8 @@ import com.zig.slope.view.NaviSelectDialog;
 import com.zig.slope.callback.AllInterface;
 import com.zig.slope.view.LeftDrawerLayout;
 import com.zig.slope.view.LeftMenuFragment;
+import com.zig.slope.view.TakePhotoPopTop;
 import com.zig.slope.web.Inofation;
-import com.zig.slope.web.TestActivity;
 import com.zig.slope.web.WebSocketService;
 import com.zig.slope.web.model.ChatModel;
 import com.zig.slope.web.model.ItemModel;
@@ -130,7 +138,6 @@ import org.xutils.common.Callback;
 import org.xutils.common.util.KeyValue;
 import org.xutils.http.RequestParams;
 import org.xutils.http.body.MultipartBody;
-import org.xutils.x;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -140,7 +147,6 @@ import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -216,6 +222,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     public static final String KEY_EXTRAS = "extras";
     private LatLng defaultll = new LatLng(22.747520986909,113.92984114558);
     private int currentType = 1;
+    private TakePhotoPopTop popuWf;
     //定时发送位置
     private ScheduledExecutorService pool = Executors.newScheduledThreadPool(2);
     private TimerTask task = new TimerTask() {
@@ -232,38 +239,37 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 slopes = (List<SlopeBean>) msg.obj;
                 currentModel=0;
                 int type = msg.arg1;
-                setPMarks(slopes, 0);
+                if(type==1){
+                    setPMarks(slopes, 0);
+                }
                 Log.i(TAG, "handleMessage: type=="+type);
                 if(type==6){
                     currentTv = (TextView) findViewById(R.id.typeHd);
                     changeColor(currentTv);
-                    hiddenAllMarker();
                     getPresenter().requesHDData(LocationdrawActivity.this);
                 }
                 if(type==5){
                     currentTv = (TextView) findViewById(R.id.typeGd);
                     changeColor(currentTv);
-                    hiddenAllMarker();
                     getPresenter().requesGDData(LocationdrawActivity.this);
                 }
                 if(type==4){
+                    mBaiduMap.setOnMapStatusChangeListener(mClusterManager);
                     currentTv = (TextView) findViewById(R.id.typeDx);
                     changeColor(currentTv);
-                    hiddenAllMarker();
                     getPresenter().requesDXData(LocationdrawActivity.this);
                 }
                 if(type==3){
                     currentTv = (TextView) findViewById(R.id.typeThree);
                     changeColor(currentTv);
-                    hiddenAllMarker();
                     getPresenter().requestSFData(LocationdrawActivity.this);
 
                 }
                 if(type==2){
                     currentTv = (TextView) findViewById(R.id.typeHouse);
                     changeColor(currentTv);
-                    hiddenAllMarker();
                     initCity(WF,0x33ff0000,0xFFFF0000);
+                    showWFPoint();
                 }
                 if(mg!=null) {
                     mMenuFragment.setdata(mg.getOperators());
@@ -272,7 +278,15 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     mMenuFragment.setdata(new Gson().fromJson(loacalLoginData, LoginBean.class));
                 }
                 mMenuFragment.setChecked("0".equals(pm.getPackage("openLocation")));
-            }else{
+            }else if(msg.what==200){//地陷加载完
+                    okhttpWorkUtil.stopProgressDialog();
+                    isFirstshow = false;
+                    MapStatus.Builder builder = new MapStatus.Builder();
+                    float x = mBaiduMap.getMapStatus().zoom;
+                    builder.target(new LatLng(22.747520986909+Math.random()/1000000000,113.92984114558+Math.random()/1000000000)).zoom(x);//设置缩放比例
+                    mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+            }
+            else{
 //                    Animator animator = AnimatorInflater.loadAnimator(LocationdrawActivity.this, R.animator.splash);
 //                    animator.setTarget(splash_img);
 //                    animator.start();
@@ -289,6 +303,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
      */
     private LatLng currentPt;
     private String touchType;
+
     public void initListeners() {
         mBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
 
@@ -307,7 +322,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     }
                     SanFan sf = (SanFan) marker.getExtraInfo().get("sf");
                     if(sf!=null){
-                        showPopupWindow(sf,2);
+                        showPopupWindow(sf,3);
                     }
                     GongDi gd = (GongDi) marker.getExtraInfo().get("gd");
                     if(gd!=null){
@@ -321,6 +336,16 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     if(pw!=null){
                         showPopupWindow(pw,6);
                     }
+
+                    Object id = marker.getExtraInfo().get("name");
+                    if(id!=null){
+                        currentWfs = (Integer) id;
+                        currentPage = INDEX;
+                        isLoadMore = false;
+                        //请求危房
+                        getPresenter().requesWFData(LocationdrawActivity.this,INDEX, currentWfs);
+                    }
+
                 }
                 return false;
             }
@@ -370,30 +395,33 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 updateMapState();
             }
         });
-
-        mBaiduMap.setOnMapStatusChangeListener(new BaiduMap.OnMapStatusChangeListener() {
-            @Override
-            public void onMapStatusChangeStart(MapStatus status) {
-                updateMapState();
-            }
-
-            @Override
-            public void onMapStatusChangeStart(MapStatus status, int reason) {
-
-            }
-
-            @Override
-            public void onMapStatusChangeFinish(MapStatus status) {
-                updateMapState();
-            }
-
-            @Override
-            public void onMapStatusChange(MapStatus status) {
-                updateMapState();
-            }
-        });
+        if(currentType==4){
+            mBaiduMap.setOnMapStatusChangeListener(mClusterManager);
+        }else {
+            mBaiduMap.setOnMapStatusChangeListener(onMapStatusChangeListener);
+        }
     }
+    BaiduMap.OnMapStatusChangeListener onMapStatusChangeListener = new BaiduMap.OnMapStatusChangeListener() {
+        @Override
+        public void onMapStatusChangeStart(MapStatus status) {
+            updateMapState();
+        }
 
+        @Override
+        public void onMapStatusChangeStart(MapStatus status, int reason) {
+
+        }
+
+        @Override
+        public void onMapStatusChangeFinish(MapStatus status) {
+            updateMapState();
+        }
+
+        @Override
+        public void onMapStatusChange(MapStatus status) {
+            updateMapState();
+        }
+    };
 
 
     /**
@@ -432,6 +460,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     }
 
     public void updateMarker(int zoom){
+        boolean scaled = zoom==2;
         Log.i("zxy", "updateMarker: zoom===="+zoom);
         if(currentType==1) {
             if (markers != null && markers.size() != 0) {
@@ -441,7 +470,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                         SlopeBean pk = (SlopeBean) marker.getExtraInfo().get("pk");
                         if (pk != null) {
                             View view = getIcon(pk, zoom, 1);
-                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));//OOM
+                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));//OOM
                             if (marker.getZIndex()==9) {
                                 marker.setIcon(bitmap);
                                 marker.setZIndex(8);
@@ -467,7 +496,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                         SanFan pk = (SanFan) marker.getExtraInfo().get("sf");
                         if (pk != null) {
                             View view = getIcon(pk, zoom, 2);
-                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
                             if (marker.getZIndex()==9) {
                                 marker.setIcon(bitmap);
                                 marker.setZIndex(8);
@@ -493,7 +522,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                         String name = marker.getExtraInfo().getString("name");
                         if (name != null) {
                             View view = getIcon(name, zoom, 3);
-                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
                             if (marker.getZIndex()==9) {
                                 marker.setIcon(bitmap);
                                 marker.setZIndex(8);
@@ -519,7 +548,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                         GongDi pk = (GongDi) marker.getExtraInfo().get("gd");
                         if (pk != null) {
                             View view = getIcon(pk, zoom, 5);
-                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
                             if (marker.getZIndex()==9) {
                                 marker.setIcon(bitmap);
                                 marker.setZIndex(8);
@@ -573,7 +602,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                         PaiWu pk = (PaiWu) marker.getExtraInfo().get("hd");
                         if (pk != null) {
                             View view = getIcon(pk, zoom, 6);
-                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+                            bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
                             if (marker.getZIndex()==9) {
                                 marker.setIcon(bitmap);
                                 marker.setZIndex(8);
@@ -727,6 +756,11 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }catch (Exception e){
             e.printStackTrace();
         }
+        if (Util.isOnMainThread()) {
+            if(!LocationdrawActivity.this.isDestroyed()) {
+                Glide.with(LocationdrawActivity.this).pauseRequests();
+            }
+        }
         super.onDestroy();
     }
 
@@ -752,6 +786,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     private GongDi cgd = null;
     private DiXian cdx = null;
     private PaiWu cpu = null;
+    private WeiFang cwf = null;
     public void showPopFormTop(View view) {
         Log.i(TAG, "showPopFormTop: -------"+toolbar.getVisibility()+"");
         if(toolbar.getVisibility()!=View.VISIBLE){
@@ -877,7 +912,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         LatLng desLatLng = new LatLng( pk.getN(),pk.getE());
         View view = getIcon(pk,zoom,1);
         // 构建BitmapDescriptor
-        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,false));
         Bundle bundle3 = new Bundle();
         bundle3.putSerializable("pk",pk);
         OverlayOptions oo =new MarkerOptions().position(desLatLng)
@@ -892,124 +927,300 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
 
         oos.add(oo);
     }
-    private Bitmap getViewBitmap(View addViewContent) {
+    private Bitmap getViewBitmap(View addViewContent,boolean scaled) {
         addViewContent.setDrawingCacheEnabled(true);
         addViewContent.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
         addViewContent.layout(0, 0, addViewContent.getMeasuredWidth(), addViewContent.getMeasuredHeight());
         addViewContent.buildDrawingCache();
         Bitmap cacheBitmap = addViewContent.getDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
-        return bitmap;
+        if(scaled) {
+            Bitmap bitmap = Bitmap.createScaledBitmap(cacheBitmap, cacheBitmap.getWidth() * 2 / 3, cacheBitmap.getHeight() * 2 / 3, true);
+            cacheBitmap.recycle();
+            return bitmap;
+        }else{
+            Bitmap bitmap = Bitmap.createScaledBitmap(cacheBitmap, cacheBitmap.getWidth(), cacheBitmap.getHeight(), true);
+            cacheBitmap.recycle();
+            return bitmap;
+        }
     }
 
-
     public View getIcon(Object object,int zoom,int type) {//type 1==边坡  tytpe  2==三防
-        View view = View.inflate(LocationdrawActivity.this, R.layout.maker, null);
-        // 填充数据
-        LinearLayout ll = view.findViewById(R.id.cont_1);
-        ImageView iconView = (ImageView) view.findViewById(R.id.m_icon);
-        TextView nameView = (TextView) view.findViewById(R.id.m_nameId);
-        TextView contacts = (TextView) view.findViewById(R.id.m_ontacts);
-        TextView tel = (TextView) view.findViewById(R.id.m_tel);
-        TextView adress = (TextView) view.findViewById(R.id.m_adress);
-        if(type==1){
-            SlopeBean pk = (SlopeBean)object;
-            nameView.setText(pk.getNewName());
-            contacts.setText("联系人："+pk.getContacts());
-            tel.setText(pk.getTel());
-            adress.setText("地址："+pk.getDangerName());
-            if(pk.getDanger()!=null) {
-                if (pk.getDanger().equals(getResources().getString(R.string.gread1))) {
+        View view =null;
+        if(zoom==0){
+            view =  View.inflate(LocationdrawActivity.this, R.layout.makerzoom0, null);
+            ImageView iconView = (ImageView) view.findViewById(R.id.m_icon);
+            if(type ==1){
+                SlopeBean pk = (SlopeBean)object;
+                if(pk.getDanger()!=null) {
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread1))) {
+                        iconView.setImageResource(R.mipmap.slopegreen);
+                    }
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread2))) {
+                        iconView.setImageResource(R.mipmap.slopeyellow);
+                    }
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread3))) {
+                        iconView.setImageResource(R.mipmap.slopered);
+                    }
+                }else{
                     iconView.setImageResource(R.mipmap.slopegreen);
                 }
-                if (pk.getDanger().equals(getResources().getString(R.string.gread2))) {
-                    iconView.setImageResource(R.mipmap.slopeyellow);
+            }
+            if(type==2){
+                SanFan sanFan = (SanFan)object;
+                if(sanFan.getTypes().equals("内涝点")) {
+                    iconView.setImageResource(R.mipmap.sfyellow);
                 }
-                if (pk.getDanger().equals(getResources().getString(R.string.gread3))) {
-                    iconView.setImageResource(R.mipmap.slopered);
+                else if(sanFan.getTypes().equals("隐患点")) {
+                    iconView.setImageResource(R.mipmap.sfgreen);
                 }
-            }else{
-                iconView.setImageResource(R.mipmap.slopegreen);
+                else if(sanFan.getTypes().equals("积水点")) {
+                    iconView.setImageResource(R.mipmap.sfread);
+                }else if(sanFan.getTypes().equals("易涝点")){
+                    iconView.setImageResource(R.mipmap.sfread);
+                }
+            }
+            if(type==3){
+                iconView.setImageResource(R.mipmap.wfred);
+            }
+            if(type==4) {
+                DiXian dx = (DiXian) object;
+                String repair = dx.getRepair();
+                String curing = dx.getCuring();
+                int a=0,b=0;
+                try{
+                    a=Integer.parseInt(repair);
+                }catch (Exception e){
+                    a=0;
+                }
+                try{
+                    b=Integer.parseInt(curing);
+                }catch (Exception e){
+                    b=0;
+                }
+                int x = (a>=b)?a:b;
+                if(dx.getId().equals("99")){
+                    Log.i("zxy", "getIcon: a="+a+"====b="+b+"======repair"+repair+"====curing"+curing);
+                }
+                if (x<=2) {
+                    iconView.setImageResource(R.mipmap.dxgreen);
+                }
+                if (x==3) {
+                    iconView.setImageResource(R.mipmap.dxyellow);
+                }
+                if (x>=4) {
+                    iconView.setImageResource(R.mipmap.dxred);
+                }
+            }
+            if(type==5){
+                GongDi gd = (GongDi)object;
+                if(gd.getState().equals("施工中")) {
+                    iconView.setImageResource(R.mipmap.gdred);
+                }
+                else if(gd.getState().equals("未开工")) {
+                    iconView.setImageResource(R.mipmap.gdyellow);
+                }
+                else if(gd.getState().equals("已完工")) {
+                    iconView.setImageResource(R.mipmap.gdgreen);
+                }else if(gd.getState().equals("已停工")){
+                    iconView.setImageResource(R.mipmap.gdyellow);
+                }
+            }
+            if(type==6){
+                PaiWu gd = (PaiWu)object;
+                iconView.setImageResource(R.mipmap.hdred);
             }
         }
-        if(type==2){
-            SanFan sanFan = (SanFan)object;
-            nameView.setText(sanFan.getId());
-            contacts.setText("联系人："+sanFan.getContacts());
-            tel.setText(sanFan.getTel());
-            adress.setText("地址："+sanFan.getAddress());
-            if(sanFan.getTypes().equals("内涝点")) {
-                iconView.setImageResource(R.mipmap.sfyellow);
+        else if(zoom==1){
+            view = View.inflate(LocationdrawActivity.this, R.layout.makerzoom1, null);
+            ImageView iconView = (ImageView) view.findViewById(R.id.m_icon);
+            TextView nameView = (TextView) view.findViewById(R.id.m_nameId);
+            if(type==1){
+                SlopeBean pk = (SlopeBean)object;
+                nameView.setText(pk.getNewName());
+                if(pk.getDanger()!=null) {
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread1))) {
+                        iconView.setImageResource(R.mipmap.slopegreen);
+                    }
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread2))) {
+                        iconView.setImageResource(R.mipmap.slopeyellow);
+                    }
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread3))) {
+                        iconView.setImageResource(R.mipmap.slopered);
+                    }
+                }else{
+                    iconView.setImageResource(R.mipmap.slopegreen);
+                }
             }
-            else if(sanFan.getTypes().equals("隐患点")) {
-                iconView.setImageResource(R.mipmap.sfgreen);
+            if(type==2){
+                SanFan sanFan = (SanFan)object;
+                nameView.setText(sanFan.getId());
+                if(sanFan.getTypes().equals("内涝点")) {
+                    iconView.setImageResource(R.mipmap.sfyellow);
+                }
+                else if(sanFan.getTypes().equals("隐患点")) {
+                    iconView.setImageResource(R.mipmap.sfgreen);
+                }
+                else if(sanFan.getTypes().equals("积水点")) {
+                    iconView.setImageResource(R.mipmap.sfread);
+                }else if(sanFan.getTypes().equals("易涝点")){
+                    iconView.setImageResource(R.mipmap.sfread);
+                }
             }
-            else if(sanFan.getTypes().equals("积水点")) {
-                iconView.setImageResource(R.mipmap.sfread);
-            }else if(sanFan.getTypes().equals("易涝点")){
-                iconView.setImageResource(R.mipmap.sfread);
+            if(type==3){
+                nameView.setText(object.toString());
+                iconView.setImageResource(R.mipmap.wfred);
             }
-        }
-        if(type==3){
-            nameView.setText(object.toString());
-            iconView.setImageResource(R.mipmap.wfred);
-        }
-        if(type==4) {
-            DiXian dx = (DiXian) object;
-            nameView.setText(dx.getId());
-            contacts.setText("道路：" + dx.getRoad());
-            tel.setText("管道类型：" + dx.getPipelineType());
-            adress.setText("地址：" + dx.getAddress());
-            if (dx.getGrade().equals("1") || dx.getGrade().equals("2")) {
-                iconView.setImageResource(R.mipmap.dxgreen);
+            if(type==4) {
+                DiXian dx = (DiXian) object;
+                nameView.setText(dx.getId());
+                String repair = dx.getRepair();
+                String curing = dx.getCuring();
+                int a=0,b=0;
+                try{
+                    a=Integer.parseInt(repair);
+                }catch (Exception e){
+                    a=0;
+                }
+                try{
+                    b=Integer.parseInt(curing);
+                }catch (Exception e){
+                    b=0;
+                }
+                int x = (a>=b)?a:b;
+                if(dx.getId().equals("99")){
+                    Log.i("zxy", "getIcon: a="+a+"====b="+b+"======repair"+repair+"====curing"+curing);
+                }
+                if (x<=2) {
+                    iconView.setImageResource(R.mipmap.dxgreen);
+                }
+                if (x==3) {
+                    iconView.setImageResource(R.mipmap.dxyellow);
+                }
+                if (x>=4) {
+                    iconView.setImageResource(R.mipmap.dxred);
+                }
             }
-            if (dx.getGrade().equals("3") || dx.getGrade().equals("4")) {
-                iconView.setImageResource(R.mipmap.dxyellow);
+            if(type==5){
+                GongDi gd = (GongDi)object;
+                nameView.setText(gd.getId());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.gravity=Gravity.CENTER_HORIZONTAL;
+                if(gd.getState().equals("施工中")) {
+                    iconView.setImageResource(R.mipmap.gdred);
+                }
+                else if(gd.getState().equals("未开工")) {
+                    iconView.setImageResource(R.mipmap.gdyellow);
+                }
+                else if(gd.getState().equals("已完工")) {
+                    iconView.setImageResource(R.mipmap.gdgreen);
+                }else if(gd.getState().equals("已停工")){
+                    iconView.setImageResource(R.mipmap.gdyellow);
+                }
             }
-            if (dx.getGrade().equals("5") || dx.getGrade().equals("6")) {
-                iconView.setImageResource(R.mipmap.dxred);
+            if(type==6){
+                PaiWu gd = (PaiWu)object;
+                nameView.setText(gd.getSewageId());
+                iconView.setImageResource(R.mipmap.hdred);
             }
-        }
-        if(type==5){
-            GongDi gd = (GongDi)object;
-            nameView.setText(gd.getId());
-            contacts.setText("工地名称："+gd.getConstructionName());
-            tel.setText("建设单位联系人电话："+gd.getConstructionTel());
-            adress.setText("地址："+gd.getConstructionAddress());
-            if(gd.getState().equals("施工中")) {
-                iconView.setImageResource(R.mipmap.gdred);
+
+        } else if(zoom==2){
+            view = View.inflate(LocationdrawActivity.this, R.layout.makerzoom2, null);
+            LinearLayout ll = view.findViewById(R.id.cont_1);
+            ImageView iconView = (ImageView) view.findViewById(R.id.m_icon);
+            TextView nameView = (TextView) view.findViewById(R.id.m_nameId);
+            TextView contacts = (TextView) view.findViewById(R.id.m_ontacts);
+            TextView tel = (TextView) view.findViewById(R.id.m_tel);
+            TextView adress = (TextView) view.findViewById(R.id.m_adress);
+            if(type==1){
+                SlopeBean pk = (SlopeBean)object;
+                nameView.setText(pk.getNewName());
+                contacts.setText("联系人："+pk.getContacts());
+                tel.setText(pk.getTel());
+                adress.setText("地址："+pk.getDangerName());
+                if(pk.getDanger()!=null) {
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread1))) {
+                        iconView.setImageResource(R.mipmap.slopegreen);
+                    }
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread2))) {
+                        iconView.setImageResource(R.mipmap.slopeyellow);
+                    }
+                    if (pk.getDanger().equals(getResources().getString(R.string.gread3))) {
+                        iconView.setImageResource(R.mipmap.slopered);
+                    }
+                }else{
+                    iconView.setImageResource(R.mipmap.slopegreen);
+                }
             }
-            else if(gd.getState().equals("未开工")) {
-                iconView.setImageResource(R.mipmap.gdyellow);
+            if(type==2){
+                SanFan sanFan = (SanFan)object;
+                nameView.setText(sanFan.getId());
+                contacts.setText("联系人："+sanFan.getContacts());
+                tel.setText(sanFan.getTel());
+                adress.setText("地址："+sanFan.getAddress());
+                if(sanFan.getTypes().equals("内涝点")) {
+                    iconView.setImageResource(R.mipmap.sfyellow);
+                }
+                else if(sanFan.getTypes().equals("隐患点")) {
+                    iconView.setImageResource(R.mipmap.sfgreen);
+                }
+                else if(sanFan.getTypes().equals("积水点")) {
+                    iconView.setImageResource(R.mipmap.sfread);
+                }else if(sanFan.getTypes().equals("易涝点")){
+                    iconView.setImageResource(R.mipmap.sfread);
+                }
             }
-            else if(gd.getState().equals("已完工")) {
-                iconView.setImageResource(R.mipmap.gdgreen);
-            }else if(gd.getState().equals("已停工")){
-                iconView.setImageResource(R.mipmap.gdyellow);
+            if(type==3){
+                nameView.setText(object.toString());
+                iconView.setImageResource(R.mipmap.wfred);
             }
-        }
-        if(type==6){
-            PaiWu gd = (PaiWu)object;
-            nameView.setText(gd.getSewageId());
-            contacts.setText("水体名称："+gd.getSewageName());
-            tel.setText("排放口类型："+gd.getSewageType());
-            adress.setText("地址："+gd.getAddress());
-            iconView.setImageResource(R.mipmap.hdred);
-        }
-        if(zoom==0){
-            ll.setVisibility(View.GONE);
-            nameView.setVisibility(View.GONE);
-            adress.setVisibility(View.GONE);
-        }
-        if(zoom==1){
-            ll.setVisibility(View.GONE);
-            nameView.setVisibility(View.VISIBLE);
-            adress.setVisibility(View.GONE);
-        }
-        if(zoom==2){
-            ll.setVisibility(View.VISIBLE);
-            nameView.setVisibility(View.VISIBLE);
-            adress.setVisibility(View.VISIBLE);
+            if(type==4) {
+                DiXian dx = (DiXian) object;
+                nameView.setText(dx.getId());
+                contacts.setText("道路：" + dx.getRoad());
+                tel.setText("管道类型：" + dx.getPipelineType());
+                adress.setText("地址：" + dx.getAddress());
+                if (dx.getGrade().equals("1") || dx.getGrade().equals("2")) {
+                    iconView.setImageResource(R.mipmap.dxgreen);
+                }
+                if (dx.getGrade().equals("3") || dx.getGrade().equals("4")) {
+                    iconView.setImageResource(R.mipmap.dxyellow);
+                }
+                if (dx.getGrade().equals("5") || dx.getGrade().equals("6")) {
+                    iconView.setImageResource(R.mipmap.dxred);
+                }
+            }
+            if(type==5){
+                GongDi gd = (GongDi)object;
+                nameView.setText(gd.getId());
+                contacts.setVisibility(View.GONE);
+                // contacts.setText("建设单位联系人:"+"\n"+"电话：");
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.gravity=Gravity.CENTER_HORIZONTAL;
+                tel.setLayoutParams(params);
+                tel.setText("联系人:"+gd.getConstructionTel());
+                adress.setText("地址："+gd.getConstructionAddress());
+                if(gd.getState().equals("施工中")) {
+                    iconView.setImageResource(R.mipmap.gdred);
+                }
+                else if(gd.getState().equals("未开工")) {
+                    iconView.setImageResource(R.mipmap.gdyellow);
+                }
+                else if(gd.getState().equals("已完工")) {
+                    iconView.setImageResource(R.mipmap.gdgreen);
+                }else if(gd.getState().equals("已停工")){
+                    iconView.setImageResource(R.mipmap.gdyellow);
+                }
+            }
+            if(type==6){
+                PaiWu gd = (PaiWu)object;
+                nameView.setText(gd.getSewageId());
+                contacts.setText("水体名称："+gd.getSewageName());
+                tel.setText("排放口类型："+gd.getSewageType());
+                adress.setText("地址："+gd.getAddress());
+                iconView.setImageResource(R.mipmap.hdred);
+            }
         }
         return view;
     }
@@ -1217,6 +1428,11 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     //分类标注 边坡，危房。。。。
     public void  selectType(View view){
         int id = view.getId();
+        if(id!=R.id.typeDx){
+            mBaiduMap.setOnMapStatusChangeListener(onMapStatusChangeListener);
+        }else{
+            mBaiduMap.setOnMapStatusChangeListener(mClusterManager);
+        }
         switch (id){
             case R.id.typeSolpe://边坡
                 if(currentType!=1) {
@@ -1224,13 +1440,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     currentTv = (TextView) view;
                     changeColor(currentTv);
                     hiddenAllMarker();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            showSlopes();
-                        }
-                    },300);
-
+                    showSlopes();
                 }
                 break;
             case R.id.typeThree://三防
@@ -1242,13 +1452,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     if (sanFans == null) {
                         getPresenter().requestSFData(LocationdrawActivity.this);
                     } else {
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showSanFan();
-                            }
-                        },300);
-
+                        showSanFan();
                     }
                 }
                 break;
@@ -1258,13 +1462,8 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     currentTv = (TextView) view;
                     changeColor(currentTv);
                     hiddenAllMarker();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            initCity(WF, 0x33ff0000, 0xFFFF0000);
-                            showWFPoint();
-                        }
-                    },300);
+                    initCity(WF, 0x33ff0000, 0xFFFF0000);
+                    showWFPoint();
 
                 }
                 break;
@@ -1274,6 +1473,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     currentTv = (TextView) view;
                     changeColor(currentTv);
                     hiddenAllMarker();
+                    Log.i(TAG, "selectType: diXians=="+diXians);
                     if (diXians == null) {
                         getPresenter().requesDXData(LocationdrawActivity.this);
                     } else {
@@ -1290,12 +1490,8 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     if (gongDis == null) {
                         getPresenter().requesGDData(LocationdrawActivity.this);
                     } else {
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showGongDi();
-                            }
-                        }, 300);
+                       showGongDi();
+
 
                     }
                 }
@@ -1309,13 +1505,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     if (paiWus == null) {
                         getPresenter().requesHDData(LocationdrawActivity.this);
                     } else {
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                showPaiWu();
-                            }
-                        }, 300);
-
+                        showPaiWu();
                     }
                 }
                 break;
@@ -1355,6 +1545,18 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }
         if(s.contains(getResources().getString(R.string.type_house))){
             mainTitle.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.wfyellow),
+                    null, null, null);
+        }
+        if(s.contains(getResources().getString(R.string.type_dx))){
+            mainTitle.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.dxyellow),
+                    null, null, null);
+        }
+        if(s.contains(getResources().getString(R.string.type_gd))){
+            mainTitle.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.gdyellow),
+                    null, null, null);
+        }
+        if(s.contains(getResources().getString(R.string.type_hd))){
+            mainTitle.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.hdyellow),
                     null, null, null);
         }
         if(s.contains(getResources().getString(R.string.type_worker))){
@@ -1408,9 +1610,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     };
 
     public void showInfo(Object o,int type){
-        if(type==3){
-            return;
-        }
+//        if(type==3){
+//            return;
+//        }
         String img = null;
         if(type==1){
             SlopeBean pk = (SlopeBean) o;
@@ -1420,6 +1622,13 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             img = pk.getImageAddress1().trim();
         }
         if(type==2){
+            WeiFang pk = (WeiFang) o;
+            this.cwf = pk;
+            toolbar.setTitle("危房编号:"+pk.getId());
+            listView.setAdapter(new ListviewAdapter(this,pk.PltoList()));
+            img = pk.getImageAddress1().trim();
+        }
+        if(type==3){
             SanFan sf = (SanFan) o;
             this.csf = sf;
             toolbar.setTitle("三防编号:"+sf.getId());
@@ -1446,7 +1655,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             listView.setAdapter(new ListviewAdapter(this,gd.PltoList()));
             img =gd.getImageAddress1().trim();
         }
-        showImg(true);
+        if(type!=2) {
+            showImg(true);
+        }
         mScrollLayout.setVisibility(View.VISIBLE);
         mScrollLayout.scrollToOpen();
         AlphaAnimation al = new AlphaAnimation(0,1);
@@ -1473,13 +1684,15 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     }
                     model = model.trim();
                     if(model.endsWith("jpg")) {
-                        Glide.with(LocationdrawActivity.this)
-                                .load(Constant.BASE_URL + model)
-                                .placeholder(R.mipmap.webwxgetmsgimg5)
-                                .error(R.mipmap.webwxgetmsgimg5)
-                                .centerCrop()
-                                .dontAnimate()
-                                .into(itemView);
+                        if(!LocationdrawActivity.this.isDestroyed()) {
+                            Glide.with(LocationdrawActivity.this)
+                                    .load(Constant.BASE_URL + model)
+                                    .placeholder(R.mipmap.webwxgetmsgimg5)
+                                    .error(R.mipmap.webwxgetmsgimg5)
+                                    .centerCrop()
+                                    .dontAnimate()
+                                    .into(itemView);
+                        }
                     }else{//unkunw
                         Log.i("zxy", "fillBannerItem: unkunw  data  model=="+model);
                     }
@@ -1534,7 +1747,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                     pts.add(converter.convert());
 //                    AMapUtil.gcj02_To_Bd09(v2,v1);
 //                    pts.add(new LatLng(AMapUtil.gcj02_To_Bd09(v2,v1)[0],AMapUtil.gcj02_To_Bd09(v2,v1)[1]));
-
                 }
             }
             //构建用户绘制多边形的Option对象
@@ -1906,33 +2118,53 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         View view = View.inflate(LocationdrawActivity.this, R.layout.makeruser, null);
         TextView m_name = view.findViewById(R.id.m_name);
         m_name.setText(user.getRemark()+"  时间:"+ TimeUtils.transleteTime(user.getCreateTime()));
-        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,false));
         MarkerOptions  ooA = new MarkerOptions().position(desLatLng).icon(bitmap);
         mBaiduMap.addOverlay(ooA);
     }
 
     //隐藏所有
     public void hiddenAllMarker(){
-        mBaiduMap.clear();
-        if(markers!=null&&markers.size()>0&&markers.get(0).getZIndex()==8){
-            for (int i =0;i<markers.size();i++){
-                BitmapDescriptor b = markers.get(i).getIcon();
-                b.recycle();
+        synchronized (this) {
+            mBaiduMap.clear();
+            if (markers != null && markers.size() > 0 && markers.get(0).getZIndex() == 8) {
+                for (int i = 0; i < markers.size(); i++) {
+                    BitmapDescriptor b = markers.get(i).getIcon();
+                    Log.i(TAG, "hiddenAllMarker: b=="+b.getBitmap());
+                    b.getBitmap().recycle();
+                    b.recycle();
+                }
             }
-        }
-        if(markerssf!=null&&markerssf.size()>0&&markerssf.get(0).getZIndex()==8){
-            for (int i =0;i<markerssf.size();i++){
-                BitmapDescriptor b = markerssf.get(i).getIcon();
-                b.recycle();
+            if (markerssf != null && markerssf.size() > 0 && markerssf.get(0).getZIndex() == 8) {
+                for (int i = 0; i < markerssf.size(); i++) {
+                    BitmapDescriptor b = markerssf.get(i).getIcon();
+                    b.getBitmap().recycle();
+                    b.recycle();
+                }
             }
-        }
-        if(markerswf!=null&&markerswf.size()>0&&markerswf.get(0).getZIndex()==8){
-            for (int i =0;i<markerswf.size();i++){
-                BitmapDescriptor b = markerswf.get(i).getIcon();
-                b.recycle();
+            if (markerswf != null && markerswf.size() > 0 && markerswf.get(0).getZIndex() == 8) {
+                for (int i = 0; i < markerswf.size(); i++) {
+                    BitmapDescriptor b = markerswf.get(i).getIcon();
+                    b.getBitmap().recycle();
+                    b.recycle();
+                }
             }
+            if (markersgd != null && markersgd.size() > 0 && markersgd.get(0).getZIndex() == 8) {
+                for (int i = 0; i < markersgd.size(); i++) {
+                    BitmapDescriptor b = markersgd.get(i).getIcon();
+                    b.getBitmap().recycle();
+                    b.recycle();
+                }
+            }
+            if (markershd != null && markershd.size() > 0 && markershd.get(0).getZIndex() == 8) {
+                for (int i = 0; i < markershd.size(); i++) {
+                    BitmapDescriptor b = markershd.get(i).getIcon();
+                    b.getBitmap().recycle();
+                    b.recycle();
+                }
+            }
+            initCity(BJ, 0x2239b500, 0xAAFF0000);
         }
-        initCity(BJ,0x2239b500,0xAAFF0000);
     }
     //显示所有slope
     public void showSlopes(){
@@ -1942,6 +2174,8 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 Marker marker =(Marker) mBaiduMap.addOverlay(oos.get(i));
                 markers.add(marker);
             }
+        }else{
+            setPMarks(slopes, 0);
         }
     }
     //显示三防
@@ -1962,40 +2196,56 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
             }
         }
     }
+    private ClusterManager<MyItem> mClusterManager;
     boolean isFirstshow = true;
+    List<MyItem> items =null;
     //显示地陷
     public void showDiXian(){
         if(okhttpWorkUtil!=null&&isFirstshow) {
                 okhttpWorkUtil.showProgressDialog();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    okhttpWorkUtil.stopProgressDialog();
-                    isFirstshow = false;
-                }
-            },2000);
         }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(oosdx!=null&&oosdx.size()>0){
-                    markersdx.clear();
-                    for (int i =0;i<oosdx.size();i++){
-                        Marker marker =(Marker) mBaiduMap.addOverlay(oosdx.get(i));
-                        markersdx.add(marker);
-                    }
-                }else {
+//                if(oosdx!=null&&oosdx.size()>0){
+//                    markersdx.clear();
+//                    for (int i =0;i<oosdx.size();i++){
+//                        Marker marker =(Marker) mBaiduMap.addOverlay(oosdx.get(i));
+//                        markersdx.add(marker);
+//                    }
+//                    Log.i(TAG, "run: markersdx==="+markersdx.size());
+//                }else {
                 if(diXians==null||diXians.size()==0) {
-                    Log.i(TAG, "showDiXian: 工地无数据");
+                    Log.i(TAG, "showDiXian: 地陷无数据");
                 }else {
-                    for (int i = 0; i < diXians.size(); i++) {
-                        setMarkdx(diXians.get(i), 0);
+                    if(items==null) {
+                        items = new ArrayList<>();
+                        for (int i = 0; i < diXians.size(); i++) {
+                            DiXian sf = diXians.get(i);
+                            if (sf.getN() != null && sf.getE() != null) {
+                                LatLng desLatLng = new LatLng(sf.getN(), sf.getE());
+                                View view = getIcon(sf, 1, 4);
+                                // 构建BitmapDescriptor
+                                bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,false));
+                                Bundle bundle3 = new Bundle();
+                                bundle3.putSerializable("dx", sf);
+                                items.add(new MyItem(desLatLng, bundle3, bitmap));
+                            }
+                            //setMarkdx(diXians.get(i), 0);
+                        }
+                        mClusterManager.addItems(items);
+                        handler.sendEmptyMessage(200);
                     }
                 }
             }
-            }
+//            }
         }).start();
-
+        if(!isFirstshow) {
+            MapStatus.Builder builder = new MapStatus.Builder();
+            float x = mBaiduMap.getMapStatus().zoom;
+            builder.target(new LatLng(22.747520986909+Math.random()/1000000000,113.92984114558+Math.random()/1000000000)).zoom(x);//设置缩放比例
+            mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        }
     }
     //显示河道
     public void showPaiWu(){
@@ -2036,13 +2286,15 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     }
 
     public void setMarkdx(DiXian sf,int zoom){
+
         if(sf.getN()==null&&sf.getE()==null){
             return;
         }
         LatLng desLatLng = new LatLng( sf.getN(),sf.getE());
         View view = getIcon(sf,zoom,4);
+        boolean scaled = zoom==2;
         // 构建BitmapDescriptor
-        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
         Bundle bundle3 = new Bundle();
         bundle3.putSerializable("dx",sf);
         OverlayOptions oo =new MarkerOptions().position(desLatLng)
@@ -2062,8 +2314,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }
         LatLng desLatLng = new LatLng( sf.getN(),sf.getE());
         View view = getIcon(sf,zoom,6);
+        boolean scaled = zoom==2;
         // 构建BitmapDescriptor
-        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
         Bundle bundle3 = new Bundle();
         bundle3.putSerializable("hd",sf);
         OverlayOptions oo =new MarkerOptions().position(desLatLng)
@@ -2083,8 +2336,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }
         LatLng desLatLng = new LatLng( sf.getN(),sf.getE());
         View view = getIcon(sf,zoom,5);
+        boolean scaled = zoom==2;
         // 构建BitmapDescriptor
-        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
         Bundle bundle3 = new Bundle();
         bundle3.putSerializable("gd",sf);
         OverlayOptions oo =new MarkerOptions().position(desLatLng)
@@ -2105,8 +2359,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }
         LatLng desLatLng = new LatLng( sf.getN(),sf.getE());
         View view = getIcon(sf,zoom,2);
+        boolean scaled = zoom==2;
         // 构建BitmapDescriptor
-        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
         Bundle bundle3 = new Bundle();
         bundle3.putSerializable("sf",sf);
         OverlayOptions oo =new MarkerOptions().position(desLatLng)
@@ -2118,7 +2373,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         Marker marker =(Marker) mBaiduMap.addOverlay(oo);
         marker.setZIndex(9);
         markerssf.add(marker);
-
         oossf.add(oo);
     }
 
@@ -2163,21 +2417,23 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }else {
             List<LatLng> pointswf = getwfpoints();
             List<String> names = getwfnames();
+            int[] ids = new int[]{5,1,1,3,2,4,4};
             for (int i = 0; i < pointswf.size(); i++) {
-                setMarkwf(pointswf.get(i), 0, names.get(i));
+                setMarkwf(pointswf.get(i), 0, names.get(i),ids[i]);
             }
         }
     }
 
-    public void setMarkwf(LatLng desLatLng,int zoom,String lab){
+    public void setMarkwf(LatLng desLatLng,int zoom,String lab,int id){
         CoordinateConverter converter  = new CoordinateConverter();
         converter.from(CoordinateConverter.CoordType.COMMON);
         converter.coord(desLatLng);
         View view = getIcon(lab,zoom,3);
+        boolean scaled = zoom==2;
         // 构建BitmapDescriptor
-        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view));
+        bitmap = BitmapDescriptorFactory.fromBitmap(getViewBitmap(view,scaled));
         Bundle bundle3 = new Bundle();
-        bundle3.putString("name",lab);
+        bundle3.putInt("name",id);
         OverlayOptions oo =new MarkerOptions().position(converter.convert())
                 .zIndex(9)
                 .title(lab)
@@ -2199,6 +2455,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         String id = null;
         if(currentType==1) {
             id =  cpk.getNewName();
+        }
+        if(currentType==2){
+            id = cwf.getId();
         }
         if(currentType==3){
             id = csf.getId();
@@ -2357,7 +2616,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
 
     @Override
     protected void findViews() {
-
         Intent intent = getIntent();
         currentType = intent.getIntExtra("type",1);
         mg = (LoginMsg) intent.getSerializableExtra("data");
@@ -2387,9 +2645,11 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         }
         getPoints(currentType);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);//获取传感器管理服务
+
         // 地图初始化
         mMapView = (MapView) findViewById(R.id.bmapView);
         mBaiduMap = mMapView.getMap();
+        mClusterManager = new ClusterManager<MyItem>(this, mBaiduMap);
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
         // 定位初始化
@@ -2530,7 +2790,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
     public void onSubsidenceFail(String msg) {
         Log.i(TAG, "onSubsidenceFail: msg===="+msg);
     }
-
     @Override
     public void onSewageSucess(List<PaiWu> data) {
         Log.i(TAG, "onSewageSucess: data===="+data.size());
@@ -2538,10 +2797,31 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         showPaiWu();
 
     }
-
     @Override
     public void onSewageFail(String msg) {
         Log.i(TAG, "onSewageFail: msg===="+msg);
+
+    }
+    @Override
+    public void onDangerousSucess(WeiFangBean data) {
+        totalPage = data.getPageTotal();
+        if(popuWf==null){
+            popuWf = new TakePhotoPopTop(LocationdrawActivity.this,onClickListener,onRefreshListener,onScrollChangeListener);
+        }
+        if(isLoadMore){
+            popuWf.updateData(data.getList());
+            datap.addAll(data.getList());
+        }else {
+            datap = data.getList();
+            popuWf.setData(data.getList(), listener, getCurrentWFS(currentWfs));
+        }
+        popuWf.showAtLocation(currentTv, Gravity.BOTTOM,0,0);
+        popuWf.hiddenRefresh();
+    }
+
+    @Override
+    public void onDangerousFail(String msg) {
+        Log.i(TAG, "onDangerousFail: msg===="+msg);
     }
 
     public void processClick(View v){
@@ -2626,8 +2906,10 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         maintitle_weather.setText("深圳:"+weatherData.getmTodayWeatherBean().getmNight_Air_Temperature() + "°~"+
                 weatherData.getmTodayWeatherBean().getmDay_Air_Temperature() + "°");
         if (Util.isOnMainThread()) {
-            Glide.with(LocationdrawActivity.this).load(weatherData.getmNowWeatherBean().getmWeather_Pic()).diskCacheStrategy(DiskCacheStrategy.ALL).
-                    into(weather_icon);
+            if(!LocationdrawActivity.this.isDestroyed()) {
+                Glide.with(LocationdrawActivity.this).load(weatherData.getmNowWeatherBean().getmWeather_Pic()).diskCacheStrategy(DiskCacheStrategy.ALL).
+                        into(weather_icon);
+            }
         }
     }
 
@@ -2752,6 +3034,26 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         names.add("塘尾社区工业区老旧房片区");
         return names;
     }
+    private String getCurrentWFS(int x){
+        //1塘家
+       //2甲子塘
+       //3东坑
+       //4塘尾
+       //5凤凰
+        String s = "凤凰社区老旧房片区";
+        if(x==1){
+            s = "塘家社区老旧房屋片区";
+        }else if(x==2){
+            s="甲子塘老旧房片区";
+        }else if(x==3){
+            s = "东坑社区老旧房片区";
+        }else if(x==4){
+            s="塘尾社区老旧房片区";
+        }else {
+            s="凤凰社区老旧房片区";
+        }
+        return  s;
+    }
     private String WF[]=new String[]{
             //凤凰社区凤凰村老旧房片区
             "113.94462913,22.73035885,113.94463181,22.73039224,113.94463984,22.73042561,113.94465457,22.73045774,113.94467466,22.73048985,113.94470011,22.73052072,113.94472957,22.73055034,113.94476305,22.73057872,113.94479922,22.73060586,113.94483806,22.73063052,113.94487958,22.73065517,113.94492243,22.73067735,113.94496663,22.73069829,113.94501217,22.73071799,113.94505771,22.73073646,113.94510190,22.73075245,113.94514744,22.73076844,113.94519164,22.73078320,113.94523584,22.73079672,113.94527870,22.73080900,113.94532155,22.73082005,113.94536173,22.73083110,113.94540191,22.73084092,113.94544075,22.73084950,113.94547959,22.73085809,113.94551576,22.73086544,113.94555192,22.73087279,113.94558674,22.73088014,113.94562022,22.73088626,113.94565237,22.73089238,113.94568451,22.73089727,113.94571397,22.73090216,113.94574478,22.73090705,113.94577290,22.73091070,113.94580103,22.73091560,113.94582782,22.73091926,113.94585326,22.73092292,113.94587871,22.73092534,113.94590416,22.73092900,113.94592826,22.73093143,113.94595103,22.73093386,113.94597380,22.73093629,113.94599523,22.73093872,113.94601800,22.73094115,113.94603809,22.73094359,113.94605818,22.73094602,113.94607827,22.73094722,113.94609835,22.73094965,113.94611711,22.73095086,113.94613586,22.73095206,113.94615327,22.73095326,113.94617068,22.73095570,113.94618809,22.73095690,113.94620550,22.73095811,113.94622291,22.73095931,113.94623898,22.73096051,113.94625505,22.73096048,113.94626978,22.73096169,113.94628586,22.73096290,113.94630059,22.73096411,113.94631532,22.73096408,113.94633005,22.73096529,113.94634478,22.73096649,113.94635952,22.73096647,113.94637291,22.73096768,113.94638764,22.73096765,113.94640103,22.73096886,113.94641443,22.73096883,113.94642782,22.73097004,113.94644121,22.73097002,113.94645461,22.73097123,113.94646666,22.73097121,113.94648005,22.73097118,113.94649211,22.73097239,113.94650550,22.73097237,113.94651755,22.73097234,113.94652961,22.73097232,113.94654166,22.73097353,113.94655371,22.73097351,113.94656577,22.73097349,113.94657782,22.73097346,113.94658987,22.73097344,113.94660193,22.73097342,113.94661398,22.73097463,113.94662603,22.73097461,113.94663809,22.73097458,113.94665014,22.73097456,113.94666086,22.73097454,113.94667291,22.73097452,113.94668496,22.73097449,113.94669702,22.73097447,113.94670773,22.73097445,113.94671978,22.73097443,113.94673184,22.73097440,113.94674255,22.73097438,113.94675460,22.73097436,113.94676666,22.73097433,113.94677871,22.73097431,113.94679076,22.73097305,113.94680282,22.73097303,113.94681487,22.73097300,113.94682693,22.73097298,113.94683898,22.73097296,113.94685103,22.73097293,113.94686309,22.73097167,113.94687514,22.73097165,113.94688719,22.73097163,113.94690058,22.73097160,113.94691264,22.73097034,113.94692603,22.73097032,113.94693808,22.73097029,113.94695148,22.73096903,113.94696487,22.73096900,113.94697826,22.73096774,113.94699165,22.73096771,113.94700505,22.73096645,113.94701978,22.73096642,113.94703317,22.73096516,113.94704790,22.73096513,113.94706264,22.73096387,113.94707737,22.73096260,113.94709210,22.73096257,113.94710683,22.73096131,113.94712290,22.73096004,113.94713763,22.73095877,113.94715370,22.73095874,113.94716978,22.73095747,113.94718719,22.73095620,113.94720460,22.73095493,113.94722201,22.73095366,113.94723942,22.73095115,113.94725683,22.73094988,113.94727558,22.73094861,113.94729433,22.73094734,113.94731441,22.73094482,113.94733450,22.73094355,113.94735459,22.73094104,113.94737468,22.73093852,113.94739745,22.73093600,113.94741888,22.73093349,113.94744164,22.73093097,113.94746441,22.73092845,113.94748852,22.73092593,113.94751396,22.73092217,113.94753941,22.73091965,113.94756485,22.73091589,113.94759164,22.73091213,113.94761976,22.73090712,113.94764789,22.73090336,113.94767869,22.73089835,113.94770815,22.73089335,113.94774029,22.73088834,113.94777243,22.73088209,113.94780592,22.73087584,113.94784074,22.73086835,113.94787689,22.73086086,113.94791305,22.73085337,113.94795189,22.73084464,113.94799073,22.73083590,113.94803091,22.73082593,113.94807108,22.73081472,113.94811394,22.73080351,113.94815679,22.73079106,113.94820099,22.73077736,113.94824518,22.73076244,113.94829071,22.73074627,113.94833491,22.73073011,113.94838044,22.73071147,113.94842598,22.73069159,113.94847017,22.73067048,113.94851303,22.73064813,113.94855454,22.73062332,113.94859338,22.73059851,113.94862954,22.73057123,113.94866302,22.73054272,113.94869248,22.73051298,113.94871793,22.73048201,113.94873802,22.73044982,113.94875275,22.73041764,113.94876079,22.73038424,113.94876481,22.73035084,113.94876079,22.73031870,113.94875276,22.73028532,113.94873803,22.73025320,113.94871795,22.73022109,113.94869250,22.73019022,113.94866304,22.73016061,113.94862957,22.73013223,113.94859341,22.73010510,113.94855458,22.73008044,113.94851306,22.73005579,113.94847021,22.73003362,113.94842602,22.73001269,113.94838049,22.72999299,113.94833496,22.72997453,113.94829076,22.72995855,113.94824523,22.72994256,113.94820104,22.72992781,113.94815685,22.72991430,113.94811400,22.72990201,113.94807114,22.72989097,113.94803097,22.72987992,113.94799079,22.72987011,113.94795195,22.72986153,113.94791312,22.72985295,113.94787696,22.72984560,113.94784080,22.72983825,113.94780598,22.72983090,113.94777250,22.72982479,113.94774036,22.72981867,113.94770822,22.72981378,113.94767876,22.72980889,113.94764796,22.72980401,113.94761983,22.72980035,113.94759171,22.72979546,113.94756493,22.72979181,113.94753948,22.72978815,113.94751403,22.72978572,113.94748859,22.72978206,113.94746448,22.72977963,113.94744172,22.72977721,113.94741895,22.72977478,113.94739752,22.72977235,113.94737476,22.72976992,113.94735467,22.72976749,113.94733458,22.72976505,113.94731449,22.72976386,113.94729440,22.72976142,113.94727565,22.72976022,113.94725690,22.72975902,113.94723949,22.72975782,113.94722208,22.72975538,113.94720467,22.72975418,113.94718726,22.72975298,113.94716985,22.72975177,113.94715378,22.72975057,113.94713771,22.72975060,113.94712298,22.72974939,113.94710691,22.72974819,113.94709218,22.72974698,113.94707744,22.72974701,113.94706271,22.72974580,113.94704798,22.72974459,113.94703325,22.72974462,113.94701986,22.72974341,113.94700513,22.72974344,113.94699173,22.72974223,113.94697834,22.72974225,113.94696495,22.72974104,113.94695155,22.72974107,113.94693816,22.72973986,113.94692611,22.72973988,113.94691272,22.72973991,113.94690066,22.72973870,113.94688727,22.72973872,113.94687522,22.72973875,113.94686316,22.72973877,113.94685111,22.72973756,113.94683906,22.72973758,113.94682700,22.72973760,113.94681495,22.72973763,113.94680290,22.72973765,113.94679084,22.72973767,113.94677879,22.72973646,113.94676674,22.72973648,113.94675468,22.72973651,113.94674263,22.72973653,113.94673192,22.72973655,113.94671986,22.72973657,113.94670781,22.72973660,113.94669709,22.72973662,113.94668504,22.72973664,113.94667299,22.72973666,113.94666093,22.72973669,113.94665022,22.72973671,113.94663817,22.72973673,113.94662611,22.72973676,113.94661406,22.72973678,113.94660201,22.72973804,113.94658995,22.72973806,113.94657790,22.72973809,113.94656585,22.72973811,113.94655379,22.72973813,113.94654174,22.72973816,113.94652968,22.72973942,113.94651763,22.72973944,113.94650558,22.72973946,113.94649218,22.72973949,113.94648013,22.72974075,113.94646674,22.72974077,113.94645468,22.72974080,113.94644129,22.72974206,113.94642790,22.72974209,113.94641451,22.72974335,113.94640111,22.72974337,113.94638772,22.72974464,113.94637299,22.72974466,113.94635959,22.72974593,113.94634486,22.72974595,113.94633013,22.72974722,113.94631540,22.72974848,113.94630067,22.72974851,113.94628593,22.72974978,113.94626986,22.72975105,113.94625513,22.72975231,113.94623906,22.72975234,113.94622299,22.72975361,113.94620558,22.72975488,113.94618816,22.72975615,113.94617075,22.72975742,113.94615334,22.72975993,113.94613593,22.72976120,113.94611718,22.72976247,113.94609843,22.72976374,113.94607834,22.72976625,113.94605825,22.72976753,113.94603816,22.72977004,113.94601807,22.72977255,113.94599530,22.72977507,113.94597387,22.72977758,113.94595111,22.72978010,113.94592834,22.72978262,113.94590423,22.72978513,113.94587878,22.72978889,113.94585333,22.72979141,113.94582789,22.72979517,113.94580110,22.72979893,113.94577297,22.72980393,113.94574485,22.72980769,113.94571404,22.72981270,113.94568458,22.72981771,113.94565243,22.72982271,113.94562029,22.72982896,113.94558681,22.72983520,113.94555198,22.72984269,113.94551582,22.72985018,113.94547966,22.72985767,113.94544082,22.72986640,113.94540197,22.72987513,113.94536179,22.72988509,113.94532161,22.72989630,113.94527875,22.72990751,113.94523589,22.72991996,113.94519169,22.72993364,113.94514749,22.72994857,113.94510195,22.72996473,113.94505775,22.72998089,113.94501221,22.72999952,113.94496667,22.73001939,113.94492247,22.73004050,113.94487961,22.73006284,113.94483809,22.73008765,113.94479925,22.73011245,113.94476308,22.73013972,113.94472960,22.73016823,113.94470013,22.73019796,113.94467468,22.73022893,113.94465458,22.73026111,113.94463985,22.73029329,113.94463181,22.73032670,113.94462913,22.73035885",
@@ -2795,4 +3097,60 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 }
             },3000);
         }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.i("zxy", "onClick: view==");
+
+        }
+    };
+    private int currentPage;//当前页
+    private int totalPage = 1;//总页
+    private  final int INDEX = 1;//首页
+    private int currentWfs;//当前区
+    private boolean isLoadMore = false;
+    private List<WeiFang> datap = new ArrayList<>();
+    SwipeRefreshLayout.OnRefreshListener onRefreshListener =  new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            currentPage = INDEX;
+            isLoadMore = false;
+            //刷新
+            getPresenter().requesWFData(LocationdrawActivity.this,INDEX, currentWfs);
+        }
+    };
+
+    NestedScrollView.OnScrollChangeListener onScrollChangeListener =  new NestedScrollView.OnScrollChangeListener(){
+        @Override
+        public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                if(currentPage<totalPage) {
+                    loadMore();
+                }else{
+                    Toast.makeText(LocationdrawActivity.this,getResources().getString(R.string.full_text),Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+    OnRecyclerViewItemOnClickListener listener  = new OnRecyclerViewItemOnClickListener() {
+        @Override
+        public void onClick(View view, int position) {
+            Log.i(TAG, "onClick: datap.get(position)=="+datap.get(position).getId());
+            popuWf.dismiss();
+            showPopupWindow(datap.get(position),2);
+        }
+    };
+
+    private void loadMore(){
+        boolean isNetworkAvailable = NetworkUtil.isNetworkAvailable(LocationdrawActivity.this);
+        if (isNetworkAvailable){
+            currentPage+=1;
+            isLoadMore = true;
+            getPresenter().requesWFData(LocationdrawActivity.this,currentPage, currentWfs);
+        }else {
+            Toast.makeText(LocationdrawActivity.this,R.string.network_error,Toast.LENGTH_LONG).show();
+        }
+
+    }
 }

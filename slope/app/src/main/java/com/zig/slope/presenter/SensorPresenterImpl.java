@@ -2,6 +2,7 @@ package com.zig.slope.presenter;
 
 import android.content.Context;
 
+import com.zig.slope.bean.DataWarnBean;
 import com.zig.slope.common.base.BasePresenter;
 import com.zig.slope.common.base.bean.BaseResponseBean;
 import com.zig.slope.common.base.bean.DataBean;
@@ -47,18 +48,18 @@ public class SensorPresenterImpl extends BasePresenter<SensorContract.SensorView
      * 请求监测点预警数据
      */
     public void requestSensorForcastData(Context context,String newName){
-        model.getSensorForcastDatas(context,newName,new SensorContract.ISensorModelCallback() {
+        model.getSensorForcastDatas(context,newName,new SensorContract.ISensorModelCallbacks() {
             @Override
-            public void onSuccess(BaseResponseBean<List<DataBean>> response) {
+            public void onSuccess(BaseResponseBean<List<DataWarnBean>> response) {
                 if (getMvpView() != null) {
-                    getMvpView().onSensorSucess(response);
+                    getMvpView().onSensorSucessw(response);
                 }
             }
 
             @Override
             public void onFail(String msg) {
                 if (getMvpView() != null) {
-                    getMvpView().onSensorFail(msg);
+                    getMvpView().onSensorFailw(msg);
                 }
             }
         });

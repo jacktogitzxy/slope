@@ -670,7 +670,7 @@
         android:id="@+id/splash_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/wellcom2"
+        android:src="@drawable/wellcomp"
         android:visibility="gone"
         android:scaleType="fitXY"
         />

@@ -1,76 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="200dp"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pop_layout"
-    android:background="#bf818181"
-    android:paddingBottom="@dimen/dp_20"
-    android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/btn1"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="@dimen/dp_300">
+    <TextView
+        android:id="@+id/titlewf"
         android:layout_width="wrap_content"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
-        android:layout_marginTop="@dimen/dp_20"
-        android:paddingBottom="@dimen/margin_small"
-        android:paddingTop="@dimen/margin_small"
-        android:tag="1"
-        android:onClick="selectType"
-        android:text="@string/type_zj"
-        android:background="@drawable/buttonbg"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_large"/>
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white_bb"
+        android:padding="@dimen/dp_3"
+        android:textSize="16sp"
+        android:background="@drawable/button_myn_style"
+        android:layout_gravity="center_horizontal"
+        android:text="凤凰社区凤凰村老旧房片区"/>
+<android.support.v4.widget.SwipeRefreshLayout
+android:id="@+id/refresh_layout"
+android:background="#ef818181"
+android:layout_marginTop="@dimen/dp_30"
+android:paddingBottom="@dimen/dp_30"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_4"
+                android:fadeScrollbars="false"
+                android:layout_gravity="center_horizontal"
+                android:nestedScrollingEnabled="false"
+                android:scrollbars="vertical"
+                android:visibility="visible"
+                tools:listitem="@layout/item_wf" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btn2"
-        android:layout_width="wrap_content"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
-        android:layout_marginTop="@dimen/dp_20"
-        android:paddingBottom="@dimen/margin_small"
-        android:paddingTop="@dimen/margin_small"
-        android:tag="2"
-        android:onClick="selectType"
-        android:text="@string/type_hs"
-        android:background="@drawable/buttonbg"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_large"/>
+    </android.support.v4.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/btn3"
-        android:layout_width="wrap_content"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
-        android:layout_marginTop="@dimen/dp_20"
-        android:paddingBottom="@dimen/margin_small"
-        android:paddingTop="@dimen/margin_small"
-        android:onClick="selectType"
-        android:tag="3"
-        android:text="@string/type_jt"
-        android:background="@drawable/buttonbg"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_large"/>
+    <LinearLayout
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible">
 
-    <Button
-        android:id="@+id/btn4"
-        android:layout_width="wrap_content"
-        android:tag="4"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
-        android:layout_marginTop="@dimen/dp_20"
-        android:paddingBottom="@dimen/margin_small"
-        android:paddingTop="@dimen/margin_small"
-        android:onClick="selectType"
-        android:text="@string/type_gt"
-        android:background="@drawable/buttonbg"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_large"/>
-</LinearLayout>
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:hapticFeedbackEnabled="true"
+            android:src="@drawable/ic_empty_img_24dp"
+            android:tint="@color/colorPrimary" />
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/empty_text"
+            android:textColor="@color/colorPrimary" />
+    </LinearLayout>
+
+</FrameLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
+</android.support.design.widget.CoordinatorLayout>

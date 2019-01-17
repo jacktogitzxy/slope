@@ -6,11 +6,12 @@ import com.zig.slope.bean.DiXian;
 import com.zig.slope.bean.GongDi;
 import com.zig.slope.bean.PaiWu;
 import com.zig.slope.bean.SanFan;
+import com.zig.slope.bean.WeiFangBean;
 import com.zig.slope.common.base.bean.BaseResponseBean;
-import com.zig.slope.common.base.bean.HisBean;
 import com.zig.slope.common.base.bean.ProcessBean;
 
 import java.util.List;
+
 
 /**
  * Author：CHENHAO
@@ -30,6 +31,8 @@ public class ProcessContract {
         void onSubsidenceFail(String msg);
         void onSewageSucess(List<PaiWu> data);
         void onSewageFail(String msg);
+        void onDangerousSucess(WeiFangBean data);
+        void onDangerousFail(String msg);
     }
 
     public interface ProcessModel{
@@ -39,6 +42,7 @@ public class ProcessContract {
         void getConstructionDatas(Context context, IProcessModelCallbackgd callback);
         void getSubsidenceDatas(Context context, IProcessModelCallbackdx callback);
         void getSewageDatas(Context context, IProcessModelCallbackpw callback);
+        void getDangerousDatas(Context context, int page,int community,IProcessModelCallbackwf callback);
         //取消请求
         void cancleHttpRequest();
 
@@ -64,6 +68,10 @@ public class ProcessContract {
     }
     public interface IProcessModelCallbackpw{
         void onSuccess(BaseResponseBean<List<PaiWu>> response);
+        void onFail(String msg);
+    }
+    public interface IProcessModelCallbackwf{
+        void onSuccess(BaseResponseBean<WeiFangBean> response);
         void onFail(String msg);
     }
 }
