@@ -22,7 +22,7 @@ public class HisContract {
 
     public interface HisModel{
         //请求数据，回调
-        void getHisDatas(Context context, String admin ,int page,int types,IHisModelCallback callback,String meths);
+        void getHisDatas(Context context, String admin ,int page,int types,int flag,IHisModelCallback callback,String meths);
         //取消请求
         void cancleHttpRequest();
 

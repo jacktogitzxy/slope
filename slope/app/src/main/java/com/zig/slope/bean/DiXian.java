@@ -29,6 +29,15 @@ public class DiXian implements Serializable {
     private String advise;//建议处理
     private String imageAddress1;//图片
     private String subsidenceType;//类型
+    private String remark;//频率
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     public String getSubsidenceType() {
         return subsidenceType;
@@ -190,7 +199,7 @@ public class DiXian implements Serializable {
         this.imageAddress1 = imageAddress1;
     }
 
-    public DiXian(Double e, Double n, String id, String community, String street, String road, String address, String pipelineType, String material, String diameters, String depth, String repair, String curing, String loss, String buliding, String person, String grade, String advise, String imageAddress1) {
+    public DiXian(Double e, Double n, String id, String community, String street, String road, String address, String pipelineType, String material, String diameters, String depth, String repair, String curing, String loss, String buliding, String person, String grade, String advise, String imageAddress1,String remark) {
         this.e = e;
         this.n = n;
         this.id = id;
@@ -210,6 +219,7 @@ public class DiXian implements Serializable {
         this.grade = grade;
         this.advise = advise;
         this.imageAddress1 = imageAddress1;
+        this.remark = remark;
     }
 
     public List<String> PltoList(){
@@ -218,7 +228,7 @@ public class DiXian implements Serializable {
         lists.add("隐患类型:"+this.subsidenceType);
         lists.add("社区:"+this.community);
         lists.add("街道办:"+this.street);
-        lists.add("位置:"+this.road);
+        lists.add("位置:"+this.address);
 //        lists.add("地址:"+this.address);
         lists.add("管道类型:"+this.pipelineType);
         lists.add("管材:"+this.material);
@@ -231,6 +241,7 @@ public class DiXian implements Serializable {
 //        lists.add("潜在威胁人数:"+this.person);
         lists.add("地面坍塌:"+this.grade);
         lists.add("建议处理:"+this.advise);
+        lists.add("备注:"+this.remark);
         return lists;
     }
 }

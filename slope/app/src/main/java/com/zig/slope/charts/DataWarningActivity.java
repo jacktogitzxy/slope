@@ -18,6 +18,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -84,6 +85,7 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
     private double mCurrentLat = 0.0;
     private double mCurrentLon = 0.0;
     private float mCurrentAccracy;
+    private TextView displayName,displayName2;
     private Double lastX = 0.0;
     LatLng desLatLng = new LatLng(22.755346594895,113.91997779108);
     private GridView videogride;
@@ -105,6 +107,8 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         layoutManager = new LinearLayoutManager(DataWarningActivity.this);
         recycler_view.setLayoutManager(layoutManager);
         recycler_view.setVisibility(View.VISIBLE);
+        displayName = findViewById(R.id.displayName);
+        displayName2 = findViewById(R.id.displayName2);
         emptyView = findViewById(R.id.empty_view);
         emptyView.setVisibility(View.INVISIBLE);
         videogride = findViewById(R.id.videogride);
@@ -119,10 +123,15 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         if(type==2){
             toolbar.setTitle(getTitles(currentType)+newName+getResources().getString(R.string.sensorWarning));
+            if(currentType==1) {
+                displayName.setText("名称：" +intent.getStringExtra("zName"));
+                displayName2.setText("地点：" +intent.getStringExtra("address"));
+            }
         }
         if(type==4){
             toolbar.setTitle(newName+getResources().getString(R.string.sensorWarning2));
         }
+
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -349,15 +358,15 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
         BitmapDescriptor bitmap1 =BitmapDescriptorFactory.fromBitmap(bd.getBitmap());
         BitmapDrawable bd2 = (BitmapDrawable) getResources().getDrawable(R.drawable.slopeyellow);
         BitmapDescriptor bitmap2 =BitmapDescriptorFactory.fromBitmap(bd2.getBitmap());
-        BitmapDrawable bd3= (BitmapDrawable) getResources().getDrawable(R.drawable.slopegreen);
-        BitmapDescriptor bitmap4 =BitmapDescriptorFactory.fromBitmap(bd3.getBitmap());
-        BitmapDrawable bd4= (BitmapDrawable) getResources().getDrawable(R.drawable.solpeiconleft);
-        BitmapDescriptor bitmap3 =BitmapDescriptorFactory.fromBitmap(bd3.getBitmap());
+//        BitmapDrawable bd3= (BitmapDrawable) getResources().getDrawable(R.drawable.slopegreen);
+//        BitmapDescriptor bitmap4 =BitmapDescriptorFactory.fromBitmap(bd3.getBitmap());
+//        BitmapDrawable bd4= (BitmapDrawable) getResources().getDrawable(R.drawable.solpeiconleft);
+//        BitmapDescriptor bitmap3 =BitmapDescriptorFactory.fromBitmap(bd4.getBitmap());
         ArrayList<BitmapDescriptor> list = new ArrayList<>();
         list.add(bitmap1);
         list.add(bitmap2);
-        list.add(bitmap4);
-        list.add(bitmap3);
+//        list.add(bitmap4);
+//        list.add(bitmap3);
         OverlayOptions oo =new MarkerOptions().position(desLatLng)
                 .zIndex(9)
                 .draggable(true)
@@ -365,7 +374,7 @@ public class DataWarningActivity extends BaseMvpActivity<SensorContract.SensorVi
                 ;
         mBaiduMap.addOverlay(oo);
         MapStatus.Builder builder = new MapStatus.Builder();
-        builder.target(desLatLng).zoom(16.0f);//设置缩放比例
+        builder.target(desLatLng).zoom(14.0f);//设置缩放比例
         mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
     }
     private void initCity() {

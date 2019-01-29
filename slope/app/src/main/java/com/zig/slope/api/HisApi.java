@@ -23,7 +23,7 @@ public interface HisApi {
      *巡查数据
      */
     @POST("{app}")
-    Observable<BaseResponseBean<HisBean>> getHisReport(@Path("app")String meths, @Query("currentPage") int page, @Query("operatorId") String admin,@Query("type_s") int type_s);
+    Observable<BaseResponseBean<HisBean>> getHisReport(@Path("app")String meths, @Query("currentPage") int page, @Query("operatorId") String admin,@Query("type_s") int type_s,@Query("flag") int flag);
 
     /**
      *管理审核

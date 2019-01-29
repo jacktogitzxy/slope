@@ -131,14 +131,25 @@ public class OkhttpWorkUtil {
         }
     }
 
-    public void postAsynHttpHis(String url,String id,String operatorName,String contents,String type) {
+    public void postAsynHttpHis(String url,String id,String operatorName,String contents,String type,String flag ) {
         OkHttpClient mOkHttpClient = new OkHttpClient();
-        RequestBody formBody = new FormBody.Builder()
-                .add("id", id)
-                .add("operatorName", operatorName)
-                .add("contents", contents)
-                .add("type_s", type)
-                .build();
+        RequestBody formBody;
+        if(flag.equals("0")){
+            formBody = new FormBody.Builder()
+                    .add("id", id)
+                    .add("operatorName", operatorName)
+                    .add("contents", contents)
+                    .add("type_s", type)
+                    .build();
+        }else {
+            formBody = new FormBody.Builder()
+                    .add("id", id)
+                    .add("operatorName", operatorName)
+                    .add("contents", contents)
+                    .add("type_s", type)
+                    .add("confirm_flag", flag)
+                    .build();
+        }
         Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)
@@ -163,6 +174,7 @@ public class OkhttpWorkUtil {
                     @Override
                     public void run() {
                         if(str.contains("5")) {
+                            Log.i("zxy", "run: "+str);
                             stopProgressDialog();
                             Toast.makeText(activity, "修改成功", Toast.LENGTH_SHORT).show();
                             if(callBack!=null){callBack.onSuccess(null);}

@@ -193,6 +193,7 @@ public class PaiWu implements Serializable {
     }
     public List<String> PltoList(){
         List<String> lists = new ArrayList<>();
+        lists.add("id:"+this.id);
         lists.add("编号:"+this.sewageId);
         lists.add("地址:"+this.address);
         lists.add("社区:"+this.community);

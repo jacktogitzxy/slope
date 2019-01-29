@@ -518,7 +518,7 @@
                            android:id="@+id/tvChat"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="上报数据"
+                           android:text="巡查上报"
                            android:textSize="13sp"
                            android:textColor="@color/color_757575" />
                    </LinearLayout>
@@ -562,7 +562,7 @@
                            android:id="@+id/tvContacts"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                           android:text="巡查记录"
+                           android:text="巡查报告"
                            android:textSize="13sp"
                            android:textColor="@color/color_757575" />
                    </LinearLayout>

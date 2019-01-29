@@ -40,6 +40,7 @@ public class MyApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
@@ -47,6 +48,7 @@ public class MyApplication extends BaseApplication {
         JPushInterface.init(this);     		// 初始化 JPush
         // for compatibility
         Bugly.init(getApplicationContext(), "c5379a7e5e", false);
+
         Beta.checkUpgrade();
 //        Beta.autoInit = true;//自动初始化开关,true表示app启动自动初始化升级模块; false不会自动初始化; 开发者如果担心sdk初始化影响app启动速度，可以设置为false，在后面某个时刻手动调用Beta.init(getApplicationContext(),false);
 //        Beta.autoCheckUpgrade = true;//true表示初始化时自动检查升级; false表示不会自动检查升级,需要手动调用Beta.checkUpgrade()方法;
@@ -66,7 +68,7 @@ public class MyApplication extends BaseApplication {
         SDKInitializer.setCoordType(CoordType.BD09LL);
 //        TypefaceProvider.registerDefaultIconSets();
         //突破65535的限制
-        MultiDex.install(this);
+
         //ARouter配置
         if (Utils.isDebug()) {           // 这两行必须写在init之前，否则这些配置在init过程中将无效
             ARouter.openLog();     // 打印日志
@@ -83,5 +85,6 @@ public class MyApplication extends BaseApplication {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }

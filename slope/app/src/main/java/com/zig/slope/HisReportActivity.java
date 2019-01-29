@@ -43,13 +43,22 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
     private   String admin;
     private HisAdapter adapter;
     private Toolbar toolbar;
-    private String NOTDO = "queryInspectionResultsApp";//未审核
-    private String ADMINDO = "queryInspectionResultsListAdminApp";//管理审核
-    private  String LEADERDO = "queryInspectionResultsListLeaderApp";//领导审核
+//    private String NOTDO = "queryInspectionResultsApp";//未审核
+//    private String ADMINDO = "queryInspectionResultsListAdminApp";//管理审核
+//    private  String LEADERDO = "queryInspectionResultsListLeaderApp";//领导审核
+    private String searchResultsApp = "queryInspectionResultsApp";
     private boolean isCurrentType = true;
-    private  String CURRENTTYPE=NOTDO;
+    private  int CURRENTTYPE=1;
     private String operatorLevel,operatorName;
     private int type=1;//1 边坡 2危房  3三防 4地陷 5工地  6河道 7全部
+    /*
+    flag=2 表示管理员上报的
+    flag=3 表示领导上报的
+    flag=4 完成的
+    flag=1 表示巡查员上报的
+     */
+
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_his_report;
@@ -111,18 +120,19 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Log.i(TAG, "onMenuItemClick: item="+item.getTitle());
                 isCurrentType = toolbar.getSubtitle().equals(item.getTitle());
-                Log.i(TAG, "onMenuItemClick: isCurrentType=="+isCurrentType);
                 if(!isCurrentType) {//分类查询
                     if (item.getItemId() == R.id.notdo) {
-                        CURRENTTYPE = NOTDO;
+                        CURRENTTYPE = 1;
                     }
                     if (item.getItemId() == R.id.admindo) {
-                        CURRENTTYPE = ADMINDO;
+                        CURRENTTYPE = 2;
                     }
                     if (item.getItemId() == R.id.leaderdo) {
-                        CURRENTTYPE = LEADERDO;
+                        CURRENTTYPE = 3;
+                    }
+                    if (item.getItemId() == R.id.alldo) {
+                        CURRENTTYPE = 4;
                     }
                     currentPage=INDEX;
                     getTypeData();
@@ -141,7 +151,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
     }
 
     public void getTypeData(){
-            getPresenter().requestHisData(HisReportActivity.this, admin, currentPage, CURRENTTYPE,type);
+            getPresenter().requestHisData(HisReportActivity.this, admin, currentPage, searchResultsApp,type,CURRENTTYPE);
     }
     @Override
     protected void getData() {
@@ -149,7 +159,7 @@ public class HisReportActivity extends BaseMvpActivity<HisContract.HisReportView
         admin = pm.getPackage("operatorId");
         currentPage = INDEX;
         operatorName = pm.getPackage("operatorName");
-        getPresenter().requestHisData(HisReportActivity.this,admin,INDEX,NOTDO,type);
+        getPresenter().requestHisData(HisReportActivity.this,admin,INDEX,searchResultsApp,type,CURRENTTYPE);
     }
 
     @Override

@@ -37,7 +37,6 @@ public class LeftMenuFragment extends Fragment {
         uid = view.findViewById(R.id.user_id);
         group = view.findViewById(R.id.radioGroup);
         group.setOnCheckedChangeListener(radioButtonListener);
-        group.setOnCheckedChangeListener(radioButtonListener);
         aSwitch = view.findViewById(R.id.openLocation);
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

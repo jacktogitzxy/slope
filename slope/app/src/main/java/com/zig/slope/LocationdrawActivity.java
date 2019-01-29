@@ -1651,7 +1651,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         if(type==6){
             PaiWu gd = (PaiWu) o;
             this.cpu = gd;
-            toolbar.setTitle("河道编号:"+gd.getSewageId());
+            toolbar.setTitle("河道编号:"+gd.getId());
             listView.setAdapter(new ListviewAdapter(this,gd.PltoList()));
             img =gd.getImageAddress1().trim();
         }
@@ -2542,7 +2542,9 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                   Intent  i = new Intent(LocationdrawActivity.this, DataWarningActivity.class);
                   if(currentType==1) {
                       i.putExtra("newName", cpk.getNewName());
+                      i.putExtra("address",cpk.getDangerName());
                       i.putExtra("zLatLng", new LatLng(cpk.getN(), cpk.getE()));
+                      i.putExtra("zName",cpk.getCityNum());
                   }else if(currentType==3){
                       i.putExtra("newName", csf.getId());
                       i.putExtra("zLatLng", new LatLng(csf.getN(), csf.getE()));
@@ -2731,7 +2733,6 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
         localIntentFilter.addAction("com.zig.live");
         localIntentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(liverecever,localIntentFilter);
-
         pool.scheduleAtFixedRate(task, 10, 10*60, TimeUnit.SECONDS);
     }
     @Override
@@ -2936,7 +2937,7 @@ public class LocationdrawActivity extends BaseMvpActivity<ProcessContract.Proces
                 if (activity.getString(R.string.baidu_navi).equals(value)) {
                     startNavi(activity, startLL, endLL);
                 } else if (activity.getString(R.string.gaode_navi).equals(value)) {
-                    double[]gps = AMapUtil.bd09_To_Gcj02(cpk.getN(),cpk.getE());
+                    double[]gps = AMapUtil.bd09_To_Gcj02(endLL.latitude,endLL.longitude);
                     AMapUtil.goToNaviActivity(activity,"test",null,
                             gps,"1","2");
                 }

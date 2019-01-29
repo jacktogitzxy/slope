@@ -25,4 +25,12 @@
         android:orderInCategory="300"
         app:showAsAction="never"
         />
+
+    <item
+        android:id="@+id/alldo"
+        android:title="@string/allreported"
+        android:icon="@drawable/ic_looks_4_black_24dp"
+        android:orderInCategory="300"
+        app:showAsAction="never"
+        />
 </menu>

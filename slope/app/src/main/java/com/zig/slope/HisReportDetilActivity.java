@@ -14,9 +14,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -48,11 +50,14 @@ public class HisReportDetilActivity extends AppCompatActivity {
     private LinearLayout place_search_layout;
     private EditText place_edit;
     private  AppCompatTextView[]cbs;
+    private CheckBox ckeck_1,ckeck_2,ckeck_3;
     private AppCompatTextView start_place_edit,destination_edit,start_place_edit2,destination_edit2,
-            enterbt;
+            start_place_edit3,destination_edit3,enterbt;
     String tagc = "0";
     private String operatorLevel,operatorName;
     private int flag;
+    private RadioGroup group;
+    String isreport = "2";//不上报
     private OkhttpWorkUtil okhttpWorkUtil;
     private int type;//类别
     @Override
@@ -69,7 +74,7 @@ public class HisReportDetilActivity extends AppCompatActivity {
         data = (HisReport) intent.getSerializableExtra("data");
         operatorLevel = intent.getStringExtra("operatorLevel");
         operatorName = intent.getStringExtra("operatorName");
-        flag = intent.getIntExtra("flag",0);//1未审核2管理审核3领导审核
+        flag = intent.getIntExtra("flag",0);//1未审核2管理审核3领导审核4
         type = intent.getIntExtra("type",1);
         initView();
         initData(data);
@@ -77,8 +82,11 @@ public class HisReportDetilActivity extends AppCompatActivity {
     }
     List<String> imgs = null;
     private void initData(HisReport data) {
+        Log.i("zxy", "initData: operatorLevel=="+operatorLevel);
         if("3".equals(operatorLevel)&&flag==1) {
             enterbt.setVisibility(View.VISIBLE);
+            group.setVisibility(View.VISIBLE);
+            ckeck_1.setVisibility(View.VISIBLE);
             if(okhttpWorkUtil==null){
                 okhttpWorkUtil = new OkhttpWorkUtil(HisReportDetilActivity.this,okcallBack);
              }
@@ -88,12 +96,25 @@ public class HisReportDetilActivity extends AppCompatActivity {
         }
         if("2".equals(operatorLevel)&&flag==2) {
             enterbt.setVisibility(View.VISIBLE);
+            group.setVisibility(View.VISIBLE);
+            ckeck_2.setVisibility(View.VISIBLE);
             if(okhttpWorkUtil==null){
                 okhttpWorkUtil = new OkhttpWorkUtil(HisReportDetilActivity.this,okcallBack);
             }
             start_place_edit2.setText(getResources().getString(R.string.lingdao)+operatorName);
         }else{
             start_place_edit2.setText(getResources().getString(R.string.lingdao)+data.getLeaders());
+        }
+        if("1".equals(operatorLevel)&&flag==3) {
+            enterbt.setVisibility(View.VISIBLE);
+//            group.setVisibility(View.VISIBLE);
+            ckeck_3.setVisibility(View.VISIBLE);
+            if(okhttpWorkUtil==null){
+                okhttpWorkUtil = new OkhttpWorkUtil(HisReportDetilActivity.this,okcallBack);
+            }
+            start_place_edit3.setText(getResources().getString(R.string.sjlingdao)+operatorName);
+        }else{
+            start_place_edit3.setText(getResources().getString(R.string.sjlingdao)+data.getSeniors());
         }
         textTime.setText("上报时间："+ TimeUtils.transleteTime(data.getCreateTime()));
         textAuthor.setText("巡查员："+data.getRemark());
@@ -126,6 +147,7 @@ public class HisReportDetilActivity extends AppCompatActivity {
         text_view_content.setText("情况描述："+data.getContents());
         destination_edit.setText(getResources().getString(R.string.yijian)+data.getAdminsContent());
         destination_edit2.setText(getResources().getString(R.string.yijian)+data.getLeadersContent());
+        destination_edit3.setText(getResources().getString(R.string.yijian)+data.getSeniorsContent());
         final String msg = data.getUrl1().trim();
         String vsg = data.getUrl2().trim();
 
@@ -219,6 +241,8 @@ public class HisReportDetilActivity extends AppCompatActivity {
         destination_edit = findViewById(R.id.destination_edit);
         start_place_edit2 =findViewById(R.id.start_place_edit2);
         destination_edit2 = findViewById(R.id.destination_edit2);
+        start_place_edit3 =findViewById(R.id.start_place_edit3);
+        destination_edit3 = findViewById(R.id.destination_edit3);
         enterbt = findViewById(R.id.enterbt);
         enterbt.setOnClickListener(onclick);
         place_edit = (EditText) findViewById(R.id.place_edit);
@@ -239,6 +263,9 @@ public class HisReportDetilActivity extends AppCompatActivity {
         cbs[1] = findViewById(R.id.text_view_cb1);
         cbs[2] = findViewById(R.id.text_view_cb2);
         cbs[3] = findViewById(R.id.text_view_cb3);
+        ckeck_1 = findViewById(R.id.ckeck_1);
+        ckeck_2 = findViewById(R.id.ckeck_2);
+        ckeck_3 = findViewById(R.id.ckeck_3);
         if(type==1){
             cbs[0].setText(getResources().getString(R.string.danger1));
             cbs[1].setText(getResources().getString(R.string.danger2));
@@ -269,6 +296,19 @@ public class HisReportDetilActivity extends AppCompatActivity {
             cbs[2].setText(getResources().getString(R.string.danger19));
             cbs[3].setText(getResources().getString(R.string.danger20));
         }
+        group = findViewById(R.id.radioGroupReport);
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if (checkedId == R.id.noreport) {
+                    isreport = "2";
+                }
+                if (checkedId == R.id.yesreport) {
+                    isreport = "1";
+                }
+
+            }
+        });
     }
     public void showInputDestination(View view) {
         if(enterbt.getVisibility()==View.VISIBLE){
@@ -286,6 +326,35 @@ public class HisReportDetilActivity extends AppCompatActivity {
                     Toast.makeText(HisReportDetilActivity.this,"您不是领导!",Toast.LENGTH_SHORT).show();
                 }
             }
+            if(view.getId()==R.id.start_place_edit3||view.getId()==R.id.destination_edit3){//上级管理
+                if("1".equals(operatorLevel)){
+                    startEdit(view);
+                }else{
+                    Toast.makeText(HisReportDetilActivity.this,"您无权限!",Toast.LENGTH_SHORT).show();
+                }
+            }
+            if(view.getId()==R.id.ckeck_1){
+                if(ckeck_1.isChecked()) {
+                    destination_edit.setText(getResources().getString(R.string.yijian)+getResources().getString(R.string.quickCkeck));
+                }else{
+                    destination_edit.setText(getResources().getString(R.string.yijian));
+                }
+            }
+            if(view.getId()==R.id.ckeck_2){
+                if(ckeck_2.isChecked()) {
+                    destination_edit2.setText(getResources().getString(R.string.yijian)+getResources().getString(R.string.quickCkeck));
+                }else{
+                    destination_edit2.setText(getResources().getString(R.string.yijian));
+                }
+            }
+            if(view.getId()==R.id.ckeck_3){
+                if(ckeck_3.isChecked()) {
+                    destination_edit3.setText(getResources().getString(R.string.yijian)+getResources().getString(R.string.quickCkeck));
+                }else{
+                    destination_edit3.setText(getResources().getString(R.string.yijian));
+                }
+            }
+
         }
 
     }
@@ -313,8 +382,14 @@ public class HisReportDetilActivity extends AppCompatActivity {
         }else  if(tagc.equals("3"))
         {
             start_place_edit2.setText(getResources().getString(R.string.lingdao)+place_edit.getText());
-        }else{
+        }else if(tagc.equals("4")){
             destination_edit2.setText(getResources().getString(R.string.yijian)+place_edit.getText());
+        }
+        else  if(tagc.equals("5"))
+        {
+            start_place_edit3.setText(getResources().getString(R.string.sjlingdao)+place_edit.getText());
+        }else if(tagc.equals("6")){
+            destination_edit3.setText(getResources().getString(R.string.yijian)+place_edit.getText());
         }
         place_edit.setText("");
         msgView.setVisibility(View.VISIBLE);
@@ -330,16 +405,22 @@ public class HisReportDetilActivity extends AppCompatActivity {
     View.OnClickListener onclick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            Log.i("zxcc", "onClick: isreport="+isreport);
             if ("3".equals(operatorLevel)){//管理
                 String contents = destination_edit.getText().toString().trim();
                 String id =String.valueOf(data.getId());
-                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"adminShenHeApp",id,operatorName,contents.substring(11),type+"");
+                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL+"adminShenHeApp",id,operatorName,contents.substring(11),type+"",isreport);
 
             }
             if ("2".equals(operatorLevel)){//领导
                 String contents = destination_edit2.getText().toString().trim();
                 String id =String.valueOf(data.getId());
-                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL + "LeaderShenHeApp", id, operatorName, contents.substring(11),type+"");
+                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL + "LeaderShenHeApp", id, operatorName, contents.substring(11),type+"",isreport);
+            }
+            if ("1".equals(operatorLevel)){//1领导
+                String contents = destination_edit3.getText().toString().trim();
+                String id =String.valueOf(data.getId());
+                okhttpWorkUtil.postAsynHttpHis(Constant.BASE_URL + "seniorsShenHeApp", id, operatorName, contents.substring(11),type+"","0");
             }
         }
     };

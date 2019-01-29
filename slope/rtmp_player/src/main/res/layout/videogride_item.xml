@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     android:clickable="true"
     android:background="@drawable/boldervideo"
     android:onClick="onClicktoPlay"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <!--<org.careye.player.media.EyeVideoView-->
@@ -28,4 +29,4 @@
         android:paddingRight="5dp"
         android:background="@drawable/item_text_view_bge"
         android:text="监测点1"/>
-</FrameLayout>
+</LinearLayout>

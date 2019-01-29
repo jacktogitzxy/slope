@@ -174,6 +174,13 @@
             android:textColor="@android:color/black"
             android:gravity="center_vertical"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_marginRight="@dimen/dp_3"
+            android:background="@drawable/hisreport_state"
+            android:orientation="vertical">
         <RelativeLayout
             android:id="@+id/charge_layout"
             android:layout_width="match_parent"
@@ -233,19 +240,34 @@
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/destination_edit"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/dp_200"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@android:color/black"
                     android:gravity="center_vertical"
                     android:clickable="true"
-
                     android:paddingLeft="@dimen/dp_16"
                     android:text="意见："
                     android:tag="2"
                     android:onClick="showInputDestination"
                     android:textSize="13sp" />
+                <CheckBox
+                    android:id="@+id/ckeck_1"
+                    android:textSize="13sp"
+                    android:layout_gravity="right"
+                    android:layout_width="0dp"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:onClick="showInputDestination"
+                    android:layout_height="wrap_content"
+                    android:text="@string/quickCkeck"
+                    android:textColor="@android:color/black"
+                    android:checked="false"/>
             </LinearLayout>
+            <View
+                style="@style/transaction_type_divider"
+                android:layout_below="@+id/destination_layout"/>
+            />
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/charge_layout2"
@@ -254,8 +276,6 @@
             android:padding="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_16"
           >
-
-
 
             <LinearLayout
                 android:id="@+id/start_place_layout2"
@@ -307,7 +327,7 @@
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/destination_edit2"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/dp_200"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@android:color/black"
@@ -319,8 +339,148 @@
                     android:tag="4"
                     android:onClick="showInputDestination"
                     android:textSize="13sp" />
+
+                <CheckBox
+                    android:id="@+id/ckeck_2"
+                    android:textSize="13sp"
+                    android:layout_gravity="right"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:onClick="showInputDestination"
+                    android:layout_height="wrap_content"
+                    android:text="@string/quickCkeck"
+                    android:visibility="gone"
+                    android:textColor="@android:color/black"
+                    android:checked="false"/>
             </LinearLayout>
+            <View
+                style="@style/transaction_type_divider"
+                android:layout_below="@+id/destination_layout2"/>
+            />
+
+
         </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/charge_layout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            >
+            <LinearLayout
+                android:id="@+id/start_place_layout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/blue_circle_bg" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/start_place_edit3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:tag="4"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/position_divider3"
+                style="@style/transaction_type_divider"
+                android:layout_below="@id/start_place_layout3"
+                android:layout_marginLeft="10dp"
+                android:visibility="invisible"
+                />
+
+            <LinearLayout
+                android:id="@+id/destination_layout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/position_divider3"
+                android:layout_marginTop="@dimen/dp_8"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/yellow_circle_bg" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/destination_edit3"
+                    android:layout_width="@dimen/dp_200"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:text="意见："
+                    android:tag="6"
+                    android:onClick="showInputDestination"
+                    android:textSize="13sp" />
+                <CheckBox
+                    android:id="@+id/ckeck_3"
+                    android:textSize="13sp"
+                    android:layout_gravity="right"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:onClick="showInputDestination"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/quickCkeck"
+                    android:textColor="@android:color/black"
+                    android:checked="false"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+            <RadioGroup
+                android:id="@+id/radioGroupReport"
+                android:layout_marginTop="@dimen/dp_3"
+                android:layout_below="@+id/destination_layout3"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:contentDescription="@string/radioGroup_report" >
+
+                <RadioButton
+                    android:id="@+id/noreport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/text_size_normal"
+                    android:layout_gravity="center"
+                    android:textColor="@color/top_bar_normal_bg"
+                    android:text="@string/report_no" >
+                </RadioButton>
+
+                <RadioButton
+                    android:id="@+id/yesreport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/top_bar_normal_bg"
+                    android:textSize="@dimen/text_size_normal"
+                    android:layout_gravity="center"
+                    android:text="@string/report_yes" >
+                </RadioButton>
+
+            </RadioGroup>
+        </LinearLayout>
+
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/enterbt"
             android:layout_width="match_parent"

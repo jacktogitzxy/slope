@@ -33,3 +33,7 @@
 -keep class com.google.gson.** {*;}
 -keep class com.google.protobuf.** {*;}
 -keep public class android.support.v4.content.FileProvider {*;}
+
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+-keep class android.support.**{*;}

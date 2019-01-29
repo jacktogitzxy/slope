@@ -27,8 +27,8 @@ public class HisPresenterImpl extends BasePresenter<HisContract.HisReportView> {
     /**
      * 请求巡查历史
      */
-    public void requestHisData(Context context,String admin,int page,String meths,int types){
-        model.getHisDatas(context,admin,page,types,new HisContract.IHisModelCallback() {
+    public void requestHisData(Context context,String admin,int page,String meths,int types,int flag){
+        model.getHisDatas(context,admin,page,types,flag,new HisContract.IHisModelCallback() {
             @Override
             public void onSuccess(BaseResponseBean<HisBean> response) {
                 if (getMvpView() != null) {

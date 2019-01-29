@@ -28,8 +28,33 @@ public class HisReport implements Serializable {
         private String adminsContent;
         private String leaders;
         private String leadersContent;
+        private String seniors;
+        private String seniorsContent;
         private String remark;
         private String remark1;
+
+    public String getSeniors() {
+        if(seniors==null||seniors.equals("null")){
+            return "";
+        }
+        return seniors;
+    }
+
+    public void setSeniors(String seniors) {
+        this.seniors = seniors;
+    }
+
+    public String getSeniorsContent() {
+        if(seniorsContent==null||seniorsContent.equals("null")){
+            return "";
+        }
+        return seniorsContent;
+    }
+
+    public void setSeniorsContent(String seniorsContent) {
+        this.seniorsContent = seniorsContent;
+    }
+
     public int getId() {
         return id;
     }
@@ -79,6 +104,9 @@ public class HisReport implements Serializable {
     }
 
     public String getContents() {
+        if(contents==null||contents.equals("null")){
+            return "";
+        }
         return contents;
     }
 
@@ -151,6 +179,9 @@ public class HisReport implements Serializable {
     }
 
     public String getAdmins() {
+        if(admins==null||admins.equals("null")){
+            return "";
+        }
         return admins;
     }
 
@@ -159,6 +190,9 @@ public class HisReport implements Serializable {
     }
 
     public String getAdminsContent() {
+        if(adminsContent==null||adminsContent.equals("null")){
+            return "";
+        }
         return adminsContent;
     }
 
@@ -167,6 +201,9 @@ public class HisReport implements Serializable {
     }
 
     public String getLeaders() {
+        if(leaders==null||leaders.equals("null")){
+            return "";
+        }
         return leaders;
     }
 
@@ -175,6 +212,9 @@ public class HisReport implements Serializable {
     }
 
     public String getLeadersContent() {
+        if(leadersContent==null||leadersContent.equals("null")){
+            return "";
+        }
         return leadersContent;
     }
 
@@ -198,11 +238,13 @@ public class HisReport implements Serializable {
         this.remark1 = remark1;
     }
 
-    public HisReport(int id, String sid,String t_id,String cid,  String did,String newName, String createTime, String contents, int controlFlag1, String url1, int controlFlag2, String url2, int controlFlag3, int controlFlag4, int flag, String admins, String adminsContent, String leaders, String leadersContent, String remark,String remark1) {
+    public HisReport(int id, String sid, String newName, String t_id, String cid, String did, String createTime, String contents, int controlFlag1, String url1, int controlFlag2, String url2, int controlFlag3, int controlFlag4, int flag, String admins, String adminsContent, String leaders, String leadersContent, String seniors, String seniorsContent, String remark, String remark1) {
         this.id = id;
         this.sid = sid;
-        this.did=did;
         this.newName = newName;
+        this.t_id = t_id;
+        this.cid = cid;
+        this.did = did;
         this.createTime = createTime;
         this.contents = contents;
         this.controlFlag1 = controlFlag1;
@@ -216,10 +258,9 @@ public class HisReport implements Serializable {
         this.adminsContent = adminsContent;
         this.leaders = leaders;
         this.leadersContent = leadersContent;
+        this.seniors = seniors;
+        this.seniorsContent = seniorsContent;
         this.remark = remark;
-        this.t_id=t_id;
         this.remark1 = remark1;
-        this.cid=cid;
-
     }
 }
